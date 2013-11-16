@@ -1,5 +1,6 @@
 package interfaces;
+import org.la4j.matrix.Matrix;
 
-public interface Matrix3D {
-
+/* just an alias */
+public interface Matrix3D extends Matrix{
 }
