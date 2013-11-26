@@ -1,5 +1,7 @@
 package file;
 
+import interfaces.Mesh;
+
 import java.io.*;
 import java.util.*;
 
@@ -58,6 +60,8 @@ public class ObjectFileFormatReader {
 			e.printStackTrace();
 		}
 	}
+	
+	public Mesh getMesh() { return null; }
 	
 	public List<Coord3d> getVertices() { return this._vertices; }
 	
