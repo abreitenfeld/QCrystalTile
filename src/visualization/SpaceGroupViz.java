@@ -29,14 +29,16 @@ import org.jzy3d.plot3d.rendering.view.modes.ViewPositionMode;
 import file.ObjectFileFormatReader;
 
 import il.ac.idc.jdt.*;
+import interfaces.Model;
+import interfaces.View;
 
-public class SpaceGroupViz extends AbstractAnalysis {
+public class SpaceGroupViz extends AbstractAnalysis implements View {
 
 	private static final float Sphere_Radius = 5f;
 	private static final Color Faces_Color = new Color(135, 206, 235, 150);
 	
 	private enum DemoOFF {
-		spiral, voro_01, voro_02, voro_03
+		spiral, voro_01, voro_02
 	}
 	
 	public static void main(String[] args) throws Exception {
@@ -44,12 +46,23 @@ public class SpaceGroupViz extends AbstractAnalysis {
     }
 	
 	@Override
+	public void show() {
+		this.show();
+	}
+
+	@Override
+	public Model getModel() {
+		return null;
+	}
+	
+	@Override
 	public void init() throws Exception {
 		
 		chart = AWTChartComponentFactory.chart(Quality.Nicest, getCanvasType());
-
+		this.setCanvasType("awt");
+		
 		//chart.setAxeDisplayed(false);
-		//chart.setViewMode(ViewPositionMode.PROFILE);
+		//chart.setViewMode(ViewPositionMode.TOP);
 		/*LightSet lightSet = new LightSet();
 		Light light = new Light();
 		light.setPosition(new Coord3d(10, 10, 0));
@@ -57,13 +70,20 @@ public class SpaceGroupViz extends AbstractAnalysis {
 		light.setDiffuseColor(Color.RED);
 		lightSet.add(light);
 		this.getChart().getScene().setLightSet(lightSet);*/
+
+		// add movable point
+		final PickablePoint pivot = new PickablePoint(new Coord3d(0.1, 0.1, 0.1), Color.BLUE, 10);
+		pivot.setDisplayed(true);
+		pivot.setPickingId(1);
+		//chart.getScene().add(pivot);
+		
 		// listener to click
-		/*chart.getView().addViewPointChangedListener(new IViewPointChangedListener() {
+		chart.getView().addViewPointChangedListener(new IViewPointChangedListener() {
 			@Override
 			public void viewPointChanged(ViewPointChangedEvent e) {
-				System.out.println("sdfdsf");
+				//pivot.setCoord(e.getViewPoint());
 			}
-		});*/
+		});
 	
 		final InputStream inFile = SpaceGroupViz.class.getResourceAsStream("/resources/" + DemoOFF.voro_02 + ".off");
 		final ObjectFileFormatReader offReader = new ObjectFileFormatReader(inFile);
@@ -82,7 +102,7 @@ public class SpaceGroupViz extends AbstractAnalysis {
 			Point vertPt = new Point(coord, new Color(255,100,100), Sphere_Radius);
 			chart.getScene().add(vertPt);
 		}
-		
+				
 		/*final QuickHull3D hull = new QuickHull3D(rndPts);
 		List<il.ac.idc.jdt.Point> jdtPts = new LinkedList<il.ac.idc.jdt.Point>();
 		int[][] faceIndices = hull.getFaces(QuickHull3D.POINT_RELATIVE + QuickHull3D.CLOCKWISE);
@@ -103,5 +123,5 @@ public class SpaceGroupViz extends AbstractAnalysis {
 		 }
 		*/
 	}
-	
+
 }
