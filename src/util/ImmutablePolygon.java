@@ -5,7 +5,7 @@ import java.util.*;
 
 import javax.swing.event.ListSelectionEvent;
 
-public class Polygon implements interfaces.Polygon {
+public class ImmutablePolygon implements interfaces.Polygon {
 
 	private final List<Vector3D> _vertices;
 	
@@ -13,7 +13,7 @@ public class Polygon implements interfaces.Polygon {
 	 * Constructor of an polygon.
 	 * @param vertices
 	 */
-	public Polygon(Vector3D[] vertices) {
+	public ImmutablePolygon(Vector3D[] vertices) {
 		this(new ArrayList<Vector3D>(Arrays.asList(vertices)));
 	}
 	
@@ -21,7 +21,7 @@ public class Polygon implements interfaces.Polygon {
 	 * Constructor of an polygon.
 	 * @param vertices
 	 */
-	public Polygon(Collection<Vector3D> vertices) {
+	public ImmutablePolygon(Collection<Vector3D> vertices) {
 		this(new ArrayList<Vector3D>(vertices));
 	}
 	
@@ -29,7 +29,7 @@ public class Polygon implements interfaces.Polygon {
 	 * Constructor of an polygon.
 	 * @param vertices
 	 */
-	public Polygon(List<Vector3D> vertices) {
+	public ImmutablePolygon(List<Vector3D> vertices) {
 		this._vertices = Collections.unmodifiableList(vertices);
 	}
 	

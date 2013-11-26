@@ -9,7 +9,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class Mesh implements interfaces.Mesh {
+public class ImmutableMesh implements interfaces.Mesh {
 
 	private final List<Vector3D> _vertices;
 	private final List<Polygon> _polygons;
@@ -19,7 +19,7 @@ public class Mesh implements interfaces.Mesh {
 	 * @param vertices
 	 * @param polys
 	 */
-	public Mesh(Vector3D[] vertices, Polygon[] polys) {
+	public ImmutableMesh(Vector3D[] vertices, Polygon[] polys) {
 		this(new ArrayList<Vector3D>(Arrays.asList(vertices)), new ArrayList<Polygon>(Arrays.asList(polys)));
 	}
 	
@@ -28,7 +28,7 @@ public class Mesh implements interfaces.Mesh {
 	 * @param vertices
 	 * @param polys
 	 */
-	public Mesh(Collection<Vector3D> vertices, Collection<Polygon> polys) {
+	public ImmutableMesh(Collection<Vector3D> vertices, Collection<Polygon> polys) {
 		this(new ArrayList<Vector3D>(vertices), new ArrayList<Polygon>(polys));
 	}
 	
@@ -37,7 +37,7 @@ public class Mesh implements interfaces.Mesh {
 	 * @param vertices
 	 * @param polys
 	 */
-	public Mesh(List<Vector3D> vertices, List<Polygon> polys) {
+	public ImmutableMesh(List<Vector3D> vertices, List<Polygon> polys) {
 		this._vertices = Collections.unmodifiableList(vertices);
 		this._polygons = Collections.unmodifiableList(polys);
 	}
