@@ -1,6 +1,6 @@
 package interfaces;
 
-interface Transformation {
+public interface Transformation {
 	Matrix3D linearPart();
 	Vector3D translationPart();
 	
