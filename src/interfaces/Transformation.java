@@ -8,4 +8,6 @@ public interface Transformation {
 	
 	// return a new Transformation that represents the operation of applying this after 
 	Transformation composition(Transformation b);
+	
+	Vector3D apply(Vector3D point);
 }
