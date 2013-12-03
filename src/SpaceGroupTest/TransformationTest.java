@@ -3,6 +3,7 @@ package SpaceGroupTest;
 import static org.junit.Assert.*;
 import interfaces.Matrix3D;
 import interfaces.Matrix4D;
+import interfaces.Transformation;
 import interfaces.Vector3D;
 
 import org.junit.Test;
@@ -72,12 +73,31 @@ public class TransformationTest {
 
 	@Test
 	public void testGetAsHomogeneous() {
-		fail("Not yet implemented");
+		Vector3D point = new Vector3D( new double[] {1d,1d,1d} );
+		Transformation justMove = new TransformationImpl(
+				 new Matrix3D(new Matrix3D().factory().createIdentityMatrix(3)),
+				 new Vector3D(new double[] {0.5,0.5,0})
+			);
+		assertEquals("check moved point", 
+				new Vector3D( new double[] {1.5,1.5,1.0}).getAsHomogeneous(),
+				justMove.getAsHomogeneous().multiply(point.getAsHomogeneous())
+			);
+		Transformation justScale = new TransformationImpl(
+				 new Matrix3D(new double[][] {
+						 { 0.5, 0, 0 },
+						 { 0, 0.5, 0 },
+						 { 0, 0, 0.5 }
+				 }),
+				 new Vector3D(new double[] { 0d, 0d, 0d})
+			);
+		assertEquals("check scaled point", 
+				new Vector3D( new double[] {0.5,0.5,0.5}).getAsHomogeneous(),
+				justScale.getAsHomogeneous().multiply(point.getAsHomogeneous())
+			);
 	}
 
 	@Test
 	public void testComposition() {
 		fail("Not yet implemented");
 	}
-
 }
