@@ -51,6 +51,14 @@ public class TransformationImpl implements Transformation {
 		Matrix4D matr = new Matrix4D(this.getAsHomogeneous().multiply(b.getAsHomogeneous()));
 		return new TransformationImpl(matr);
 	}
+	
+	@Override
+	public Vector3D apply(Vector3D point) {
+		return new Vector3D(
+				this.getAsHomogeneous().multiply(point.getAsHomogeneous()).sliceLeft(3)
+			);
+	}
+	
 	private Matrix3D linearPart;
 	private Vector3D translationPart;
 }
