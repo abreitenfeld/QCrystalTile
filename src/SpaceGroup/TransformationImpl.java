@@ -1,6 +1,8 @@
+package SpaceGroup;
 
 import org.la4j.factory.CRSFactory;
 import org.la4j.vector.Vector;
+import org.la4j.vector.dense.BasicVector;
 
 import interfaces.Matrix3D;
 import interfaces.Matrix4D;
@@ -16,9 +18,9 @@ public class TransformationImpl implements Transformation {
 	}
 	
 	public TransformationImpl(Matrix4D homogeneousM) {
-		this.linearPart = new Matrix3D(homogeneousM.sliceTopLeft(2, 2));
+		this.linearPart = new Matrix3D(homogeneousM.sliceTopLeft(3, 3));
 		
-		this.translationPart = new Vector3D( homogeneousM.getColumn(3));
+		this.translationPart = new Vector3D( homogeneousM.getColumn(3).sliceLeft(3));
 	}
 
 	@Override
@@ -37,7 +39,7 @@ public class TransformationImpl implements Transformation {
 		
 		Matrix4D ret = new Matrix4D(factory.createIdentityMatrix(4));
 		for( int i=0; i< 3; i++) {
-			Vector row = linearPart.getRow(i);
+			Vector row = new BasicVector(new double[] { linearPart.get(i, 0), linearPart.get(i, 1), linearPart.get(i, 2), 0}); //linearPart.getRow(i);
 			ret.setRow(i, row);
 		}
 		ret.setColumn(3, factory.createVector(new double[] { translationPart.get(0), translationPart.get(1), translationPart.get(2), 1 }));

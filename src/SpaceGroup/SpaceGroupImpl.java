@@ -1,3 +1,4 @@
+package SpaceGroup;
 import java.util.Set;
 
 import interfaces.LatticeType;
