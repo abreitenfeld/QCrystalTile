@@ -26,4 +26,10 @@ public class Vector3D extends BasicVector implements Vector {
 	public Vector3D(VectorSource arg0) {
 		super(arg0);
 	}
+	
+	public Vector4D getAsHomogeneous() {
+		return new Vector4D(
+				new double[]{ get(0), get(1), get(2), 1d }
+			);
+	}
 }
