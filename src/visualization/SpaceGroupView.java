@@ -5,7 +5,9 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Panel;
 import java.io.InputStream;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.swing.BoxLayout;
 import javax.swing.JComponent;
@@ -26,6 +28,7 @@ import org.jzy3d.events.IViewPointChangedListener;
 import org.jzy3d.events.ViewPointChangedEvent;
 import org.jzy3d.maths.Coord3d;
 import org.jzy3d.maths.Rectangle;
+import org.jzy3d.plot3d.primitives.AbstractDrawable;
 import org.jzy3d.plot3d.primitives.Point;
 import org.jzy3d.plot3d.primitives.Polygon;
 import org.jzy3d.plot3d.primitives.pickable.PickablePoint;
@@ -33,17 +36,24 @@ import org.jzy3d.plot3d.rendering.canvas.Quality;
 
 import file.ObjectFileFormatReader;
 
+import interfaces.Controller;
 import interfaces.Model;
 import interfaces.View;
 
 public class SpaceGroupView extends FrameAWT implements View {
 
+	private final Controller _controller;
 	private final Chart _chart;
 	private final SpaceGroupToolPanel _toolPanel;
+	private final List<Point> _chartVertices = new LinkedList<Point>();
+	private final List<Polygon> _chartFaces = new LinkedList<Polygon>();
 	
+	private final ResourceBundle bundle = ResourceBundle.getBundle("resources.Messages");
+	
+	private static final Color Wireframe_Color = Color.GRAY;
 	private static final float Sphere_Radius = 5f;
 	private static final Color Faces_Color = new Color(135, 206, 235, 150);
-	private static final Rectangle DEFAULT_SIZE = new Rectangle(1024, 768);
+	private static final Rectangle Default_Size = new Rectangle(1024, 768);
 	
 	private enum DemoOFF {
 		spiral,
@@ -51,18 +61,15 @@ public class SpaceGroupView extends FrameAWT implements View {
 		voro_02
 	}
 	
-	public static void main(String[] args) throws Exception {
-     	SpaceGroupView view = new SpaceGroupView();
-     	view.setVisible(true);
-    }
-	
 	@Override
 	public Model getModel() {
 		return null;
 	}
 
-	public SpaceGroupView() {
+	SpaceGroupView(Controller controller) {
 		super();
+		
+		this._controller = controller;
 		this.setLayout(new BorderLayout());
 
 		_chart = AWTChartComponentFactory.chart(Quality.Nicest, IChartComponentFactory.Toolkit.awt);
@@ -70,35 +77,80 @@ public class SpaceGroupView extends FrameAWT implements View {
 		// add movable point
 		/*final PickablePoint pivot = new PickablePoint(new Coord3d(0.1, 0.1, 0.1), Color.BLUE, 10);
 		pivot.setDisplayed(true);
-		pivot.setPickingId(1);
-		 */
-		
+		pivot.setPickingId(1);*/
+		 
 		// add components
-        this._toolPanel = new SpaceGroupToolPanel();
-        this.add(this._toolPanel, BorderLayout.LINE_START);
-		
-		final InputStream inFile = SpaceGroupViz.class.getResourceAsStream("/resources/" + DemoOFF.voro_02 + ".off");
-		final ObjectFileFormatReader offReader = new ObjectFileFormatReader(inFile);
-		final List<Polygon> polys = offReader.getPolygons();
-		final List<Coord3d> vertices = offReader.getVertices();
-		
-		// add polygons to chart
-		for (Polygon poly : polys) {
-			poly.setWireframeColor(Color.GRAY);
-			poly.setColor(Faces_Color);
-			_chart.getScene().add(poly);
-		 }
-	
-		// add vertices
-		for(Coord3d coord : vertices){
-			Point vertPt = new Point(coord, new Color(255,100,100), Sphere_Radius);
-			_chart.getScene().add(vertPt);
-		}
-		
+        this._toolPanel = new SpaceGroupToolPanel(this._controller);
+        this.add(this._toolPanel, BorderLayout.LINE_END);
+        
 		// set up default mouse controller
 		ICameraMouseController mouse = ChartLauncher.configureControllers(_chart, "", true, true);
         ChartLauncher.instructions();
-		super.initialize(_chart, DEFAULT_SIZE, "SpaceGroup Visualizer");
+		super.initialize(_chart, Default_Size, "SpaceGroup Visualizer");
+	}
+	
+	private void clearScene() {
+		// remove polygons
+		for (Polygon poly : this._chartFaces) {
+			this._chart.removeDrawable(poly, false);
+		}
+		
+		// remove vertices
+		for(Point vertice : this._chartVertices) {
+			this._chart.removeDrawable(vertice, false);
+		}
+	}
+	
+	@Override
+	public void invalidateView() {
+		final InputStream inFile = SpaceGroupView.class.getResourceAsStream("/resources/" + DemoOFF.voro_02 + ".off");
+		final ObjectFileFormatReader offReader = new ObjectFileFormatReader(inFile);
+		final List<Polygon> polys = offReader.getPolygons();
+		final List<Coord3d> vertices = offReader.getVertices();
+		final List<AbstractDrawable> drawables = new LinkedList<AbstractDrawable>();
+
+		this.clearScene();
+		this._chartFaces.clear();
+		this._chartVertices.clear();
+		
+		boolean showVertices = this._controller.getViewOption(Controller.ViewOptions.ShowVertices);
+		
+		// add polygons
+		for (Polygon poly : polys) {
+			poly.setWireframeColor(Wireframe_Color);
+			poly.setColor(Faces_Color);
+			this._chartFaces.add(poly);
+			drawables.add(poly);
+		 }
+	
+		// add vertices
+		for (Coord3d coord : vertices){
+			Point vertice = new Point(coord, new Color(255,100,100), Sphere_Radius);
+			vertice.setDisplayed(showVertices);
+			this._chartVertices.add(vertice);
+			drawables.add(vertice);
+		}
+	
+		this._chart.getScene().add(drawables);
+	}
+
+	@Override
+	public void invalidateViewOptions() {
+		boolean showVertices = this._controller.getViewOption(Controller.ViewOptions.ShowVertices);
+		boolean showFaces = this._controller.getViewOption(Controller.ViewOptions.ShowFaces);
+		boolean showWireframe = this._controller.getViewOption(Controller.ViewOptions.ShowWireframe);
+		
+		// update polygon visibility
+		for (Polygon poly : this._chartFaces) {
+			poly.setWireframeDisplayed(showWireframe);
+			poly.setFaceDisplayed(showFaces);
+		}
+		
+		// update vertice visibility
+		for(Point vertice : this._chartVertices) {
+			vertice.setDisplayed(showVertices);
+		}
+		
 	}
 	
 }
