@@ -45,6 +45,8 @@ public class SpaceGroupView extends FrameAWT implements View {
 	private final Controller _controller;
 	private final Chart _chart;
 	private final SpaceGroupToolPanel _toolPanel;
+	private final SpaceGroupSettingsPanel _settingPanel;
+	
 	private final List<Point> _chartVertices = new LinkedList<Point>();
 	private final List<Polygon> _chartFaces = new LinkedList<Polygon>();
 	
@@ -80,6 +82,9 @@ public class SpaceGroupView extends FrameAWT implements View {
 		pivot.setPickingId(1);*/
 		 
 		// add components
+        this._settingPanel = new SpaceGroupSettingsPanel(this._controller);
+        this.add(this._settingPanel, BorderLayout.LINE_START);
+        
         this._toolPanel = new SpaceGroupToolPanel(this._controller);
         this.add(this._toolPanel, BorderLayout.LINE_END);
         
@@ -99,21 +104,22 @@ public class SpaceGroupView extends FrameAWT implements View {
 		for(Point vertice : this._chartVertices) {
 			this._chart.removeDrawable(vertice, false);
 		}
+		
+		this._chartFaces.clear();
+		this._chartVertices.clear();
 	}
 	
 	@Override
 	public void invalidateView() {
-		final InputStream inFile = SpaceGroupView.class.getResourceAsStream("/resources/" + DemoOFF.voro_02 + ".off");
+		boolean showVertices = this._controller.getViewOption(Controller.ViewOptions.ShowVertices);
+		
+		final InputStream inFile = SpaceGroupView.class.getResourceAsStream("/resources/" + DemoOFF.spiral + ".off");
 		final ObjectFileFormatReader offReader = new ObjectFileFormatReader(inFile);
 		final List<Polygon> polys = offReader.getPolygons();
 		final List<Coord3d> vertices = offReader.getVertices();
 		final List<AbstractDrawable> drawables = new LinkedList<AbstractDrawable>();
 
 		this.clearScene();
-		this._chartFaces.clear();
-		this._chartVertices.clear();
-		
-		boolean showVertices = this._controller.getViewOption(Controller.ViewOptions.ShowVertices);
 		
 		// add polygons
 		for (Polygon poly : polys) {
@@ -146,7 +152,7 @@ public class SpaceGroupView extends FrameAWT implements View {
 			poly.setFaceDisplayed(showFaces);
 		}
 		
-		// update vertice visibility
+		// update vertices visibility
 		for(Point vertice : this._chartVertices) {
 			vertice.setDisplayed(showVertices);
 		}
