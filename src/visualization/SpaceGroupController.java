@@ -8,6 +8,7 @@ public class SpaceGroupController implements Controller {
 	private final Model _model;
 	private final View _view;
 	private final EnumSet<ViewOptions> _options = EnumSet.of(ViewOptions.ShowVertices, ViewOptions.ShowWireframe, ViewOptions.ShowFaces);
+	private Vector3D _originPoint = null;
 	
 	/**
 	 * Constructor.
@@ -19,7 +20,17 @@ public class SpaceGroupController implements Controller {
 		
 		this._view.invalidateView();
 	}
+	
+	@Override
+	public Vector3D getOriginPoint() {
+		return this._originPoint;
+	}
 
+	@Override
+	public void setOriginPoint(Vector3D point) {
+		this._originPoint = point;
+	}
+	
 	public boolean getViewOption(ViewOptions option) {
 		return this._options.contains(option);
 	}
