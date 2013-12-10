@@ -13,6 +13,6 @@ public interface Controller {
 	void setVisualizationStep(VisualizationSteps step);
 	VisualizationSteps getVisualizationStep();
 	
-	public enum ViewOptions { ShowVertices, ShowWireframe, ShowFaces }
+	public enum ViewOptions { ShowVertices, ShowWireframe, ShowFaces };
 	public enum VisualizationSteps { ConvexHull, DelaunayTriangulation, VoronoiTesselation };
 }
