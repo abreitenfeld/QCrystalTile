@@ -32,8 +32,6 @@ import util.ConvertHelper;
 
 import Utilities.*;
 
-import file.ObjectFileFormatReader;
-
 import interfaces.Controller;
 import interfaces.Mesh;
 import interfaces.Model;
@@ -55,18 +53,7 @@ public class SpaceGroupView extends FrameAWT implements View {
 	private static final float Sphere_Radius = 5f;
 	private static final Color Faces_Color = new Color(135, 206, 235, 150);
 	private static final Rectangle Default_Size = new Rectangle(1024, 768);
-	
-	private enum DemoOFF {
-		spiral,
-		voro_01,
-		voro_02
-	}
-	
-	@Override
-	public Model getModel() {
-		return null;
-	}
-
+		
 	SpaceGroupView(Controller controller) {
 		super();
 		
@@ -93,7 +80,10 @@ public class SpaceGroupView extends FrameAWT implements View {
 		super.initialize(_chart, Default_Size, "SpaceGroup Visualizer");
 	}
 	
-	private void clearScene() {
+	@Override
+	public Model getModel() { return null; }
+	
+	protected void clearScene() {
 		// remove polygons
 		for (Polygon poly : this._chartFaces) {
 			this._chart.removeDrawable(poly, false);
@@ -108,25 +98,13 @@ public class SpaceGroupView extends FrameAWT implements View {
 		this._chartVertices.clear();
 	}
 	
-	private Mesh getMesh(PointList p) {
-		String[] qargs={" "};
-		 switch (this._controller.getVisualizationStep()) {
-		    case ConvexHull: return QConvex.call(p,qargs);
-		    case DelaunayTriangulation: return QDelaunay.call(p,qargs);
-		    case VoronoiTesselation: return QVoronoi.call(p,qargs);
-	    }
-		 return null;
-	}
-	
 	@Override
 	public void invalidateView() {
 		boolean showVertices = this._controller.getViewOption(Controller.ViewOptions.ShowVertices);
 		boolean showFaces = this._controller.getViewOption(Controller.ViewOptions.ShowFaces);
 		boolean showWireframe = this._controller.getViewOption(Controller.ViewOptions.ShowWireframe);
 		
-	    final PointList p = new PointList();
-	    p.gen_randomPoints(20);
-	    final Mesh m = this.getMesh(p);
+	    final Mesh m = this._controller.calculateMesh();
 	    
 	    final List<interfaces.Polygon> polys = m.getFaces();
 		final List<interfaces.Vector3D> vertices = m.getVertices();

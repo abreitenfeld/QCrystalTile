@@ -17,9 +17,9 @@ public class SpaceGroupController implements Controller {
 	private final Model _model;
 	private final View _view;
 	private final EnumSet<ViewOptions> _options = EnumSet.of(ViewOptions.ShowVertices, ViewOptions.ShowWireframe, ViewOptions.ShowFaces);
-	private Vector3D _originPoint = null;
+	private Vector3D _originPoint = new Vector3D(new double[] {0, 0, 0});;
 	private VisualizationSteps _step = VisualizationSteps.ConvexHull;
-	private final PointList p;
+	//private final PointList p;
 	
 	/**
 	 * Constructor.
@@ -28,11 +28,7 @@ public class SpaceGroupController implements Controller {
 	public SpaceGroupController(Model model) {
 		this._model = model;
 		this._view = new SpaceGroupView(this);
-		
 		this._view.invalidateView();
-		
-		this.p = new PointList();
-	    this.p.gen_randomPoints(20);
 	}
 	
 	@Override
@@ -67,40 +63,42 @@ public class SpaceGroupController implements Controller {
 	}
 	
 	@Override
-	public Model getModel() {
-		return null;
-	}
+	public Model getModel() { return null; }
 
 	@Override
 	public View getView() { return this._view; }
+	
+	/**
+	 * Calculates the mesh according visualization step.
+	 * @param p
+	 * @return
+	 */
+	@Override
+	public Mesh calculateMesh() {
+		String[] qargs={" "};
+		QMesh mesh = null;
+		
+		PointList p = new PointList();
+	    p.gen_randomPoints(20);
+		
+		switch (this.getVisualizationStep()) {
+		    case ConvexHull:
+		    	mesh = QConvex.call(p, qargs);
+		    	break;
+		    case DelaunayTriangulation:
+		    	mesh = QDelaunay.call(p, qargs);
+		    	break;
+		    case VoronoiTesselation:
+		    	mesh = QVoronoi.call(p, qargs);
+		    	break;
+	    }
+		return mesh;
+	}
 	
 	public static void main(String[] args) throws Exception {
 		//UIManager.setLookAndFeel("javax.swing.plaf.synth.SynthLookAndFeel");
      	Controller controller = new SpaceGroupController(null);
      	controller.getView().show();
     }
-
-	/**
-	 * Calculates the mesh according visualization step.
-	 * @param p
-	 * @return
-	 */
-	public Mesh calculateMesh() {
-		String[] qargs={" "};
-		QMesh mesh = null;
-
-		switch (this.getVisualizationStep()) {
-		    case ConvexHull:
-		    	mesh = QConvex.call(p, qargs);
-		    	break;
-		    case DelaunayTriangulation:
-		    	mesh = QDelaunay.call(p,qargs);
-		    	break;
-		    case VoronoiTesselation:
-		    	mesh = QVoronoi.call(p,qargs);
-		    	break;
-	    }
-		return mesh;
-	}
 	
 }
