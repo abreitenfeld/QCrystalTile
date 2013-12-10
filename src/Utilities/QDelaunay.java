@@ -15,7 +15,7 @@ import java.util.LinkedList;
  */
 public class QDelaunay extends CallCProgram {
 
-        protected static String execPath = "/usr/bin/qdelaunay";
+        protected static String execPath = "qdelaunay";
         protected static String fileName="qDelaunay";
 
     public static QMesh call(PointList points,String[] args){
