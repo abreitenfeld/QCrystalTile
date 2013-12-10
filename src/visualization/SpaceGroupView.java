@@ -9,10 +9,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.ResourceBundle;
 
-import javax.swing.BoxLayout;
-import javax.swing.JComponent;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 import org.jzy3d.analysis.AnalysisLauncher;
 import org.jzy3d.bridge.swing.FrameSwing;
@@ -28,15 +25,17 @@ import org.jzy3d.events.IViewPointChangedListener;
 import org.jzy3d.events.ViewPointChangedEvent;
 import org.jzy3d.maths.Coord3d;
 import org.jzy3d.maths.Rectangle;
-import org.jzy3d.plot3d.primitives.AbstractDrawable;
-import org.jzy3d.plot3d.primitives.Point;
-import org.jzy3d.plot3d.primitives.Polygon;
-import org.jzy3d.plot3d.primitives.pickable.PickablePoint;
+import org.jzy3d.plot3d.primitives.*;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
+
+import util.ConvertHelper;
+
+import Utilities.*;
 
 import file.ObjectFileFormatReader;
 
 import interfaces.Controller;
+import interfaces.Mesh;
 import interfaces.Model;
 import interfaces.View;
 
@@ -73,7 +72,7 @@ public class SpaceGroupView extends FrameAWT implements View {
 		
 		this._controller = controller;
 		this.setLayout(new BorderLayout());
-
+		
 		_chart = AWTChartComponentFactory.chart(Quality.Nicest, IChartComponentFactory.Toolkit.awt);
         
 		// add movable point
@@ -83,7 +82,7 @@ public class SpaceGroupView extends FrameAWT implements View {
 		 
 		// add components
         this._settingPanel = new SpaceGroupSettingsPanel(this._controller);
-        this.add(this._settingPanel, BorderLayout.LINE_START);
+        this.add(this._settingPanel, BorderLayout.PAGE_END);
         
         this._toolPanel = new SpaceGroupToolPanel(this._controller);
         this.add(this._toolPanel, BorderLayout.LINE_END);
@@ -109,32 +108,50 @@ public class SpaceGroupView extends FrameAWT implements View {
 		this._chartVertices.clear();
 	}
 	
+	private Mesh getMesh(PointList p) {
+		String[] qargs={" "};
+		 switch (this._controller.getVisualizationStep()) {
+		    case ConvexHull: return QConvex.call(p,qargs);
+		    case DelaunayTriangulation: return QDelaunay.call(p,qargs);
+		    case VoronoiTesselation: return QVoronoi.call(p,qargs);
+	    }
+		 return null;
+	}
+	
 	@Override
 	public void invalidateView() {
 		boolean showVertices = this._controller.getViewOption(Controller.ViewOptions.ShowVertices);
+		boolean showFaces = this._controller.getViewOption(Controller.ViewOptions.ShowFaces);
+		boolean showWireframe = this._controller.getViewOption(Controller.ViewOptions.ShowWireframe);
 		
-		final InputStream inFile = SpaceGroupView.class.getResourceAsStream("/resources/" + DemoOFF.spiral + ".off");
-		final ObjectFileFormatReader offReader = new ObjectFileFormatReader(inFile);
-		final List<Polygon> polys = offReader.getPolygons();
-		final List<Coord3d> vertices = offReader.getVertices();
+	    final PointList p = new PointList();
+	    p.gen_randomPoints(20);
+	    final Mesh m = this.getMesh(p);
+	    
+	    final List<interfaces.Polygon> polys = m.getFaces();
+		final List<interfaces.Vector3D> vertices = m.getVertices();
 		final List<AbstractDrawable> drawables = new LinkedList<AbstractDrawable>();
-
-		this.clearScene();
 		
+		this.clearScene();
+
 		// add polygons
-		for (Polygon poly : polys) {
-			poly.setWireframeColor(Wireframe_Color);
-			poly.setColor(Faces_Color);
-			this._chartFaces.add(poly);
-			drawables.add(poly);
+		for (interfaces.Polygon poly : polys) {
+			Polygon nPoly = ConvertHelper.convertPolygonToJzyPolygon(poly);
+			nPoly.setWireframeColor(Wireframe_Color);
+			nPoly.setColor(Faces_Color);
+			nPoly.setWireframeDisplayed(showWireframe);
+			nPoly.setFaceDisplayed(showFaces);
+			this._chartFaces.add(nPoly);
+			drawables.add(nPoly);
 		 }
 	
 		// add vertices
-		for (Coord3d coord : vertices){
-			Point vertice = new Point(coord, new Color(255,100,100), Sphere_Radius);
-			vertice.setDisplayed(showVertices);
-			this._chartVertices.add(vertice);
-			drawables.add(vertice);
+		for (interfaces.Vector3D vertice : vertices){
+			Coord3d coord = ConvertHelper.convertVector3dTojzyCoord3d(vertice);
+			Point point = new Point(coord, new Color(255,100,100), Sphere_Radius);
+			point.setDisplayed(showVertices);
+			this._chartVertices.add(point);
+			drawables.add(point);
 		}
 	
 		this._chart.getScene().add(drawables);
