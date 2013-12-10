@@ -11,14 +11,23 @@ public class QConvex extends CallCProgram {
     protected static String execPath = "qconvex";
     protected static String fileName="qConvex";
 
-    public static QMesh call(PointList points){
+    public static QMesh call(PointList points,String[] args){
 
         LinkedList<Integer[]> indexs=new LinkedList<Integer[]>();
 
         preparePointsFile(points);
+        String[] cmd=new String[args.length+4];
+
+        cmd[0]=execPath;
+        for(int i=1;i<args.length+1;i++){
+            cmd[i]=args[i-1];
+        }
+        cmd[args.length+1]="-o";
+        cmd[args.length+2]="-TI";
+        cmd[args.length+3]="points.off";
 
         try{
-            ProcessBuilder b = new ProcessBuilder(execPath, "-o","TI", "points.off");
+            ProcessBuilder b = new ProcessBuilder(cmd);
             Process qconvex=b.start();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(qconvex.getInputStream()));
