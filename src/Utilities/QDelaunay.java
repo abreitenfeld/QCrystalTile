@@ -18,26 +18,33 @@ public class QDelaunay extends CallCProgram {
         protected static String execPath = "/usr/bin/qdelaunay";
         protected static String fileName="qDelaunay";
 
-    public static QMesh call(PointList points){
+    public static QMesh call(PointList points,String[] args){
 
         LinkedList<Integer[]> indexs=new LinkedList<Integer[]>();
 
         preparePointsFile(points);
+        String[] cmd=new String[args.length+4];
+
+        cmd[0]=execPath;
+        for(int i=1;i<args.length+1;i++){
+            cmd[i]=args[i-1];
+        }
+        cmd[args.length+1]="-o";
+        cmd[args.length+2]="-TI";
+        cmd[args.length+3]="points.off";
+
         try{
-            ProcessBuilder b = new ProcessBuilder(execPath, "-o","TI", "points.off");
+            ProcessBuilder b = new ProcessBuilder(cmd);
             Process p=b.start();
 
-            // Read the STDOUT and save it in a String
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             String line;
 
-            // Convert the InputStream in a String
             int line_counter=1;
 
             while ((line = br.readLine()) != null) {
                 System.out.println(line);
                 if(line_counter>=points.size()+3){
-                    //System.out.println(line);
                     Integer[] index = String2Ints(line);
                     indexs.add(index);
                 }else{
