@@ -12,6 +12,7 @@ public interface Controller {
 	boolean getViewOption(ViewOptions option);
 	void setVisualizationStep(VisualizationSteps step);
 	VisualizationSteps getVisualizationStep();
+	Mesh calculateMesh();
 	
 	public enum ViewOptions { ShowVertices, ShowWireframe, ShowFaces }
 	public enum VisualizationSteps { ConvexHull, DelaunayTriangulation, VoronoiTesselation };
