@@ -1,6 +1,6 @@
 package interfaces;
 
-public interface Transformation {
+public interface Transformation /*extends Comparable<Transformation>*/ {
 	Matrix3D linearPart();
 	Vector3D translationPart();
 	
@@ -10,4 +10,6 @@ public interface Transformation {
 	Transformation composition(Transformation b);
 	
 	Vector3D apply(Vector3D point);
+	
+	TransformationFactory getFactory();
 }
