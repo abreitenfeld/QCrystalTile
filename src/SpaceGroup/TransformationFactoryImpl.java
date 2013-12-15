@@ -1,6 +1,9 @@
 package SpaceGroup;
 
+import org.la4j.factory.CCSFactory;
+
 import interfaces.Matrix3D;
+import interfaces.Matrix4D;
 import interfaces.Transformation;
 import interfaces.TransformationFactory;
 import interfaces.Vector3D;
@@ -9,6 +12,25 @@ public class TransformationFactoryImpl implements TransformationFactory {
 
 	/*public TransformationFactoryImpl() {
 	}*/
+	
+	@Override
+	public Transformation identity() {
+		CCSFactory factory = new CCSFactory();
+		return new TransformationImpl(new Matrix4D(factory.createIdentityMatrix(4)));
+	}
+
+	@Override
+	public Transformation create(Matrix3D linearPart, Vector3D translation) {
+		return new TransformationImpl(linearPart, translation);
+	}
+
+	@Override
+	public Transformation fromLinearPart(Matrix3D linearPart) {
+		return new TransformationImpl(
+				linearPart,
+				new Vector3D(new double[] {0,0,0} )
+			);
+	}
 
 	@Override
 	public Transformation translation(double x, double y, double z) {

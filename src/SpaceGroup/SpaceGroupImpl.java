@@ -13,16 +13,21 @@ public class SpaceGroupImpl implements SpaceGroup {
 
 	public SpaceGroupImpl(
 			LatticeType latticeType,
-			Set<Transformation> base
+			Set<Transformation> generatingSet
 		) {
 		this.latticeType = latticeType;
-		this.basicTransformations = base;
+		this.generatingSet = generatingSet;
 		this.transformations = null;
 	}
 
 	@Override
 	public LatticeType getLatticeType() {
 		return latticeType;
+	}
+	
+	@Override
+	public Set<Transformation> getGeneratingSet() {
+		return generatingSet;
 	}
 
 	@Override
@@ -33,7 +38,7 @@ public class SpaceGroupImpl implements SpaceGroup {
 	}
 	
 	protected void closure() {
-		transformations = closure(basicTransformations);
+		transformations = closure(generatingSet);
 	}
 	
 	protected Set<Transformation> closure(Set<Transformation> base) {
@@ -74,6 +79,7 @@ public class SpaceGroupImpl implements SpaceGroup {
 	}
 	
 	private LatticeType latticeType;
-	private Set<Transformation> basicTransformations;
+	private Set<Transformation> generatingSet;
 	private Set<Transformation> transformations;
+
 }
