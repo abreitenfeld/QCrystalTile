@@ -4,10 +4,11 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.Panel;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.InputStream;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.ResourceBundle;
+import java.util.*;
+import java.util.Timer;
 
 import javax.swing.*;
 
@@ -27,6 +28,7 @@ import org.jzy3d.maths.Coord3d;
 import org.jzy3d.maths.Rectangle;
 import org.jzy3d.plot3d.primitives.*;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
+import org.jzy3d.plot3d.rendering.view.modes.CameraMode;
 
 import util.ConvertHelper;
 
@@ -35,6 +37,7 @@ import Utilities.*;
 import interfaces.Controller;
 import interfaces.Mesh;
 import interfaces.Model;
+import interfaces.Vector3D;
 import interfaces.View;
 
 public class SpaceGroupView extends FrameAWT implements View {
@@ -44,29 +47,45 @@ public class SpaceGroupView extends FrameAWT implements View {
 	private final SpaceGroupToolPanel _toolPanel;
 	private final SpaceGroupSettingsPanel _settingPanel;
 	
+	private Coord3d _globalCenter;
 	private final List<Point> _chartVertices = new LinkedList<Point>();
 	private final List<Polygon> _chartFaces = new LinkedList<Polygon>();
+	private final HashMap<interfaces.Polygon, Polygon> _polyToJzyPoly = new HashMap<interfaces.Polygon, Polygon>();
+	private final HashMap<interfaces.Vector3D, Point> _vectToJzyPoint = new HashMap<interfaces.Vector3D, Point>();
+	private final HashMap<interfaces.Polygon, Coord3d> _polyToCenter = new HashMap<interfaces.Polygon, Coord3d>();
+	private final HashMap<interfaces.Polygon, List<Point>> _polyToJzyPoint = new HashMap<interfaces.Polygon, List<Point>>();
+	private volatile boolean _showSpacing = false;
+	private volatile float _currentSpacing = Min_Spacing_Factor;
 	
 	private final ResourceBundle bundle = ResourceBundle.getBundle("resources.Messages");
 	
-	private static final Color Wireframe_Color = Color.GRAY;
-	private static final float Sphere_Radius = 5f;
-	private static final Color Faces_Color = new Color(135, 206, 235, 150);
-	private static final Rectangle Default_Size = new Rectangle(1024, 768);
-		
+	public static final float Min_Spacing_Factor = 1f;
+	public static final float Max_Spacing_Factor = 2f;
+	public static final float Wireframe_Width = 2f;
+	public static final float Vertice_Size = 5f;
+	public static final Color Vertice_Color = new Color(255,100,100);
+	public static final Color Wireframe_Color = Color.WHITE;
+	public static final Color Faces_Color = new Color(135, 206, 235, 150);
+	public static final Color Foregrond_Color = Color.WHITE;
+	public static final Color Viewport_Background = Color.GRAY;	
+	public static final Rectangle Default_Size = new Rectangle(1024, 768);
+	
+	/**
+	 * Constructor of view.
+	 * @param controller
+	 */
 	SpaceGroupView(Controller controller) {
 		super();
-		
 		this._controller = controller;
-		this.setLayout(new BorderLayout());
 		
-		_chart = AWTChartComponentFactory.chart(Quality.Nicest, IChartComponentFactory.Toolkit.awt);
-        
-		// add movable point
-		/*final PickablePoint pivot = new PickablePoint(new Coord3d(0.1, 0.1, 0.1), Color.BLUE, 10);
-		pivot.setDisplayed(true);
-		pivot.setPickingId(1);*/
-		 
+		this.setLayout(new BorderLayout());
+		this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(Foregrond_Color));
+		this._showSpacing = _controller.getViewOption(Controller.ViewOptions.ShowSpacing);
+		this._currentSpacing = this._showSpacing ? Max_Spacing_Factor : Min_Spacing_Factor;
+		
+		this._chart = AWTChartComponentFactory.chart(Quality.Nicest, IChartComponentFactory.Toolkit.awt);
+		this._chart.getView().setBackgroundColor(Viewport_Background);
+			 
 		// add components
         this._settingPanel = new SpaceGroupSettingsPanel(this._controller);
         this.add(this._settingPanel, BorderLayout.PAGE_END);
@@ -78,11 +97,32 @@ public class SpaceGroupView extends FrameAWT implements View {
 		ICameraMouseController mouse = ChartLauncher.configureControllers(_chart, "", true, true);
         ChartLauncher.instructions();
 		super.initialize(_chart, Default_Size, "SpaceGroup Visualizer");
+		
+		// timer for updating spacing value
+		final Timer timer = new Timer();
+		timer.schedule(new TimerTask() {
+			final float StepWith = 0.3f;
+			final float MinScale = 0.2f;
+			
+			@Override
+			public void run() {
+				if (_showSpacing && _currentSpacing < Max_Spacing_Factor) {
+					float spacing = Math.max((float)(Math.log10(_currentSpacing) / Math.log10(Max_Spacing_Factor)), MinScale) * StepWith;
+					setSpacing(Math.min(_currentSpacing + spacing, Max_Spacing_Factor));
+				}
+				else if (!_showSpacing && _currentSpacing > Min_Spacing_Factor) {
+					float spacing = Math.max((float)(Math.log10(_currentSpacing) / Math.log10(Max_Spacing_Factor)), MinScale) * StepWith;
+					setSpacing(Math.max(_currentSpacing - spacing, Min_Spacing_Factor));
+				}
+			}
+		}, 0, 30);
+		
+		//this._chart.getView().setCameraMode(CameraMode.PERSPECTIVE);
 	}
 	
-	@Override
-	public Model getModel() { return null; }
-	
+	/**
+	 * Clears the entire scene.
+	 */
 	protected void clearScene() {
 		// remove polygons
 		for (Polygon poly : this._chartFaces) {
@@ -96,6 +136,75 @@ public class SpaceGroupView extends FrameAWT implements View {
 		
 		this._chartFaces.clear();
 		this._chartVertices.clear();
+		this._polyToCenter.clear();
+		this._polyToJzyPoly.clear();
+		this._vectToJzyPoint.clear();
+		this._polyToJzyPoint.clear();
+	}
+	
+	/**
+	 * Sets the current spacing between polygons.
+	 * @param spacing
+	 */
+	private synchronized void setSpacing(float spacing) {
+		this._currentSpacing = spacing;
+		this.calculatePolygonPosition();
+		
+	//	this._chart.getView().zo
+	//	System.out.println(this._chart.getView().updateBounds());
+		//this._chart.getView().zoom(this._showSpacing ? 1f : 1f, true);
+		this._chart.getView().updateBounds();
+	}
+	
+	/**
+	 * Calculates the position of polygons according current spacing value.
+	 */
+	private void calculatePolygonPosition() {
+		Iterator<interfaces.Polygon> iter = this._polyToJzyPoly.keySet().iterator();
+		while (iter.hasNext()) {
+			interfaces.Polygon poly = iter.next();
+			if (this._polyToCenter.containsKey(poly)) {
+				Polygon jzyPoly = this._polyToJzyPoly.get(poly);
+				Coord3d center = this._polyToCenter.get(poly);
+				List<Point> drawableVertices = this._polyToJzyPoint.get(poly);
+				
+				// update position of each vertex
+				for(int i = 0; i < poly.getVertices().size(); i++) {
+					interfaces.Vector3D vertice = poly.getVertices().get(i);
+					Coord3d jzyPoint = ConvertHelper.convertVector3dTojzyCoord3d(vertice);
+					Coord3d originVect =  center.sub(this._globalCenter).mul(this._currentSpacing).add(this._globalCenter);
+					// update vertex position from polygon
+					jzyPoly.get(i).xyz = jzyPoint.sub(center).add(originVect);
+					drawableVertices.get(i).xyz = jzyPoly.get(i).xyz;
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Calculates the centroid for every polygons inside the scene.
+	 * @param polys
+	 */
+	private void calculatePolygonCenter(List<interfaces.Polygon> polys) {
+		int totalVerticeCount = 0;
+		Coord3d totalVect = Coord3d.ORIGIN;
+
+		for(interfaces.Polygon poly : polys) {
+			int polyCount = poly.getVertices().size();
+			Coord3d polyCenter = Coord3d.ORIGIN;
+			
+			for (Vector3D vect : poly.getVertices()) {
+				Coord3d jzyVect = ConvertHelper.convertVector3dTojzyCoord3d(vect);
+				// count total number of vertices
+				totalVerticeCount++;
+				totalVect = totalVect.add(jzyVect);
+				polyCenter = polyCenter.add(jzyVect);
+			}
+			// calculate center of polygon
+			this._polyToCenter.put(poly, polyCenter.div(poly.getVertices().size()));
+		}
+		// calculate center of box
+		this._globalCenter = totalVect.div(totalVerticeCount);
 	}
 	
 	@Override
@@ -104,8 +213,12 @@ public class SpaceGroupView extends FrameAWT implements View {
 		boolean showFaces = this._controller.getViewOption(Controller.ViewOptions.ShowFaces);
 		boolean showWireframe = this._controller.getViewOption(Controller.ViewOptions.ShowWireframe);
 		
+		// add movable point
+		/*final PickablePoint pivot = new PickablePoint(new Coord3d(0.1, 0.1, 0.1), Color.BLUE, 10);
+		pivot.setDisplayed(true);
+		pivot.setPickingId(1);*/
+		
 	    final Mesh m = this._controller.calculateMesh();
-	    
 	    final List<interfaces.Polygon> polys = m.getFaces();
 		final List<interfaces.Vector3D> vertices = m.getVertices();
 		final List<AbstractDrawable> drawables = new LinkedList<AbstractDrawable>();
@@ -116,25 +229,44 @@ public class SpaceGroupView extends FrameAWT implements View {
 		for (interfaces.Polygon poly : polys) {
 			Polygon nPoly = ConvertHelper.convertPolygonToJzyPolygon(poly);
 			nPoly.setWireframeColor(Wireframe_Color);
+			nPoly.setWireframeWidth(Wireframe_Width);
 			nPoly.setColor(Faces_Color);
 			nPoly.setWireframeDisplayed(showWireframe);
 			nPoly.setFaceDisplayed(showFaces);
+			
 			this._chartFaces.add(nPoly);
+			this._polyToJzyPoly.put(poly, nPoly);
 			drawables.add(nPoly);
+			
+			// add vertices
+			this._polyToJzyPoint.put(poly, new ArrayList<Point>(poly.getVertices().size()));
+			for (interfaces.Vector3D vertice : poly.getVertices()) {
+				Point point = new Point(ConvertHelper.convertVector3dTojzyCoord3d(vertice), Vertice_Color, Vertice_Size);
+				point.setDisplayed(showVertices);
+				this._chartVertices.add(point);
+				this._polyToJzyPoint.get(poly).add(point);
+				drawables.add(point);
+			}
 		 }
 	
 		// add vertices
-		for (interfaces.Vector3D vertice : vertices){
+		/*for (interfaces.Vector3D vertice : vertices){
 			Coord3d coord = ConvertHelper.convertVector3dTojzyCoord3d(vertice);
-			Point point = new Point(coord, new Color(255,100,100), Sphere_Radius);
+			Point point = new Point(coord, new Color(255,100,100), Vertice_Size);
 			point.setDisplayed(showVertices);
+			this._vectToJzyPoint.put(vertice, point);
 			this._chartVertices.add(point);
 			drawables.add(point);
-		}
+		}*/
 	
+		this.calculatePolygonCenter(polys);
+		this.calculatePolygonPosition();
+		
 		this._chart.getScene().add(drawables);
+		this._toolPanel.invalidateView();
+		this._settingPanel.invalidateView();
 	}
-
+	
 	@Override
 	public void invalidateViewOptions() {
 		boolean showVertices = this._controller.getViewOption(Controller.ViewOptions.ShowVertices);
@@ -151,7 +283,12 @@ public class SpaceGroupView extends FrameAWT implements View {
 		for(Point vertice : this._chartVertices) {
 			vertice.setDisplayed(showVertices);
 		}
+
+		this._showSpacing = this._controller.getViewOption(Controller.ViewOptions.ShowSpacing);
+		this.calculatePolygonPosition();
 		
+		this._toolPanel.invalidateViewOptions();
+		this._settingPanel.invalidateViewOptions();
 	}
 	
 }

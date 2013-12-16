@@ -19,7 +19,6 @@ public class SpaceGroupController implements Controller {
 	private final EnumSet<ViewOptions> _options = EnumSet.of(ViewOptions.ShowVertices, ViewOptions.ShowWireframe, ViewOptions.ShowFaces);
 	private Vector3D _originPoint = new Vector3D(new double[] {0, 0, 0});;
 	private VisualizationSteps _step = VisualizationSteps.ConvexHull;
-	//private final PointList p;
 	
 	/**
 	 * Constructor.
@@ -29,6 +28,7 @@ public class SpaceGroupController implements Controller {
 		this._model = model;
 		this._view = new SpaceGroupView(this);
 		this._view.invalidateView();
+		this._view.invalidateViewOptions();
 	}
 	
 	@Override
@@ -79,14 +79,25 @@ public class SpaceGroupController implements Controller {
 		QMesh mesh = null;
 		
 		PointList p = new PointList();
-	    p.gen_randomPoints(20);
+		int pCount = 5;
+		float w = 5;
+		for (int i = 0; i < pCount; i++) {
+			for (int c = 0; c < pCount; c++) {
+				for (int z = 0; z < pCount; z++) {
+					p.add(new Vector3D(new double[] {i * w, c  * w, z * w}));
+					//System.out.print(p.get(p.size() - 1) + "  ");
+				}	
+			}	
+			//System.out.println();
+		}
+	    //p.gen_randomPoints(20);
 		
 		switch (this.getVisualizationStep()) {
 		    case ConvexHull:
 		    	mesh = QConvex.call(p, qargs);
 		    	break;
 		    case DelaunayTriangulation:
-		    	mesh = QDelaunay.call(p, qargs);
+		    	mesh = QDelaunay.call(p, new String[] {"-Qs"});
 		    	break;
 		    case VoronoiTesselation:
 		    	mesh = QVoronoi.call(p, qargs);
