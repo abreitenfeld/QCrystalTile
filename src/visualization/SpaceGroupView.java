@@ -98,7 +98,7 @@ public class SpaceGroupView extends FrameAWT implements View {
         ChartLauncher.instructions();
 		super.initialize(_chart, Default_Size, "SpaceGroup Visualizer");
 		
-		// timer for updating spacing value
+		// timer for tweening the current spacing value
 		final Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
 			final float StepWith = 0.3f;
@@ -107,10 +107,12 @@ public class SpaceGroupView extends FrameAWT implements View {
 			@Override
 			public void run() {
 				if (_showSpacing && _currentSpacing < Max_Spacing_Factor) {
+					// increase spacing if spacing is turned on
 					float spacing = Math.max((float)(Math.log10(_currentSpacing) / Math.log10(Max_Spacing_Factor)), MinScale) * StepWith;
 					setSpacing(Math.min(_currentSpacing + spacing, Max_Spacing_Factor));
 				}
 				else if (!_showSpacing && _currentSpacing > Min_Spacing_Factor) {
+					// decrease  the spacing if spacing is turned off
 					float spacing = Math.max((float)(Math.log10(_currentSpacing) / Math.log10(Max_Spacing_Factor)), MinScale) * StepWith;
 					setSpacing(Math.max(_currentSpacing - spacing, Min_Spacing_Factor));
 				}
@@ -150,9 +152,9 @@ public class SpaceGroupView extends FrameAWT implements View {
 		this._currentSpacing = spacing;
 		this.calculatePolygonPosition();
 		
-	//	this._chart.getView().zo
-	//	System.out.println(this._chart.getView().updateBounds());
-		//this._chart.getView().zoom(this._showSpacing ? 1f : 1f, true);
+		// this._chart.getView().zo
+		// System.out.println(this._chart.getView().updateBounds());
+		// this._chart.getView().zoom(this._showSpacing ? 1f : 1f, true);
 		this._chart.getView().updateBounds();
 	}
 	

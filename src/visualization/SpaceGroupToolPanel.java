@@ -21,6 +21,7 @@ public class SpaceGroupToolPanel extends Panel implements ActionListener, View {
 	
 	private final ResourceBundle bundle = ResourceBundle.getBundle("resources.Messages");
 	private static final Dimension BUTTON_SIZE = new Dimension(40, 40);
+	private static final Color Selected_Color = Color.green;
 	
 	public SpaceGroupToolPanel(Controller controller) {
 		super();
@@ -48,7 +49,7 @@ public class SpaceGroupToolPanel extends Panel implements ActionListener, View {
 		styleButton(_btnFace);
 		this.add(_btnFace);
 
-		_btnSpacing = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("images/grid.png")));
+		_btnSpacing = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("images/poly_spacing.png")));
 		_btnSpacing.setToolTipText(bundle.getString("showSpacing"));
 		styleButton(_btnSpacing);
 		this.add(_btnSpacing);
