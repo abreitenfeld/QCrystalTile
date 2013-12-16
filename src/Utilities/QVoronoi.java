@@ -16,6 +16,7 @@ public class QVoronoi extends CallCProgram{
 
         LinkedList<Integer[]> indexs=new LinkedList<Integer[]>();
         PointList points_voro=new PointList();
+
         preparePointsFile(points);
 
         String[] cmd=new String[args.length+4];
@@ -29,9 +30,11 @@ public class QVoronoi extends CallCProgram{
         cmd[args.length+3]="points.off";
         try{
             ProcessBuilder b = new ProcessBuilder(cmd);
-            Process qconvex=b.start();
+            b.redirectErrorStream(true);
+            Process p=b.start();
 
-            BufferedReader br = new BufferedReader(new InputStreamReader(qconvex.getInputStream()));
+            BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
+            BufferedReader error_reader= new BufferedReader(new InputStreamReader(p.getErrorStream()));
             String line;
 
             int line_counter=1;
@@ -40,7 +43,7 @@ public class QVoronoi extends CallCProgram{
             while ((line = br.readLine()) != null) {
                 System.out.println(line);
                 if(line_counter==2){
-                    String[] format=line.split(" ");
+                    String[] format=line.split("\\s+");
                     verts=Integer.parseInt(format[0]);
                 }else if(line_counter>2 && line_counter<=verts+2){
                     double[] str2int=String2Double(line);
@@ -51,6 +54,12 @@ public class QVoronoi extends CallCProgram{
                 }
                 line_counter++;
             }
+
+            System.out.println("Error Log...");
+            while ((line=error_reader.readLine()) !=null){
+                System.out.println(line);
+            }
+
             File points_file = new File(fileName);
             boolean success = points_file.delete();
             if (!success)
