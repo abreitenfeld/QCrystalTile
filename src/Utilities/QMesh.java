@@ -18,12 +18,6 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 
-/* ###Description
-    This Class offers:
-    - 'faces_indexs' maps to 'pointlist'.Every Integer[] in 'faces_indexs' represents a Face (Triangle)
-    -  'faces' contains the Triangles maped by 'faces_indexs'
- */
-
 public class QMesh implements Mesh {
 
     private PointList pointlist=new PointList();

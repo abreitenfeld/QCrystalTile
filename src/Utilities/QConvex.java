@@ -31,6 +31,7 @@ public class QConvex extends CallCProgram {
             Process qconvex=b.start();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(qconvex.getInputStream()));
+            BufferedReader error_reader= new BufferedReader(new InputStreamReader(qconvex.getErrorStream()));
             String line;
             int line_counter=1;
 
@@ -42,6 +43,10 @@ public class QConvex extends CallCProgram {
                 }else{
                     line_counter++;
                 }
+            }
+            System.out.println("Error Log...");
+            while ((line=error_reader.readLine()) !=null){
+                System.out.println(line);
             }
 
             File points_file = new File(fileName);

@@ -47,9 +47,9 @@ abstract public class CallCProgram {
     }
     protected static double[] String2Double(String input){
 
-        String[] strArray = input.split(" ");
+        String[] strArray = input.split("\\s+");
         double[] doubleArray = new double[strArray.length];
-        for(int i = 0; i < strArray.length; i++) {
+        for(int i = 1; i < strArray.length; i++) {
             doubleArray[i] = Double.parseDouble(strArray[i]);
         }
         return doubleArray;
