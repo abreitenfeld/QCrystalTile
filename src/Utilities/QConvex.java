@@ -11,7 +11,7 @@ public class QConvex extends CallCProgram {
     protected static String execPath = "qconvex";
     protected static String fileName="qConvex";
 
-    public static QMesh call(PointList points,String[] args){
+    public static QMesh call(PointList points,String... args){
 
         LinkedList<Integer[]> indexs=new LinkedList<Integer[]>();
 

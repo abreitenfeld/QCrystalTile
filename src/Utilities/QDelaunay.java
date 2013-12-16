@@ -20,7 +20,7 @@ public class QDelaunay extends CallCProgram {
         protected static String execPath = "qdelaunay";
         protected static String fileName="qDelaunay";
 
-    public static QMesh call(PointList points,String[] args){
+    public static QMesh call(PointList points,String... args){
 
         LinkedList<Integer[]> indexs=new LinkedList<Integer[]>();
         PointList points_voro=new PointList();

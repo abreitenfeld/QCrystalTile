@@ -12,7 +12,7 @@ public class QVoronoi extends CallCProgram{
     protected static String execPath = "qvoronoi";
     protected static String fileName="qVoronoi";
 
-    public static QMesh call(PointList points,String[] args){
+    public static QMesh call(PointList points,String... args){
 
         LinkedList<Integer[]> indexs=new LinkedList<Integer[]>();
         PointList points_voro=new PointList();
@@ -30,7 +30,6 @@ public class QVoronoi extends CallCProgram{
         cmd[args.length+3]="points.off";
         try{
             ProcessBuilder b = new ProcessBuilder(cmd);
-            b.redirectErrorStream(true);
             Process p=b.start();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
