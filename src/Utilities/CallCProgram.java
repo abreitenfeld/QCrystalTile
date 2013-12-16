@@ -46,11 +46,11 @@ abstract public class CallCProgram {
         return intArray;
     }
     protected static double[] String2Double(String input){
-
+        input=" "+input;
         String[] strArray = input.split("\\s+");
-        double[] doubleArray = new double[strArray.length];
+        double[] doubleArray = new double[strArray.length-1];
         for(int i = 1; i < strArray.length; i++) {
-            doubleArray[i] = Double.parseDouble(strArray[i]);
+            doubleArray[i-1] = Double.parseDouble(strArray[i]);
         }
         return doubleArray;
     }
