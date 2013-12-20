@@ -6,12 +6,12 @@ package interfaces;
  * String validSGID = <valid spacegroup id> ;
  * validSGID.equals( new SpaceGroupID( validSGID ) );
  * 
- * SpaceGroupID id = new SpaceGroupID ( <valid sgdescr> );
- * id.equals( new SpaceGroupID( id.toString ) );
+ * SpaceGroupID id = new SpaceGroupID ( <valid spacegroup id> );
+ * id.equals( new SpaceGroupID( id.stringRepr ) );
  */
 
 public interface SpaceGroupID {
 	// SpaceGroupID( String descr )
 	
-	String toString();
+	String stringRepr();
 }
