@@ -33,7 +33,7 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foregrond_Color));
 		
 		this._spaceGroupList = new JComboBox<String>();
-		this._spaceGroupList.addItem("I4132");
+		this._spaceGroupList.addItem("<html>I4<small>1</small>32</html>");
 		
 		// create the step slider
 		this._stepSlider= new JSlider(JSlider.HORIZONTAL, Slider_Min_Step, Slider_Max_Step, 0);

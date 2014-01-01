@@ -14,10 +14,19 @@ public class SpaceGroupController implements Controller {
 	private VisualizationSteps _step = VisualizationSteps.ConvexHull;
 	
 	/**
+	 * Factory method to create controller.
+	 * @return
+	 */
+	public static Controller CreateController() {
+		final SpaceGroupModel model = new SpaceGroupModel();
+     	return new SpaceGroupController(model);
+	}
+	
+	/**
 	 * Constructor of space group controller.
 	 * @param model
 	 */
-	public SpaceGroupController(Model model) {
+	private SpaceGroupController(Model model) {
 		this._model = model;
 		this._view = new SpaceGroupView(this);
 		this._view.invalidateView();
@@ -106,8 +115,7 @@ public class SpaceGroupController implements Controller {
 	}
 	
 	public static void main(String[] args) throws Exception {
-		//UIManager.setLookAndFeel("javax.swing.plaf.synth.SynthLookAndFeel");
-     	final Controller controller = new SpaceGroupController(null);
+     	final Controller controller = CreateController();
      	controller.getView().show();
     }
 	
