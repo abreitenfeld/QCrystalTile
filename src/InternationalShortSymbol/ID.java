@@ -1,13 +1,8 @@
 package InternationalShortSymbol;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 
 import interfaces.InvalidSpaceGroupIDException;
 import interfaces.SpaceGroupID;
-import interfaces.LatticeType.CenteringType;
 
 /* this is just a wrapper class for String, to make it incompatible with an other spacegroupID */
 public class ID implements SpaceGroupID {
