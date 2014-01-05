@@ -19,7 +19,7 @@ public class SpaceGroupImplTest {
 
 	@Test
 	public void testSpaceGroupImpl() {
-		LatticeType lt = new LatticeTypeImpl("test", LatticeType.CenteringType.P, LatticeType.System.CUBIC);
+		LatticeType lt = new LatticeTypeImpl(/*"test", */LatticeType.CenteringType.P, LatticeType.System.CUBIC);
 		Set<Transformation> base = new HashSet<Transformation>();
 		base.add(
 				TransformationImpl.factory.rotationX(90)
