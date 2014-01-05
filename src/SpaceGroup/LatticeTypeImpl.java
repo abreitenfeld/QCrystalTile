@@ -5,18 +5,19 @@ import interfaces.LatticeType;
 public class LatticeTypeImpl implements LatticeType {
 
 	public LatticeTypeImpl(
-			String name,
+			//String name,
 			CenteringType centeringType,
 			System system
 		) {
-			this.name = name;
+			//this.name = name;
 			this.centeringType = centeringType;
 			this.system = system;
 	}
 	
 	@Override
 	public String getName() {
-		return name;
+		return centeringType.toString() + " " + system.toString();
+		//return name;
 	}
 
 	@Override
@@ -28,7 +29,7 @@ public class LatticeTypeImpl implements LatticeType {
 	public System getSystem() {
 		return system;
 	}
-	private String name;
+	//private String name;
 	private CenteringType centeringType;
 	private System system;
 }
