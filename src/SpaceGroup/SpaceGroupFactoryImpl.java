@@ -44,7 +44,7 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory{
 		// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		LatticeType lattice= new LatticeTypeImpl(latticename,LatticeType.CenteringType.valueOf((String.valueOf(key.stringRepr().charAt(0)))),LatticeType.System.valueOf(system));
+		LatticeType lattice= new LatticeTypeImpl(/*latticename,*/LatticeType.CenteringType.valueOf((String.valueOf(key.stringRepr().charAt(0)))),LatticeType.System.valueOf(system));
 		SpaceGroupImpl ret= new SpaceGroupImpl(lattice,transformations);
 		return ret;
 }
