@@ -5,7 +5,7 @@
 
 .classpath
 .project
-.idea
+.idea/
 
 # Package Files #
 *.jar
