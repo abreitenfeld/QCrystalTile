@@ -1,7 +1,11 @@
 package visualization;
 
 import java.util.EnumSet;
+import java.util.LinkedList;
+import java.util.List;
+
 import javax.swing.UIManager;
+
 import Utilities.*;
 import interfaces.*;
 
@@ -83,7 +87,7 @@ public class SpaceGroupController implements Controller {
 	 */
 	@Override
 	public Mesh calculateMesh() {
-		QMesh mesh = null;
+		Mesh mesh = null;
 		
 		// generate points
 		PointList p = new PointList();
@@ -108,10 +112,36 @@ public class SpaceGroupController implements Controller {
 		    	break;
 		    case VoronoiTesselation:
 		    	mesh = QVoronoi.call(p);
+		    	/*mesh = QBench.call("/opt/local/bin/rbox", "15", "D3");
+		    	p.clear();
+		    	p.addAll(mesh.getVertices());
+		    	mesh = QVoronoi.call(p);
+		    	mesh = removeVerticeFromMesh(mesh.getVertices().get(0), mesh);*/
 		    	break;
 	    }
 		
 		return mesh;
+	}
+	
+	/**
+	 * Removes the specified vertex from mesh.
+	 * @param point
+	 * @param mesh
+	 */
+	private static Mesh removeVerticeFromMesh(Vector3D point, Mesh mesh) {
+		List<Vector3D> vertices = new LinkedList<Vector3D>(mesh.getVertices());
+		List<Polygon> polys = new LinkedList<Polygon>();
+		
+		if (vertices.remove(point)) {
+			// find polys containing the specified point
+			for (Polygon poly : mesh.getFaces()) {
+				//if (!poly.getVertices().contains(point)) {
+					polys.add(poly);
+				//}
+			}		
+		}
+
+		return new ImmutableMesh(vertices, polys);
 	}
 	
 	public static void main(String[] args) throws Exception {

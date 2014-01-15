@@ -30,7 +30,6 @@ import org.jzy3d.plot3d.primitives.*;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
 import org.jzy3d.plot3d.rendering.view.modes.CameraMode;
 
-import util.ConvertHelper;
 
 import Utilities.*;
 
@@ -214,6 +213,7 @@ public class SpaceGroupView extends FrameAWT implements View {
 		boolean showVertices = this._controller.getViewOption(Controller.ViewOptions.ShowVertices);
 		boolean showFaces = this._controller.getViewOption(Controller.ViewOptions.ShowFaces);
 		boolean showWireframe = this._controller.getViewOption(Controller.ViewOptions.ShowWireframe);
+		boolean showChromaticFaces = this._controller.getViewOption(Controller.ViewOptions.ShowChromaticFaces);;
 		
 		// add movable point
 		/*final PickablePoint pivot = new PickablePoint(new Coord3d(0.1, 0.1, 0.1), Color.BLUE, 10);
@@ -226,13 +226,21 @@ public class SpaceGroupView extends FrameAWT implements View {
 		final List<AbstractDrawable> drawables = new LinkedList<AbstractDrawable>();
 		
 		this.clearScene();
-
+		
 		// add polygons
 		for (interfaces.Polygon poly : polys) {
 			Polygon nPoly = ConvertHelper.convertPolygonToJzyPolygon(poly);
 			nPoly.setWireframeColor(Wireframe_Color);
 			nPoly.setWireframeWidth(Wireframe_Width);
-			nPoly.setColor(Faces_Color);
+			// set poly color
+			if (showChromaticFaces) {
+				Color faceColor = Color.random();
+				faceColor.a = Faces_Color.a;
+				nPoly.setColor(faceColor);
+			}
+			else {
+				nPoly.setColor(Faces_Color);
+			}
 			nPoly.setWireframeDisplayed(showWireframe);
 			nPoly.setFaceDisplayed(showFaces);
 			
@@ -274,11 +282,21 @@ public class SpaceGroupView extends FrameAWT implements View {
 		boolean showVertices = this._controller.getViewOption(Controller.ViewOptions.ShowVertices);
 		boolean showFaces = this._controller.getViewOption(Controller.ViewOptions.ShowFaces);
 		boolean showWireframe = this._controller.getViewOption(Controller.ViewOptions.ShowWireframe);
+		boolean showChromaticFaces = this._controller.getViewOption(Controller.ViewOptions.ShowChromaticFaces);
 		
 		// update polygon visibility
 		for (Polygon poly : this._chartFaces) {
 			poly.setWireframeDisplayed(showWireframe);
 			poly.setFaceDisplayed(showFaces);
+			// set poly color
+			if (showChromaticFaces) {
+				Color faceColor = Color.random();
+				faceColor.a = Faces_Color.a;
+				poly.setColor(faceColor);
+			}
+			else {
+				poly.setColor(Faces_Color);
+			}
 		}
 		
 		// update vertices visibility
