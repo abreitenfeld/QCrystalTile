@@ -30,12 +30,9 @@ public class loader {
 			}
 			System.out.println("lines: "+linenum);
 			for (int i=0;i< 245;i++){lines.removeFirst();}
-			int count=0;
 			for(int j=0;j<lines.size();j++){
 				if (lines.get(j).length()>30&&(lines.get(j).substring(0, 30).equals(" Number of Symmetry Operators "))){
-					count++;
 					JSONObject obj = new JSONObject();
-					System.out.println(lines.get(j));
 					for(int k=0;k<7;k++){
 						String[] spgitem=lines.get(j).split("=");
 						obj.put(spgitem[0].replaceAll("\\p{Z}",""), spgitem[1].replaceAll("\\p{Z}",""));
@@ -58,16 +55,7 @@ public class loader {
 			file.write(list.toJSONString());
 			file.flush();
 			file.close();
-			System.out.println(count);
-			
-			JSONObject obj2 = new JSONObject();
-			obj2.put("Hase", "Fuchs");
-			obj2.put("aksjnda","asdad");
-			file = new FileWriter("src/loader/test.txt");
-			file.write(obj2.toJSONString());
-			file.flush();
-			file.close();
-				//if(line.substring(0, int endIndex);
+		
 		}catch(Exception e){e.printStackTrace();}
 	}
 	
