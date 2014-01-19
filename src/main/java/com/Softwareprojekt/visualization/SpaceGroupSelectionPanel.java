@@ -1,9 +1,9 @@
-package main.java.com.Softwareprojekt.visualization;
+package com.Softwareprojekt.visualization;
 
-import interfaces.Controller;
-import interfaces.LatticeType;
-import interfaces.SpaceGroupID;
-import interfaces.View;
+import com.Softwareprojekt.interfaces.Controller;
+import com.Softwareprojekt.interfaces.LatticeType;
+import com.Softwareprojekt.interfaces.SpaceGroupID;
+import com.Softwareprojekt.interfaces.View;
 
 import java.awt.Dimension;
 import java.awt.FlowLayout;

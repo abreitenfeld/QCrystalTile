@@ -1,6 +1,6 @@
-package main.java.com.Softwareprojekt.file;
+package com.Softwareprojekt.file;
 
-import interfaces.Mesh;
+import com.Softwareprojekt.interfaces.Mesh;
 
 import java.io.*;
 import java.util.*;

@@ -1,4 +1,4 @@
-package main.java.com.Softwareprojekt.visualization;
+package com.Softwareprojekt.visualization;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -12,8 +12,11 @@ import java.util.Timer;
 
 import javax.swing.*;
 
-import main.java.com.Softwareprojekt.Utilities.ConvertHelper;
+import com.Softwareprojekt.Utilities.ConvertHelper;
 
+import com.Softwareprojekt.interfaces.Controller;
+import com.Softwareprojekt.interfaces.Mesh;
+import com.Softwareprojekt.interfaces.Vector3D;
 import org.jzy3d.analysis.AnalysisLauncher;
 import org.jzy3d.bridge.swing.FrameSwing;
 import org.jzy3d.bridge.awt.FrameAWT;
@@ -33,13 +36,10 @@ import org.jzy3d.plot3d.rendering.canvas.Quality;
 import org.jzy3d.plot3d.rendering.view.modes.CameraMode;
 
 
-import Utilities.*;
+import com.Softwareprojekt.Utilities.*;
 
-import interfaces.Controller;
-import interfaces.Mesh;
-import interfaces.Model;
-import interfaces.Vector3D;
-import interfaces.View;
+
+import com.Softwareprojekt.interfaces.View;
 
 public class SpaceGroupView extends FrameAWT implements View {
 
@@ -53,10 +53,10 @@ public class SpaceGroupView extends FrameAWT implements View {
 	private final Point _originPoint;
 	private final List<Point> _chartVertices = new LinkedList<Point>();
 	private final List<Polygon> _chartFaces = new LinkedList<Polygon>();
-	private final HashMap<interfaces.Polygon, Polygon> _polyToJzyPoly = new HashMap<interfaces.Polygon, Polygon>();
-	private final HashMap<interfaces.Vector3D, Point> _vectToJzyPoint = new HashMap<interfaces.Vector3D, Point>();
-	private final HashMap<interfaces.Polygon, Coord3d> _polyToCenter = new HashMap<interfaces.Polygon, Coord3d>();
-	private final HashMap<interfaces.Polygon, List<Point>> _polyToJzyPoint = new HashMap<interfaces.Polygon, List<Point>>();
+	private final HashMap<com.Softwareprojekt.interfaces.Polygon, Polygon> _polyToJzyPoly = new HashMap<com.Softwareprojekt.interfaces.Polygon, Polygon>();
+	private final HashMap<com.Softwareprojekt.interfaces.Vector3D, Point> _vectToJzyPoint = new HashMap<com.Softwareprojekt.interfaces.Vector3D, Point>();
+	private final HashMap<com.Softwareprojekt.interfaces.Polygon, Coord3d> _polyToCenter = new HashMap<com.Softwareprojekt.interfaces.Polygon, Coord3d>();
+	private final HashMap<com.Softwareprojekt.interfaces.Polygon, List<Point>> _polyToJzyPoint = new HashMap<com.Softwareprojekt.interfaces.Polygon, List<Point>>();
 	private volatile boolean _showSpacing = false;
 	private volatile float _currentSpacing = Min_Spacing_Factor;
 	
@@ -175,9 +175,9 @@ public class SpaceGroupView extends FrameAWT implements View {
 	 * Calculates the position of polygons according current spacing value.
 	 */
 	private void calculatePolygonPosition() {
-		Iterator<interfaces.Polygon> iter = this._polyToJzyPoly.keySet().iterator();
+		Iterator<com.Softwareprojekt.interfaces.Polygon> iter = this._polyToJzyPoly.keySet().iterator();
 		while (iter.hasNext()) {
-			interfaces.Polygon poly = iter.next();
+			com.Softwareprojekt.interfaces.Polygon poly = iter.next();
 			if (this._polyToCenter.containsKey(poly)) {
 				Polygon jzyPoly = this._polyToJzyPoly.get(poly);
 				Coord3d center = this._polyToCenter.get(poly);
@@ -185,7 +185,7 @@ public class SpaceGroupView extends FrameAWT implements View {
 				
 				// update position of each vertex
 				for(int i = 0; i < poly.getVertices().size(); i++) {
-					interfaces.Vector3D vertice = poly.getVertices().get(i);
+					com.Softwareprojekt.interfaces.Vector3D vertice = poly.getVertices().get(i);
 					Coord3d jzyPoint = ConvertHelper.convertVector3dTojzyCoord3d(vertice);
 					Coord3d originVect =  center.sub(this._globalCenter).mul(this._currentSpacing).add(this._globalCenter);
 					// update vertex position from polygon
@@ -200,11 +200,11 @@ public class SpaceGroupView extends FrameAWT implements View {
 	 * Calculates the centroid for every polygons inside the scene.
 	 * @param polys
 	 */
-	private void calculatePolygonCenter(List<interfaces.Polygon> polys) {
+	private void calculatePolygonCenter(List<com.Softwareprojekt.interfaces.Polygon> polys) {
 		int totalVerticeCount = 0;
 		Coord3d totalVect = Coord3d.ORIGIN;
 
-		for(interfaces.Polygon poly : polys) {
+		for(com.Softwareprojekt.interfaces.Polygon poly : polys) {
 			int polyCount = poly.getVertices().size();
 			Coord3d polyCenter = Coord3d.ORIGIN;
 			
@@ -230,8 +230,8 @@ public class SpaceGroupView extends FrameAWT implements View {
 		boolean showChromaticFaces = this._controller.getViewOption(Controller.ViewOptions.ShowChromaticFaces);;
 				
 	    final Mesh m = this._controller.calculateMesh();
-	    final List<interfaces.Polygon> polys = m.getFaces();
-		final List<interfaces.Vector3D> vertices = m.getVertices();
+	    final List<com.Softwareprojekt.interfaces.Polygon> polys = m.getFaces();
+		final List<com.Softwareprojekt.interfaces.Vector3D> vertices = m.getVertices();
 		final List<AbstractDrawable> drawables = new LinkedList<AbstractDrawable>();
 		
 		this.clearScene();
@@ -239,7 +239,7 @@ public class SpaceGroupView extends FrameAWT implements View {
 		this._originPoint.xyz = ConvertHelper.convertVector3dTojzyCoord3d(this._controller.getOriginPoint());
 
 		// add polygons
-		for (interfaces.Polygon poly : polys) {
+		for (com.Softwareprojekt.interfaces.Polygon poly : polys) {
 			Polygon nPoly = ConvertHelper.convertPolygonToJzyPolygon(poly);
 			nPoly.setWireframeColor(Wireframe_Color);
 			nPoly.setWireframeWidth(Wireframe_Width);
@@ -261,7 +261,7 @@ public class SpaceGroupView extends FrameAWT implements View {
 			
 			// add vertices
 			this._polyToJzyPoint.put(poly, new ArrayList<Point>(poly.getVertices().size()));
-			for (interfaces.Vector3D vertice : poly.getVertices()) {
+			for (com.Softwareprojekt.interfaces.Vector3D vertice : poly.getVertices()) {
 				Point point = new Point(ConvertHelper.convertVector3dTojzyCoord3d(vertice), Vertice_Color, Vertice_Size);
 				point.setDisplayed(showVertices);
 				this._chartVertices.add(point);
@@ -271,7 +271,7 @@ public class SpaceGroupView extends FrameAWT implements View {
 		 }
 	
 		// add vertices
-		/*for (interfaces.Vector3D vertice : vertices){
+		/*for (com.Softwareprojekt.interfaces.Vector3D vertice : vertices){
 			Coord3d coord = ConvertHelper.convertVector3dTojzyCoord3d(vertice);
 			Point point = new Point(coord, new Color(255,100,100), Vertice_Size);
 			point.setDisplayed(showVertices);

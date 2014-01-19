@@ -1,8 +1,8 @@
-package main.java.com.Softwareprojekt.visualization;
+package com.Softwareprojekt.visualization;
 
 import java.util.ResourceBundle;
 
-import interfaces.LatticeType;
+import com.Softwareprojekt.interfaces.LatticeType;
 
 public class CenteringTypeListItem {
 

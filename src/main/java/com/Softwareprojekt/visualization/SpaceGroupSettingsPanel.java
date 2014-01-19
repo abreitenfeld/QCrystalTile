@@ -1,9 +1,9 @@
-package main.java.com.Softwareprojekt.visualization;
+package com.Softwareprojekt.visualization;
 
-import interfaces.Controller;
-import interfaces.Controller.VisualizationSteps;
-import interfaces.Vector3D;
-import interfaces.View;
+import com.Softwareprojekt.interfaces.Controller;
+import com.Softwareprojekt.interfaces.Controller.VisualizationSteps;
+import com.Softwareprojekt.interfaces.Vector3D;
+import com.Softwareprojekt.interfaces.View;
 
 import java.awt.*;
 import java.awt.event.*;

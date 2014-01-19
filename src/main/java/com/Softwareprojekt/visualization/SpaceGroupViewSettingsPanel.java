@@ -1,15 +1,13 @@
-package main.java.com.Softwareprojekt.visualization;
+package com.Softwareprojekt.visualization;
 
-import interfaces.Controller;
-import interfaces.View;
+import com.Softwareprojekt.interfaces.Controller;
+import com.Softwareprojekt.interfaces.View;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ResourceBundle;
 import javax.swing.*;
-
-import org.eclipse.swt.internal.win32.BUTTON_IMAGELIST;
 
 public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener, View {
 

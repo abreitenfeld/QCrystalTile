@@ -1,9 +1,9 @@
-package main.java.com.Softwareprojekt.visualization;
+package com.Softwareprojekt.visualization;
 
-import interfaces.Model;
-import interfaces.SpaceGroup;
-import interfaces.SpaceGroupID;
-import interfaces.Vector3D;
+import com.Softwareprojekt.interfaces.Model;
+import com.Softwareprojekt.interfaces.SpaceGroup;
+import com.Softwareprojekt.interfaces.SpaceGroupID;
+import com.Softwareprojekt.interfaces.Vector3D;
 
 public class SpaceGroupModel implements Model {
 
