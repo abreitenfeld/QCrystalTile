@@ -16,7 +16,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, View, DocumentListener, KeyListener {
+public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, View, KeyListener {
 
 	private final Controller _controller;
 	private final ResourceBundle bundle = ResourceBundle.getBundle("resources.Messages");
@@ -75,9 +75,6 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		this.invalidateViewOptions();
 		
 		// attach listeners
-		/*this._inputXCoord.getDocument().addDocumentListener(this);
-		this._inputYCoord.getDocument().addDocumentListener(this);
-		this._inputZCoord.getDocument().addDocumentListener(this);*/
 		this._inputXCoord.addKeyListener(this);
 		this._inputYCoord.addKeyListener(this);
 		this._inputZCoord.addKeyListener(this);
@@ -106,6 +103,10 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 			y = Math.max(Math.min(y, Max_Coord_Value), Min_Coord_Value);
 			z = Math.max(Math.min(z, Max_Coord_Value), Min_Coord_Value);
 			
+			this._inputXCoord.setText(Double.toString(x));
+			this._inputYCoord.setText(Double.toString(y));
+			this._inputZCoord.setText(Double.toString(z));
+			
 			this._controller.setOriginPoint(new Vector3D(new double[] {x, y, z}));
 		}
 		catch (NumberFormatException e) {	
@@ -131,21 +132,6 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		this._inputXCoord.setText(Double.toString(originPt.get(0)));
 		this._inputYCoord.setText(Double.toString(originPt.get(1)));
 		this._inputZCoord.setText(Double.toString(originPt.get(2)));
-	}
-
-	@Override
-	public void insertUpdate(DocumentEvent e) { 
-		this.applyPoint();
-	}
-
-	@Override
-	public void removeUpdate(DocumentEvent e) {
-		this.applyPoint();
-	}
-
-	@Override
-	public void changedUpdate(DocumentEvent e) {
-		this.applyPoint();
 	}
 
 	@Override
