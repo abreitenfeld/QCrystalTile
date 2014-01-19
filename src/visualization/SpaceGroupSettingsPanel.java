@@ -16,7 +16,7 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, View, DocumentListener {
+public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, View, DocumentListener, KeyListener {
 
 	private final Controller _controller;
 	private final ResourceBundle bundle = ResourceBundle.getBundle("resources.Messages");
@@ -75,9 +75,12 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		this.invalidateViewOptions();
 		
 		// attach listeners
-		this._inputXCoord.getDocument().addDocumentListener(this);
+		/*this._inputXCoord.getDocument().addDocumentListener(this);
 		this._inputYCoord.getDocument().addDocumentListener(this);
-		this._inputZCoord.getDocument().addDocumentListener(this);
+		this._inputZCoord.getDocument().addDocumentListener(this);*/
+		this._inputXCoord.addKeyListener(this);
+		this._inputYCoord.addKeyListener(this);
+		this._inputZCoord.addKeyListener(this);
 		this._stepSlider.addChangeListener(this);
 	}
 	
@@ -94,11 +97,19 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 	}
 
 	private void applyPoint() {
-		double x = 0;
-		double y = 0;
-		double z = 0;
-		
-		this._controller.getModel().setPoint(new Vector3D(new double[] {x, y, z}));
+		try {
+			double x = Double.parseDouble(this._inputXCoord.getText());
+			double y = Double.parseDouble(this._inputYCoord.getText());
+			double z = Double.parseDouble(this._inputZCoord.getText());
+			
+			x = Math.max(Math.min(x, Max_Coord_Value), Min_Coord_Value);
+			y = Math.max(Math.min(y, Max_Coord_Value), Min_Coord_Value);
+			z = Math.max(Math.min(z, Max_Coord_Value), Min_Coord_Value);
+			
+			this._controller.setOriginPoint(new Vector3D(new double[] {x, y, z}));
+		}
+		catch (NumberFormatException e) {	
+		}
 	}
 	
 	@Override
@@ -116,21 +127,38 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		}
 		
 		// set coordinates to input fields
-		Vector3D originPt = this._controller.getModel().getPoint();
+		Vector3D originPt = this._controller.getOriginPoint();
 		this._inputXCoord.setText(Double.toString(originPt.get(0)));
 		this._inputYCoord.setText(Double.toString(originPt.get(1)));
 		this._inputZCoord.setText(Double.toString(originPt.get(2)));
 	}
 
 	@Override
-	public void insertUpdate(DocumentEvent e) { }
+	public void insertUpdate(DocumentEvent e) { 
+		this.applyPoint();
+	}
 
 	@Override
-	public void removeUpdate(DocumentEvent e) { }
+	public void removeUpdate(DocumentEvent e) {
+		this.applyPoint();
+	}
 
 	@Override
 	public void changedUpdate(DocumentEvent e) {
 		this.applyPoint();
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) { }
+
+	@Override
+	public void keyPressed(KeyEvent e) { }
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if (Character.isDigit(e.getKeyChar())) {
+			this.applyPoint();
+		}
 	}
 
 }

@@ -284,6 +284,7 @@ public class SpaceGroupView extends FrameAWT implements View {
 		this._chart.getScene().add(drawables);
 		this._viewSettingsPanel.invalidateView();
 		this._settingPanel.invalidateView();
+		this._selectionPanel.invalidateView();
 	}
 	
 	@Override
@@ -318,6 +319,7 @@ public class SpaceGroupView extends FrameAWT implements View {
 		
 		this._viewSettingsPanel.invalidateViewOptions();
 		this._settingPanel.invalidateViewOptions();
+		this._selectionPanel.invalidateViewOptions();
 	}
 	
 }

@@ -1,6 +1,7 @@
 package visualization;
 
 import interfaces.Controller;
+import interfaces.LatticeType;
 import interfaces.SpaceGroupID;
 import interfaces.View;
 
@@ -16,6 +17,7 @@ public class SpaceGroupSelectionPanel extends Panel implements View {
 
 	private final Controller _controller;
 	private final ResourceBundle bundle = ResourceBundle.getBundle("resources.Messages");
+	private final JComboBox<CenteringTypeListItem> _centeringTypeList;
 	private final JComboBox<SpaceGroupID> _spaceGroupList;
 	
 	
@@ -24,12 +26,22 @@ public class SpaceGroupSelectionPanel extends Panel implements View {
 		this._controller = controller;
 		
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
-		this.setPreferredSize(new Dimension(600, 70));
-		//this.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
-		//this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foregrond_Color));
+		this.setPreferredSize(new Dimension(600, 50));
+		this.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
+		this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foregrond_Color));
+		
+		this._centeringTypeList = new JComboBox<CenteringTypeListItem>(new CenteringTypeListItem[] {
+			new CenteringTypeListItem(LatticeType.CenteringType.I),
+			new CenteringTypeListItem(LatticeType.CenteringType.P),			
+			new CenteringTypeListItem(LatticeType.CenteringType.C),
+			new CenteringTypeListItem(LatticeType.CenteringType.F)
+		});
 		
 		this._spaceGroupList = new JComboBox<SpaceGroupID>();
 		//this._spaceGroupList.addItem("<html>I4<small>1</small>32</html>");
+	
+		this.add(new Label(bundle.getString("centeringType")));
+		this.add(this._centeringTypeList);
 		
 		this.add(new Label(bundle.getString("spaceGroup")));
 		this.add(this._spaceGroupList);
@@ -44,7 +56,6 @@ public class SpaceGroupSelectionPanel extends Panel implements View {
 	@Override
 	public void invalidateViewOptions() {
 		// TODO Auto-generated method stub
-
 	}
 
 }

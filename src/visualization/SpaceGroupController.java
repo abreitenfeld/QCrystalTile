@@ -56,6 +56,7 @@ public class SpaceGroupController implements Controller {
 	@Override
 	public void setOriginPoint(Vector3D point) {
 		this._model.setPoint(point);
+		this._view.invalidateView();
 	}
 	
 	/**
