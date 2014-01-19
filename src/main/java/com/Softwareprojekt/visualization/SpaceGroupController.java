@@ -142,10 +142,4 @@ public class SpaceGroupController implements Controller {
 
 		return new ImmutableMesh(vertices, polys);
 	}
-	
-	public static void main(String[] args) throws Exception {
-     	final Controller controller = createController();
-     	controller.getView().show();
-    }
-	
 }

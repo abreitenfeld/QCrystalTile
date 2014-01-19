@@ -7,8 +7,11 @@
 .classpath
 .project
 .settings
+.idea/
 
+/target
 # Package Files #
+*.iml
 *.jar
 *.war
 *.ear
