@@ -1,6 +1,7 @@
 package visualization;
 
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
@@ -14,14 +15,13 @@ public class SpaceGroupController implements Controller {
 	private final Model _model;
 	private final View _view;
 	private final EnumSet<ViewOptions> _options = EnumSet.of(ViewOptions.ShowVertices, ViewOptions.ShowWireframe, ViewOptions.ShowFaces);
-	private Vector3D _originPoint = new Vector3D(new double[] {0, 0, 0});;
 	private VisualizationSteps _step = VisualizationSteps.ConvexHull;
 	
 	/**
 	 * Factory method to create controller.
 	 * @return
 	 */
-	public static Controller CreateController() {
+	public static Controller createController() {
 		final SpaceGroupModel model = new SpaceGroupModel();
      	return new SpaceGroupController(model);
 	}
@@ -50,12 +50,12 @@ public class SpaceGroupController implements Controller {
 	
 	@Override
 	public Vector3D getOriginPoint() {
-		return this._originPoint;
+		return this._model.getPoint();
 	}
 
 	@Override
 	public void setOriginPoint(Vector3D point) {
-		this._originPoint = point;
+		this._model.setPoint(point);
 	}
 	
 	/**
@@ -91,15 +91,13 @@ public class SpaceGroupController implements Controller {
 		
 		// generate points
 		PointList p = new PointList();
-		p.gen_randomPoints(10);
-		/*int pCount = 5;
-		float w = 5;
-		for (int i = 0; i < pCount; i++) {
-			for (int c = 0; c < pCount; c++) {
-				for (int z = 0; z < pCount; z++) {
-					p.add(new Vector3D(new double[] {i * w, c  * w, z * w}));
-				}
-			}	
+		p.gen_randomPoints(20);
+		
+		// iterate over transformation set
+		/*Iterator<Transformation> iter = this._model.getSpaceGroup().getTransformations().iterator();
+		while(iter.hasNext()) {
+			Transformation transform = iter.next();
+			p.add(transform.apply(this._model.getPoint()));
 		}*/
 		
 		// trigger qhull wrapper according current viz step
@@ -145,7 +143,7 @@ public class SpaceGroupController implements Controller {
 	}
 	
 	public static void main(String[] args) throws Exception {
-     	final Controller controller = CreateController();
+     	final Controller controller = createController();
      	controller.getView().show();
     }
 	

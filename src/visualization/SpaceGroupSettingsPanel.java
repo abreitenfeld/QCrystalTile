@@ -18,7 +18,6 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 	private final Controller _controller;
 	private final ResourceBundle bundle = ResourceBundle.getBundle("resources.Messages");
 	private final JSlider _stepSlider;
-	private final JComboBox<String> _spaceGroupList;
 	
 	private static final int Slider_Min_Step = 0;
 	private static final int Slider_Max_Step = 2;
@@ -31,9 +30,6 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		this.setPreferredSize(new Dimension(600, 70));
 		this.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
 		this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foregrond_Color));
-		
-		this._spaceGroupList = new JComboBox<String>();
-		this._spaceGroupList.addItem("<html>I4<small>1</small>32</html>");
 		
 		// create the step slider
 		this._stepSlider= new JSlider(JSlider.HORIZONTAL, Slider_Min_Step, Slider_Max_Step, 0);
@@ -51,8 +47,6 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		labels.put(new Integer(2), new JLabel(bundle.getString("voronoiTesselation")) );
 		this._stepSlider.setLabelTable(labels);
 
-		this.add(new Label(bundle.getString("spaceGroup")));
-		this.add(this._spaceGroupList);
 		this.add(new Label(bundle.getString("visualizationStep")));
 		this.add(this._stepSlider);
 		

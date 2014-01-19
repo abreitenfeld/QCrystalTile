@@ -43,10 +43,12 @@ public class SpaceGroupView extends FrameAWT implements View {
 
 	private final Controller _controller;
 	private final Chart _chart;
-	private final SpaceGroupToolPanel _toolPanel;
+	private final SpaceGroupSelectionPanel _selectionPanel;
+	private final SpaceGroupViewSettingsPanel _viewSettingsPanel;
 	private final SpaceGroupSettingsPanel _settingPanel;
 	
 	private Coord3d _globalCenter;
+	private final Point _originPoint;
 	private final List<Point> _chartVertices = new LinkedList<Point>();
 	private final List<Polygon> _chartFaces = new LinkedList<Polygon>();
 	private final HashMap<interfaces.Polygon, Polygon> _polyToJzyPoly = new HashMap<interfaces.Polygon, Polygon>();
@@ -58,6 +60,7 @@ public class SpaceGroupView extends FrameAWT implements View {
 	
 	private final ResourceBundle bundle = ResourceBundle.getBundle("resources.Messages");
 	
+	public static final float Origin_Point_Size = 15f;	
 	public static final float Min_Spacing_Factor = 1f;
 	public static final float Max_Spacing_Factor = 2f;
 	public static final float Wireframe_Width = 2f;
@@ -84,13 +87,26 @@ public class SpaceGroupView extends FrameAWT implements View {
 		
 		this._chart = AWTChartComponentFactory.chart(Quality.Nicest, IChartComponentFactory.Toolkit.awt);
 		this._chart.getView().setBackgroundColor(Viewport_Background);
-			 
+		this._chart.getView().setSquared(false);
+		
+			
+		// create moveable point
+		this._originPoint = new Point(new Coord3d(), Color.BLUE, Origin_Point_Size);
+		this._originPoint.setDisplayed(true);
+		this._chart.addDrawable(this._originPoint);
+		//this._chart.getView().setViewPoint(new Coord3d(0,0,0));
+		//this._chart.setAxeDisplayed(false);
+		
+		
 		// add components
+		this._selectionPanel = new SpaceGroupSelectionPanel(this._controller);
+		this.add(this._selectionPanel, BorderLayout.PAGE_START);
+		
         this._settingPanel = new SpaceGroupSettingsPanel(this._controller);
         this.add(this._settingPanel, BorderLayout.PAGE_END);
         
-        this._toolPanel = new SpaceGroupToolPanel(this._controller);
-        this.add(this._toolPanel, BorderLayout.LINE_END);
+        this._viewSettingsPanel = new SpaceGroupViewSettingsPanel(this._controller);
+        this.add(this._viewSettingsPanel, BorderLayout.LINE_END);
         
 		// set up default mouse controller
 		ICameraMouseController mouse = ChartLauncher.configureControllers(_chart, "", true, true);
@@ -150,10 +166,6 @@ public class SpaceGroupView extends FrameAWT implements View {
 	private synchronized void setSpacing(float spacing) {
 		this._currentSpacing = spacing;
 		this.calculatePolygonPosition();
-		
-		// this._chart.getView().zo
-		// System.out.println(this._chart.getView().updateBounds());
-		// this._chart.getView().zoom(this._showSpacing ? 1f : 1f, true);
 		this._chart.getView().updateBounds();
 	}
 	
@@ -214,19 +226,16 @@ public class SpaceGroupView extends FrameAWT implements View {
 		boolean showFaces = this._controller.getViewOption(Controller.ViewOptions.ShowFaces);
 		boolean showWireframe = this._controller.getViewOption(Controller.ViewOptions.ShowWireframe);
 		boolean showChromaticFaces = this._controller.getViewOption(Controller.ViewOptions.ShowChromaticFaces);;
-		
-		// add movable point
-		/*final PickablePoint pivot = new PickablePoint(new Coord3d(0.1, 0.1, 0.1), Color.BLUE, 10);
-		pivot.setDisplayed(true);
-		pivot.setPickingId(1);*/
-		
+				
 	    final Mesh m = this._controller.calculateMesh();
 	    final List<interfaces.Polygon> polys = m.getFaces();
 		final List<interfaces.Vector3D> vertices = m.getVertices();
 		final List<AbstractDrawable> drawables = new LinkedList<AbstractDrawable>();
 		
 		this.clearScene();
-		
+		// update the origin point
+		this._originPoint.xyz = ConvertHelper.convertVector3dTojzyCoord3d(this._controller.getOriginPoint());
+
 		// add polygons
 		for (interfaces.Polygon poly : polys) {
 			Polygon nPoly = ConvertHelper.convertPolygonToJzyPolygon(poly);
@@ -273,7 +282,7 @@ public class SpaceGroupView extends FrameAWT implements View {
 		this.calculatePolygonPosition();
 		
 		this._chart.getScene().add(drawables);
-		this._toolPanel.invalidateView();
+		this._viewSettingsPanel.invalidateView();
 		this._settingPanel.invalidateView();
 	}
 	
@@ -307,7 +316,7 @@ public class SpaceGroupView extends FrameAWT implements View {
 		this._showSpacing = this._controller.getViewOption(Controller.ViewOptions.ShowSpacing);
 		this.calculatePolygonPosition();
 		
-		this._toolPanel.invalidateViewOptions();
+		this._viewSettingsPanel.invalidateViewOptions();
 		this._settingPanel.invalidateViewOptions();
 	}
 	
