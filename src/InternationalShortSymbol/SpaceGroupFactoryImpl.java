@@ -1,10 +1,16 @@
 package InternationalShortSymbol;
 
-import java.io.BufferedReader;
+import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
+
+import org.json.simple.JSONArray;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.json.simple.parser.ParseException;
 
 import SpaceGroup.LatticeTypeImpl;
 import SpaceGroup.SpaceGroupImpl;
@@ -15,68 +21,92 @@ import interfaces.Matrix4D;
 import interfaces.InvalidSpaceGroupIDException;
 import interfaces.SpaceGroup;
 import interfaces.SpaceGroupFactory;
-//import interfaces.SpaceGroupID;
+import interfaces.SpaceGroupID;
 import interfaces.Transformation;
 
-public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID>{
+public class SpaceGroupFactoryImpl implements SpaceGroupFactory{
+	JSONParser parser;
+	JSONArray spacegroups;
 	
 
-	public void SpaceGrouFactoryImpl() {
+	public SpaceGroupFactoryImpl() throws FileNotFoundException, IOException, ParseException {
+		parser=new JSONParser();
+		spacegroups  = (JSONArray) parser.parse(new FileReader("src/loader/SpaceGroups.txt"));
 		return;
 	}
 	
 
-	public SpaceGroup createSpaceGroup(ID key)throws InvalidSpaceGroupIDException{
-		BufferedReader br;
+	public SpaceGroup createSpaceGroup(SpaceGroupID key)throws InvalidSpaceGroupIDException{
 		Set<Transformation>transformations= new HashSet<Transformation>();
-		String latticename=null;
-		String system=null;
-		try {
-			br = new BufferedReader(new FileReader("src/Spacegroup/SpaceGroups.txt"));
-			String str;	
+		int index=-1;
 		
-			while(!(str=br.readLine()).equals(key.stringRepr())&&str!=null){
+			try {
+				if (( index=find(key.stringRepr()))<0){throw new InvalidSpaceGroupIDException("wrong SpaceGroupID");}
+			} catch (IOException | ParseException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+	
+		JSONObject spgelem= (JSONObject)spacegroups.get(index);					// gesuchte Spacegroup
+		String[] transformlist= ((String)spgelem.get("Transformations")).split(";");
+	
+		//Transformations werden geparst
+		for ( String transformation: transformlist){
+				Transformation t=parseTransform(transformation);
+				transformations.add(t);
 			}
 		
-			if (str==null){throw new InvalidSpaceGroupIDException("wrong SpaceGroupID");}
-			latticename=br.readLine();
-			system=br.readLine();
-			while(!(str=br.readLine()).equals("}")){
-				transformations.add(parseTransform(str));
-			}
-		} catch (IOException e) {
-		// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		LatticeType lattice= new LatticeTypeImpl(/*latticename,*/LatticeType.CenteringType.valueOf((String.valueOf(key.stringRepr().charAt(0)))),LatticeType.System.valueOf(system));
-		SpaceGroupImpl ret= new SpaceGroupImpl(lattice,transformations);
+		LatticeType lattice= new LatticeTypeImpl(LatticeType.CenteringType.valueOf((String)spgelem.get("LatticeType")),LatticeType.System.valueOf((String)spgelem.get("CrystalSystem")));;
+		SpaceGroup ret= new SpaceGroupImpl(lattice,transformations);
 		return ret;
 }
-	
-	
-	private TransformationImpl parseTransform(String transformation){
+
+
+	// bereitet Parsen vor
+	private Transformation parseTransform(String transformation){
+		transformation.replaceAll("\\/", "/");
 		String[] xyz= transformation.split(",");
-		TransformationImpl tMatr=new TransformationImpl(new Matrix4D(
+
+		Transformation tMatr=new TransformationImpl(new Matrix4D(
 				new double[][] {
+						
 						transform(xyz[0]),
+						
 						transform(xyz[1]),
+						
 						transform(xyz[2]),
 						{0,0,0,0}
 				}));
-		
 		return tMatr;
 		}
+
+	//durchsucht das JSONArray nach der ges. Raumgruppe	
+	private int find(String key) throws FileNotFoundException, IOException, ParseException{
+		for (int i=0;i<spacegroups.size();i++){
+		   JSONObject elem=(JSONObject)spacegroups.get(i);
+		   String name = (String)elem.get("SpaceGroupName");
+		   if(name.equals(key)){
+					return i;
+					
+		   }
+		}
+	return -1;
+	}
 	
+	
+	//wandelt String-Schreibweise in Zeilen-Vektoren 
 	private  double[] transform(String line) {
 		double[]ret= {0,0,0,0};
 		int i=0;
 		int j=0;
 		boolean negative=false;
 		while(i<line.length()){
+			System.out.println("check start: "+line.substring(i,i+1));
 			if (line.substring(i,i+1).matches("[+,-]")){
+				System.out.println("False");
 				if (line.charAt(i)=='-'){
 					++i;
-					if(line.substring(i,i+1).matches("[x,y,z]")){
+					if(line.substring(i,i+1).matches("[X,Y,Z]")){
 						
 						ret[getPos(line.charAt(i))]=-1;
 						++i;
@@ -85,32 +115,42 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID>{
 				}
 				else {
 					++i;
-					if(line.substring(i,i+1).matches("[x,y,z]")){
+					if(line.substring(i,i+1).matches("[X,Y,Z]")){
 						ret[getPos(line.charAt(i))]=1;
 						++i;
 					}
 				}
 			}
 			else if (line.substring(i,i+1).matches("[0-9]")){
+				System.out.println("Zahl");
 				j=i+1;
-				while(line.charAt(j)!='.'){
+				while(line.charAt(j)!='/'){
 					j=j+1;
 				}
+				double zaehler=Double.valueOf(line.substring(i,j));
+				System.out.println("Slash gefunden");
 				j=j+1;
-				while(line.substring(j,j+1).matches("[0-9]")){
-					j=j+1;
+				int k=j;
+				while(line.substring(k,k+1).matches("[0-9]")){
+					k=k+1;
 				}
+				double nenner=Double.valueOf(line.substring(j,k));
+				
+				System.out.println("End of number");
 				if (negative==false){
-					ret[3]=Double.parseDouble(line.substring(i,j));
+					ret[3]=zaehler/nenner;
+					System.out.println(ret[3]);
 				}else{
 					ret[3]=Double.parseDouble("-"+line.substring(i,j));
 					negative=false;
 				}
-				i=j;
+				i=k;
 			}
-			else if(line.substring(i,i+1).matches("[x,y,z]")){
+			else if(line.substring(i,i+1).matches("[X,Y,Z]")){
+				System.out.println("xcheck");
 				ret[getPos(line.charAt(i))]=1;
 				++i;
+				System.out.println("xfin");
 			}
 		}
 		
@@ -119,8 +159,8 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID>{
 	}
 	
 	private int getPos(char c){
-		if (c=='x'){return 0;}
-		else if (c=='y'){return 1;}
+		if (c=='X'){return 0;}
+		else if (c=='Y'){return 1;}
 		else{return 2;}
 	}
 	
