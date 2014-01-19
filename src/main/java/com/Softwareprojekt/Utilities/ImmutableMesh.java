@@ -1,7 +1,8 @@
 package com.Softwareprojekt.Utilities;
 
-import interfaces.Polygon;
-import interfaces.Vector3D;
+import com.Softwareprojekt.interfaces.Mesh;
+import com.Softwareprojekt.interfaces.Polygon;
+import com.Softwareprojekt.interfaces.Vector3D;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -9,7 +10,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-public class ImmutableMesh implements interfaces.Mesh {
+public class ImmutableMesh implements Mesh {
 
 	private final List<Vector3D> _vertices;
 	private final List<Polygon> _polygons;

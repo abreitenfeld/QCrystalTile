@@ -1,11 +1,8 @@
 package com.Softwareprojekt.Utilities;
 
-import il.ac.idc.jdt.Point;
-import il.ac.idc.jdt.Triangle;
-import interfaces.Mesh;
-import interfaces.Polygon;
-import interfaces.Vector3D;
-import org.la4j.vector.dense.BasicVector;
+import com.Softwareprojekt.interfaces.Mesh;
+import com.Softwareprojekt.interfaces.Polygon;
+import com.Softwareprojekt.interfaces.Vector3D;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -1,6 +1,6 @@
 package com.Softwareprojekt.Utilities;
 
-import interfaces.Vector3D;
+import com.Softwareprojekt.interfaces.Vector3D;
 import java.util.LinkedList;
 import java.util.Random;
 

@@ -1,6 +1,6 @@
 package com.Softwareprojekt.Utilities;
 
-import interfaces.Vector3D;
+import com.Softwareprojekt.interfaces.Vector3D;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;

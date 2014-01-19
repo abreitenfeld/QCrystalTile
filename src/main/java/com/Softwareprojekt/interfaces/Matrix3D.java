@@ -1,4 +1,5 @@
-package interfaces;
+package com.Softwareprojekt.interfaces;
+
 import org.la4j.matrix.Matrix;
 import org.la4j.matrix.source.MatrixSource;
 import org.la4j.matrix.sparse.CCSMatrix;

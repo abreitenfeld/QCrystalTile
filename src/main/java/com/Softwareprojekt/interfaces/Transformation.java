@@ -1,4 +1,4 @@
-package interfaces;
+package com.Softwareprojekt.interfaces;
 
 public interface Transformation {
 	Matrix3D linearPart();
