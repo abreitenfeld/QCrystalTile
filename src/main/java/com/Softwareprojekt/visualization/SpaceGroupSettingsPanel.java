@@ -1,4 +1,4 @@
-package visualization;
+package main.java.com.Softwareprojekt.visualization;
 
 import interfaces.Controller;
 import interfaces.Controller.VisualizationSteps;

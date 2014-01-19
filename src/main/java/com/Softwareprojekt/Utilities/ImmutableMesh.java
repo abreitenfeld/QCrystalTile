@@ -1,4 +1,4 @@
-package Utilities;
+package main.java.com.Softwareprojekt.Utilities;
 
 import interfaces.Polygon;
 import interfaces.Vector3D;

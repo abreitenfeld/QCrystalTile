@@ -1,4 +1,4 @@
-package visualization;
+package main.java.com.Softwareprojekt.visualization;
 
 import interfaces.Model;
 import interfaces.SpaceGroup;

@@ -1,4 +1,4 @@
-package visualization;
+package main.java.com.Softwareprojekt.visualization;
 
 import java.util.EnumSet;
 import java.util.Iterator;
@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import javax.swing.UIManager;
+
+import main.java.com.Softwareprojekt.Utilities.ImmutableMesh;
 
 import Utilities.*;
 import interfaces.*;

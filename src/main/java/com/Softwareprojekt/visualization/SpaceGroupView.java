@@ -1,4 +1,4 @@
-package visualization;
+package main.java.com.Softwareprojekt.visualization;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -11,6 +11,8 @@ import java.util.*;
 import java.util.Timer;
 
 import javax.swing.*;
+
+import main.java.com.Softwareprojekt.Utilities.ConvertHelper;
 
 import org.jzy3d.analysis.AnalysisLauncher;
 import org.jzy3d.bridge.swing.FrameSwing;
