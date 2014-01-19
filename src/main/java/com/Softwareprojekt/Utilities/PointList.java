@@ -1,4 +1,4 @@
-package Utilities;
+package com.Softwareprojekt.Utilities;
 
 import interfaces.Vector3D;
 import java.util.LinkedList;

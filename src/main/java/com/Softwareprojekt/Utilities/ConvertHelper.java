@@ -1,4 +1,4 @@
-package main.java.com.Softwareprojekt.Utilities;
+package com.Softwareprojekt.Utilities;
 
 import org.jzy3d.maths.Coord3d;
 import org.jzy3d.plot3d.primitives.Point;

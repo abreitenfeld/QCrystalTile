@@ -1,4 +1,4 @@
-package Utilities;
+package com.Softwareprojekt.Utilities;
 
 import java.io.BufferedReader;
 import java.io.File;

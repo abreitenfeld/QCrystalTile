@@ -1,4 +1,4 @@
-package Utilities;
+package com.Softwareprojekt.Utilities;
 
 import il.ac.idc.jdt.Point;
 import il.ac.idc.jdt.Triangle;

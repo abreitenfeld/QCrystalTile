@@ -1,4 +1,4 @@
-package Utilities;
+package com.Softwareprojekt.Utilities;
 
 import org.la4j.vector.dense.BasicVector;
 
