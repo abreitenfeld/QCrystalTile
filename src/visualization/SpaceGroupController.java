@@ -75,7 +75,7 @@ public class SpaceGroupController implements Controller {
 	}
 	
 	@Override
-	public Model getModel() { return null; }
+	public Model getModel() { return this._model; }
 
 	@Override
 	public View getView() { return this._view; }
