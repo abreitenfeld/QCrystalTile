@@ -3,8 +3,10 @@
 /lib
 /bin
 
+.DS_Store
 .classpath
 .project
+.settings
 
 # Package Files #
 *.jar
