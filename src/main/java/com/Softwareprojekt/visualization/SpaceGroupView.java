@@ -60,7 +60,7 @@ public class SpaceGroupView extends FrameAWT implements View {
 	private volatile boolean _showSpacing = false;
 	private volatile float _currentSpacing = Min_Spacing_Factor;
 	
-	private final ResourceBundle bundle = ResourceBundle.getBundle("resources.Messages");
+	private final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
 	
 	public static final float Origin_Point_Size = 15f;	
 	public static final float Min_Spacing_Factor = 1f;

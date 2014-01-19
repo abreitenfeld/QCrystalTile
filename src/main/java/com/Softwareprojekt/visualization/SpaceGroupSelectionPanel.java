@@ -16,7 +16,7 @@ import javax.swing.JComboBox;
 public class SpaceGroupSelectionPanel extends Panel implements View {
 
 	private final Controller _controller;
-	private final ResourceBundle bundle = ResourceBundle.getBundle("resources.Messages");
+	private final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
 	private final JComboBox<CenteringTypeListItem> _centeringTypeList;
 	private final JComboBox<SpaceGroupID> _spaceGroupList;
 	

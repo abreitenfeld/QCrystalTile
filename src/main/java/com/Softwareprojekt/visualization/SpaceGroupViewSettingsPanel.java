@@ -17,7 +17,7 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 	private final JToggleButton _btnFace;
 	private final JToggleButton _btnSpacing;
 	private final JToggleButton _btnChromaticFaces;
-	private final ResourceBundle bundle = ResourceBundle.getBundle("resources.Messages");
+	private final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
 	private static final Dimension BUTTON_SIZE = new Dimension(40, 40);
 	private static final Color Selected_Color = Color.green;
 	
@@ -32,27 +32,27 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 		final BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
 		this.setLayout(layout);
 		
-		_btnVertices = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("images/poly_vertice.png")));
+		_btnVertices = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("poly_vertice.png")));
 		_btnVertices.setToolTipText(bundle.getString("showVertices"));
 		styleButton(_btnVertices);
 		this.add(_btnVertices);
 
-		_btnWireframe = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("images/poly_wire.png")));
+		_btnWireframe = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("poly_wire.png")));
 		_btnWireframe.setToolTipText(bundle.getString("showWireframe"));
 		styleButton(_btnWireframe);
 		this.add(_btnWireframe);
 		
-		_btnFace = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("images/poly_face.png")));
+		_btnFace = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("poly_face.png")));
 		_btnFace.setToolTipText(bundle.getString("showFaces"));
 		styleButton(_btnFace);
 		this.add(_btnFace);
 
-		_btnChromaticFaces = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("images/poly_chromatic.png")));
+		_btnChromaticFaces = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("poly_chromatic.png")));
 		_btnChromaticFaces.setToolTipText(bundle.getString("showChromaticFaces"));
 		styleButton(_btnChromaticFaces);
 		this.add(_btnChromaticFaces);
 		
-		_btnSpacing = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("images/poly_spacing.png")));
+		_btnSpacing = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("poly_spacing.png")));
 		_btnSpacing.setToolTipText(bundle.getString("showSpacing"));
 		styleButton(_btnSpacing);
 		this.add(_btnSpacing);

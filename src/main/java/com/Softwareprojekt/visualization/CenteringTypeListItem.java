@@ -7,7 +7,7 @@ import com.Softwareprojekt.interfaces.LatticeType;
 public class CenteringTypeListItem {
 
 	private final LatticeType.CenteringType _type;
-	private static final ResourceBundle bundle = ResourceBundle.getBundle("resources.Messages");
+	private static final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
 	private static final String String_Pattern = "%s (%s)";
 	
 	public CenteringTypeListItem(LatticeType.CenteringType type) {

@@ -19,7 +19,7 @@ import javax.swing.event.DocumentListener;
 public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, View, KeyListener {
 
 	private final Controller _controller;
-	private final ResourceBundle bundle = ResourceBundle.getBundle("resources.Messages");
+	private final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
 	private final JSlider _stepSlider;
 	private final JTextField _inputXCoord;
 	private final JTextField _inputYCoord;
