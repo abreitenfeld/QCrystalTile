@@ -1,12 +1,16 @@
 package SpaceGroup;
+
+import interfaces.LatticeType;
+import interfaces.SpaceGroup;
+import interfaces.Transformation;
+import interfaces.TransformationFactory;
+
+
 import java.util.HashSet;
 import java.util.Set;
 
 import org.la4j.matrix.functor.MatrixFunction;
 
-import interfaces.LatticeType;
-import interfaces.SpaceGroup;
-import interfaces.Transformation;
 
 
 public class SpaceGroupImpl implements SpaceGroup {
@@ -45,6 +49,9 @@ public class SpaceGroupImpl implements SpaceGroup {
 		Set<Transformation> res = new HashSet<Transformation>(base);
 		int iteration = 0;
 		int prevSize = 0;
+
+		TransformationFactory transFactory = new TransformationFactoryImpl();
+		//Transformation t1 = transFactory.
 		while( res.size() > prevSize ) {
 			if( !cond(iteration, res.size())) {
 				System.out.println("breaking the closure loop!");
@@ -60,7 +67,7 @@ public class SpaceGroupImpl implements SpaceGroup {
 	}
 	
 	protected boolean cond(int iteration, int currentSize) {
-		return iteration < 6;
+		return iteration < 100;
 	}
 	
 	protected Set<Transformation> combine( Set<Transformation> set, Set<Transformation> base) {

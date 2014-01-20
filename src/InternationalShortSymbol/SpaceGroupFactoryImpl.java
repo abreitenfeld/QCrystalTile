@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.TreeSet;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -21,10 +20,9 @@ import interfaces.Matrix4D;
 import interfaces.InvalidSpaceGroupIDException;
 import interfaces.SpaceGroup;
 import interfaces.SpaceGroupFactory;
-import interfaces.SpaceGroupID;
 import interfaces.Transformation;
 
-public class SpaceGroupFactoryImpl implements SpaceGroupFactory{
+public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
 	JSONParser parser;
 	JSONArray spacegroups;
 	
@@ -36,7 +34,7 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory{
 	}
 	
 
-	public SpaceGroup createSpaceGroup(SpaceGroupID key)throws InvalidSpaceGroupIDException{
+	public SpaceGroup createSpaceGroup(ID key)throws InvalidSpaceGroupIDException{
 		Set<Transformation>transformations= new HashSet<Transformation>();
 		int index=-1;
 		
