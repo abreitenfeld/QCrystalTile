@@ -45,11 +45,15 @@ public class SpaceGroupImpl implements SpaceGroup {
 		Set<Transformation> res = new HashSet<Transformation>(base);
 		int iteration = 0;
 		int prevSize = 0;
-		while( res.size() > prevSize && cond(iteration, res.size())) {
+		while( res.size() > prevSize ) {
+			if( !cond(iteration, res.size())) {
+				System.out.println("breaking the closure loop!");
+				break;
+			}
 			prevSize = res.size();
 			res.addAll(
-					combine(res,base)
-				);
+				combine(res,base)
+			);
 			iteration ++;
 		};
 		return res;
@@ -65,13 +69,12 @@ public class SpaceGroupImpl implements SpaceGroup {
 		for( Transformation t : set) {
 			for( Transformation b : base) {
 				Transformation newTrans = b.composition(t);
-				//System.out.println("adding\n" + newTrans.getAsHomogeneous());
-				MatrixFunction round = new MatrixFunction() {
+				/*MatrixFunction round = new MatrixFunction() {
 					public double evaluate(int row, int col, double entry) {
 						return Math.round(entry);
 					}
 				};
-				newTrans.getAsHomogeneous().update(round);
+				newTrans.getAsHomogeneous().update(round);*/
 				res.add(newTrans);
 			}
 		}
