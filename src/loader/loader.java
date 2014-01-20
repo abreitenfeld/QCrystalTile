@@ -30,15 +30,12 @@ public class loader {
 			}
 			System.out.println("lines: "+linenum);
 			for (int i=0;i< 245;i++){lines.removeFirst();}
-			int count=0;
 			for(int j=0;j<lines.size();j++){
-				if (lines.get(j).length()>20&&(lines.get(j).substring(0, 17).equals(" Space Group Name"))){
-					count++;
+				if (lines.get(j).length()>30&&(lines.get(j).substring(0, 30).equals(" Number of Symmetry Operators "))){
 					JSONObject obj = new JSONObject();
-					System.out.println(lines.get(j));
-					for(int k=0;k<6;k++){
+					for(int k=0;k<7;k++){
 						String[] spgitem=lines.get(j).split("=");
-						obj.put(spgitem[0], spgitem[1]);
+						obj.put(spgitem[0].replaceAll("\\p{Z}",""), spgitem[1].replaceAll("\\p{Z}",""));
 						j++;
 					}
 					String[] symline=lines.get(j).split("=");
@@ -46,7 +43,7 @@ public class loader {
 					String transformations="";
 					j++;
 					while(symline[0].equals(" symmetry")){
-						transformations=transformations+symline[1]+";";
+						transformations=transformations+symline[1].substring(1,symline[1].length()-1)+";";
 						symline=lines.get(j).split("=");
 						j++;
 					}
@@ -58,8 +55,7 @@ public class loader {
 			file.write(list.toJSONString());
 			file.flush();
 			file.close();
-			System.out.println(count);
-				//if(line.substring(0, int endIndex);
+		
 		}catch(Exception e){e.printStackTrace();}
 	}
 	

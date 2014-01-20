@@ -22,8 +22,8 @@ public class LoaderTest {
 		JSONArray spacegroups  = (JSONArray) parser.parse(new FileReader("src/loader/SpaceGroups.txt"));
 		for (int i=0;i<spacegroups.size();i++){
 			   JSONObject elem=(JSONObject)spacegroups.get(i);
-			   String name = (String)elem.get(" Space Group Name ");
-			   if(name.equals("  "+"I4(1)32"+"  ")){
+			   String name = (String)elem.get("SpaceGroupName");
+			   if(name.equals("I4(1)32")){
 				   
 				   String transformations =(String)elem.get("Transformations");
 				   String[] list = transformations.split(";");
