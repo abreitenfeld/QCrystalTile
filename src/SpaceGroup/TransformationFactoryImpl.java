@@ -35,11 +35,12 @@ public class TransformationFactoryImpl implements TransformationFactory {
 	@Override
 	public Transformation translation(double x, double y, double z) {
 		return new TransformationImpl(
-				new Matrix3D( new double[][] {
+				new Vector3D(new double[] {0,0,0}),
+				/*new Matrix3D( new double[][] {
 						{1, 0, 0},
 						{0, 1, 0},
 						{0, 0, 1}
-				}),
+				}),*/
 				new Vector3D(new double[] {x,y,z})
 			);
 	}
@@ -50,8 +51,8 @@ public class TransformationFactoryImpl implements TransformationFactory {
 		Transformation ret = new TransformationImpl(
 				new Matrix3D( new double[][] {
 						{1, 0, 0},
-						{0, Math.cos(angle), Math.sin(angle)},
-						{0, -Math.sin(angle), Math.cos(angle)}
+						{0, Math.cos(angle), -Math.sin(angle)},
+						{0, Math.sin(angle), Math.cos(angle)}
 					}),
 				new Vector3D( new double[] { 0d, 0d, 0d })
 			);
@@ -62,9 +63,9 @@ public class TransformationFactoryImpl implements TransformationFactory {
 		double angle = Math.toRadians(angleInDegrees);
 		Transformation ret = new TransformationImpl(
 				new Matrix3D( new double[][] {
-						{Math.cos(angle), 0, -Math.sin(angle)},
+						{Math.cos(angle), 0, Math.sin(angle)},
 						{0, 1, 0},
-						{Math.sin(angle), 0, Math.cos(angle) }
+						{-Math.sin(angle), 0, Math.cos(angle) }
 					}),
 				new Vector3D( new double[] { 0d, 0d, 0d })
 			);
