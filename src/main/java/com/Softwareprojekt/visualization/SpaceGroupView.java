@@ -1,43 +1,27 @@
 package com.Softwareprojekt.visualization;
 
 import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Panel;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.io.InputStream;
+import java.awt.event.*;
 import java.util.*;
 import java.util.Timer;
-
-import javax.swing.*;
 
 import com.Softwareprojekt.Utilities.ConvertHelper;
 
 import com.Softwareprojekt.interfaces.Controller;
 import com.Softwareprojekt.interfaces.Mesh;
 import com.Softwareprojekt.interfaces.Vector3D;
-import org.jzy3d.analysis.AnalysisLauncher;
-import org.jzy3d.bridge.swing.FrameSwing;
 import org.jzy3d.bridge.awt.FrameAWT;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.ChartLauncher;
-import org.jzy3d.chart.Settings;
 import org.jzy3d.chart.controllers.mouse.camera.ICameraMouseController;
 import org.jzy3d.chart.factories.AWTChartComponentFactory;
 import org.jzy3d.chart.factories.IChartComponentFactory;
 import org.jzy3d.colors.Color;
-import org.jzy3d.events.IViewPointChangedListener;
-import org.jzy3d.events.ViewPointChangedEvent;
 import org.jzy3d.maths.Coord3d;
+import org.jzy3d.maths.PlaneAxis;
 import org.jzy3d.maths.Rectangle;
 import org.jzy3d.plot3d.primitives.*;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
-import org.jzy3d.plot3d.rendering.view.modes.CameraMode;
-
-
-import com.Softwareprojekt.Utilities.*;
-
 
 import com.Softwareprojekt.interfaces.View;
 
@@ -53,10 +37,10 @@ public class SpaceGroupView extends FrameAWT implements View {
 	private final Point _originPoint;
 	private final List<Point> _chartVertices = new LinkedList<Point>();
 	private final List<Polygon> _chartFaces = new LinkedList<Polygon>();
-	private final HashMap<com.Softwareprojekt.interfaces.Polygon, Polygon> _polyToJzyPoly = new HashMap<com.Softwareprojekt.interfaces.Polygon, Polygon>();
-	private final HashMap<com.Softwareprojekt.interfaces.Vector3D, Point> _vectToJzyPoint = new HashMap<com.Softwareprojekt.interfaces.Vector3D, Point>();
-	private final HashMap<com.Softwareprojekt.interfaces.Polygon, Coord3d> _polyToCenter = new HashMap<com.Softwareprojekt.interfaces.Polygon, Coord3d>();
-	private final HashMap<com.Softwareprojekt.interfaces.Polygon, List<Point>> _polyToJzyPoint = new HashMap<com.Softwareprojekt.interfaces.Polygon, List<Point>>();
+	private final Map<com.Softwareprojekt.interfaces.Polygon, Polygon> _polyToJzyPoly = new HashMap<com.Softwareprojekt.interfaces.Polygon, Polygon>();
+	private final Map<com.Softwareprojekt.interfaces.Vector3D, Point> _vectToJzyPoint = new HashMap<com.Softwareprojekt.interfaces.Vector3D, Point>();
+	private final Map<com.Softwareprojekt.interfaces.Polygon, Coord3d> _polyToCenter = new HashMap<com.Softwareprojekt.interfaces.Polygon, Coord3d>();
+	private final Map<com.Softwareprojekt.interfaces.Polygon, List<Point>> _polyToJzyPoint = new HashMap<com.Softwareprojekt.interfaces.Polygon, List<Point>>();
 	private volatile boolean _showSpacing = false;
 	private volatile float _currentSpacing = Min_Spacing_Factor;
 	
@@ -86,7 +70,14 @@ public class SpaceGroupView extends FrameAWT implements View {
 		this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(Foregrond_Color));
 		this._showSpacing = _controller.getViewOption(Controller.ViewOptions.ShowSpacing);
 		this._currentSpacing = this._showSpacing ? Max_Spacing_Factor : Min_Spacing_Factor;
-		
+        // stop programm listener
+        this.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowClosing(WindowEvent e) {
+                System.exit(0);
+            }
+        });
+
 		this._chart = AWTChartComponentFactory.chart(Quality.Nicest, IChartComponentFactory.Toolkit.awt);
 		this._chart.getView().setBackgroundColor(Viewport_Background);
 		this._chart.getView().setSquared(false);
@@ -94,11 +85,11 @@ public class SpaceGroupView extends FrameAWT implements View {
 			
 		// create moveable point
 		this._originPoint = new Point(new Coord3d(), Color.BLUE, Origin_Point_Size);
-		this._originPoint.setDisplayed(true);
+		this._originPoint.setDisplayed(true);     c
 		this._chart.addDrawable(this._originPoint);
 		//this._chart.getView().setViewPoint(new Coord3d(0,0,0));
 		//this._chart.setAxeDisplayed(false);
-		
+
 		
 		// add components
 		this._selectionPanel = new SpaceGroupSelectionPanel(this._controller);
