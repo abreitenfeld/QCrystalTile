@@ -87,9 +87,9 @@ public class SpaceGroupController implements Controller {
 	 * @return
 	 */
 	@Override
-	public Mesh calculateMesh() {
-		Mesh mesh = null;
-		
+	public List<Mesh> calculateMesh() {
+		List mesh = new LinkedList();
+        Mesh qMesh;
 		// generate points
 		PointList p = new PointList();
 		p.gen_randomPoints(20);
@@ -104,18 +104,24 @@ public class SpaceGroupController implements Controller {
 		// trigger qhull wrapper according current viz step
 		switch (this.getVisualizationStep()) {
 		    case ConvexHull:
-		    	mesh = QConvex.call(p);
+                mesh.add(QConvex.call(p));
 		    	break;
 		    case DelaunayTriangulation:
-		    	mesh = QDelaunay.call(p);
+                qMesh = QDelaunay.call(p);
+                for (Polygon poly : qMesh.getFaces()) {
+                    PointList cellPoints = new PointList();
+                    cellPoints.addAll(poly.getVertices());
+                    mesh.add(QConvex.call(cellPoints));
+                }
 		    	break;
 		    case VoronoiTesselation:
-		    	mesh = QVoronoi.call(p);
-		    	/*mesh = QBench.call("/opt/local/bin/rbox", "15", "D3");
-		    	p.clear();
-		    	p.addAll(mesh.getVertices());
-		    	mesh = QVoronoi.call(p);
-		    	mesh = removeVerticeFromMesh(mesh.getVertices().get(0), mesh);*/
+                qMesh = QVoronoi.call(p);
+                qMesh = removeVerticeFromMesh(qMesh.getVertices().get(0), qMesh);
+                for (Polygon poly : qMesh.getFaces()) {
+                    PointList cellPoints = new PointList();
+                    cellPoints.addAll(poly.getVertices());
+                    mesh.add(QConvex.call(cellPoints));
+                }
 		    	break;
 	    }
 		
@@ -134,9 +140,9 @@ public class SpaceGroupController implements Controller {
 		if (vertices.remove(point)) {
 			// find polys containing the specified point
 			for (Polygon poly : mesh.getFaces()) {
-				//if (!poly.getVertices().contains(point)) {
+				if (!poly.getVertices().contains(point)) {
 					polys.add(poly);
-				//}
+				}
 			}		
 		}
 

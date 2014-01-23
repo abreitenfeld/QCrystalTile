@@ -81,16 +81,14 @@ public class SpaceGroupView extends FrameAWT implements View {
 		this._chart = AWTChartComponentFactory.chart(Quality.Nicest, IChartComponentFactory.Toolkit.awt);
 		this._chart.getView().setBackgroundColor(Viewport_Background);
 		this._chart.getView().setSquared(false);
-		
 			
 		// create moveable point
 		this._originPoint = new Point(new Coord3d(), Color.BLUE, Origin_Point_Size);
-		this._originPoint.setDisplayed(true);     c
+		this._originPoint.setDisplayed(true);
 		this._chart.addDrawable(this._originPoint);
 		//this._chart.getView().setViewPoint(new Coord3d(0,0,0));
 		//this._chart.setAxeDisplayed(false);
 
-		
 		// add components
 		this._selectionPanel = new SpaceGroupSelectionPanel(this._controller);
 		this.add(this._selectionPanel, BorderLayout.PAGE_START);
@@ -105,7 +103,7 @@ public class SpaceGroupView extends FrameAWT implements View {
 		ICameraMouseController mouse = ChartLauncher.configureControllers(_chart, "", true, true);
         ChartLauncher.instructions();
 		super.initialize(_chart, Default_Size, "SpaceGroup Visualizer");
-		
+
 		// timer for tweening the current spacing value
 		final Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
@@ -219,60 +217,63 @@ public class SpaceGroupView extends FrameAWT implements View {
 		boolean showFaces = this._controller.getViewOption(Controller.ViewOptions.ShowFaces);
 		boolean showWireframe = this._controller.getViewOption(Controller.ViewOptions.ShowWireframe);
 		boolean showChromaticFaces = this._controller.getViewOption(Controller.ViewOptions.ShowChromaticFaces);;
-				
-	    final Mesh m = this._controller.calculateMesh();
-	    final List<com.Softwareprojekt.interfaces.Polygon> polys = m.getFaces();
-		final List<com.Softwareprojekt.interfaces.Vector3D> vertices = m.getVertices();
-		final List<AbstractDrawable> drawables = new LinkedList<AbstractDrawable>();
-		
-		this.clearScene();
-		// update the origin point
-		this._originPoint.xyz = ConvertHelper.convertVector3dTojzyCoord3d(this._controller.getOriginPoint());
 
-		// add polygons
-		for (com.Softwareprojekt.interfaces.Polygon poly : polys) {
-			Polygon nPoly = ConvertHelper.convertPolygonToJzyPolygon(poly);
-			nPoly.setWireframeColor(Wireframe_Color);
-			nPoly.setWireframeWidth(Wireframe_Width);
-			// set poly color
-			if (showChromaticFaces) {
-				Color faceColor = Color.random();
-				faceColor.a = Faces_Color.a;
-				nPoly.setColor(faceColor);
-			}
-			else {
-				nPoly.setColor(Faces_Color);
-			}
-			nPoly.setWireframeDisplayed(showWireframe);
-			nPoly.setFaceDisplayed(showFaces);
-			
-			this._chartFaces.add(nPoly);
-			this._polyToJzyPoly.put(poly, nPoly);
-			drawables.add(nPoly);
-			
-			// add vertices
-			this._polyToJzyPoint.put(poly, new ArrayList<Point>(poly.getVertices().size()));
-			for (com.Softwareprojekt.interfaces.Vector3D vertice : poly.getVertices()) {
-				Point point = new Point(ConvertHelper.convertVector3dTojzyCoord3d(vertice), Vertice_Color, Vertice_Size);
-				point.setDisplayed(showVertices);
-				this._chartVertices.add(point);
-				this._polyToJzyPoint.get(poly).add(point);
-				drawables.add(point);
-			}
-		 }
-	
-		// add vertices
-		/*for (com.Softwareprojekt.interfaces.Vector3D vertice : vertices){
-			Coord3d coord = ConvertHelper.convertVector3dTojzyCoord3d(vertice);
-			Point point = new Point(coord, new Color(255,100,100), Vertice_Size);
-			point.setDisplayed(showVertices);
-			this._vectToJzyPoint.put(vertice, point);
-			this._chartVertices.add(point);
-			drawables.add(point);
-		}*/
-	
-		this.calculatePolygonCenter(polys);
-		this.calculatePolygonPosition();
+        this.clearScene();
+
+        final List<AbstractDrawable> drawables = new LinkedList<AbstractDrawable>();
+	    final List<Mesh> meshes = this._controller.calculateMesh();
+
+	    for (Mesh m : meshes) {
+            List<com.Softwareprojekt.interfaces.Polygon> polys = m.getFaces();
+            List<com.Softwareprojekt.interfaces.Vector3D> vertices = m.getVertices();
+
+            // update the origin point
+            this._originPoint.xyz = ConvertHelper.convertVector3dTojzyCoord3d(this._controller.getOriginPoint());
+
+            // add polygons
+            for (com.Softwareprojekt.interfaces.Polygon poly : polys) {
+                Polygon nPoly = ConvertHelper.convertPolygonToJzyPolygon(poly);
+                nPoly.setWireframeColor(Wireframe_Color);
+                nPoly.setWireframeWidth(Wireframe_Width);
+                // set poly color
+                if (showChromaticFaces) {
+                    Color faceColor = Color.random();
+                    faceColor.a = Faces_Color.a;
+                    nPoly.setColor(faceColor);
+                }
+                else {
+                    nPoly.setColor(Faces_Color);
+                }
+                nPoly.setWireframeDisplayed(showWireframe);
+                nPoly.setFaceDisplayed(showFaces);
+
+                this._chartFaces.add(nPoly);
+                this._polyToJzyPoly.put(poly, nPoly);
+                drawables.add(nPoly);
+
+                // add vertices
+                this._polyToJzyPoint.put(poly, new ArrayList<Point>(poly.getVertices().size()));
+                for (com.Softwareprojekt.interfaces.Vector3D vertice : poly.getVertices()) {
+                    Point point = new Point(ConvertHelper.convertVector3dTojzyCoord3d(vertice), Vertice_Color, Vertice_Size);
+                    point.setDisplayed(showVertices);
+                    this._chartVertices.add(point);
+                    this._polyToJzyPoint.get(poly).add(point);
+                    drawables.add(point);
+                }
+             }
+
+            // add vertices
+            /*for (com.Softwareprojekt.interfaces.Vector3D vertice : vertices){
+                Coord3d coord = ConvertHelper.convertVector3dTojzyCoord3d(vertice);
+                Point point = new Point(coord, new Color(255,100,100), Vertice_Size);
+                point.setDisplayed(showVertices);
+                this._vectToJzyPoint.put(vertice, point);
+                this._chartVertices.add(point);
+                drawables.add(point);
+            }*/
+        }
+		//this.calculatePolygonCenter(polys);
+		//this.calculatePolygonPosition();
 		
 		this._chart.getScene().add(drawables);
 		this._viewSettingsPanel.invalidateView();

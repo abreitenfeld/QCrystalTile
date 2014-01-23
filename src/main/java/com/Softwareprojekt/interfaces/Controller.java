@@ -1,6 +1,7 @@
 package com.Softwareprojekt.interfaces;
 
 import java.util.EnumSet;
+import java.util.List;
 
 public interface Controller {
 	Model getModel();
@@ -12,7 +13,7 @@ public interface Controller {
 	boolean getViewOption(ViewOptions option);
 	void setVisualizationStep(VisualizationSteps step);
 	VisualizationSteps getVisualizationStep();
-	Mesh calculateMesh();
+	List<Mesh> calculateMesh();
 	
 	public enum ViewOptions { ShowVertices, ShowWireframe, ShowFaces, ShowSpacing, ShowChromaticFaces };
 	public enum VisualizationSteps { ConvexHull, DelaunayTriangulation, VoronoiTesselation };
