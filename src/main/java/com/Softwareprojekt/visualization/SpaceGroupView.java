@@ -8,9 +8,7 @@ import java.util.Timer;
 
 import com.Softwareprojekt.Utilities.ConvertHelper;
 
-import com.Softwareprojekt.interfaces.Controller;
-import com.Softwareprojekt.interfaces.Mesh;
-import com.Softwareprojekt.interfaces.Vector3D;
+import com.Softwareprojekt.interfaces.*;
 import org.jzy3d.bridge.awt.FrameAWT;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.ChartLauncher;
@@ -24,8 +22,6 @@ import org.jzy3d.plot3d.primitives.*;
 import org.jzy3d.plot3d.primitives.Point;
 import org.jzy3d.plot3d.primitives.Polygon;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
-
-import com.Softwareprojekt.interfaces.View;
 
 public class SpaceGroupView extends FrameAWT implements View {
 
@@ -46,18 +42,23 @@ public class SpaceGroupView extends FrameAWT implements View {
     private final Map<Mesh, List<Polygon>> _meshToPolygons = new HashMap<Mesh, List<Polygon>>();
     private final Map<Mesh, List<Point>> _meshToVertices = new HashMap<Mesh, List<Point>>();
 
+    // color providers
+    private ColorProvider _currentColorProivder;
+    private final ColorProvider _monoChromaticColors;
+    private final ColorProvider _chromaticColors;
+
 	private final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
 	
 	public static final float Origin_Point_Size = 15f;	
 	public static final float Min_Spacing_Factor = 1f;
 	public static final float Max_Spacing_Factor = 2f;
-	public static final float Wireframe_Width = 2f;
-	public static final float Vertice_Size = 5f;
+	public static final float Wireframe_Width = 1.5f;
+	public static final float Vertex_Size = 5f;
 	public static final Color Vertex_Color = new Color(255,100,100);
 	public static final Color Wireframe_Color = Color.WHITE;
-	public static final Color Faces_Color = new Color(135, 206, 235, 150);
+	public static final Color Faces_Color = new Color(135, 206, 235, 170);
 	public static final Color Foreground_Color = Color.WHITE;
-	public static final Color Viewport_Background = Color.GRAY;	
+	public static final Color Viewport_Background = new Color(105, 105, 105);
 	public static final Rectangle Default_Size = new Rectangle(1024, 768);
 	
 	/**
@@ -106,6 +107,10 @@ public class SpaceGroupView extends FrameAWT implements View {
         ChartLauncher.instructions();
 		super.initialize(_chart, Default_Size, "SpaceGroup Visualizer");
 
+        this._monoChromaticColors = new MonochromaticColorProvider(Faces_Color);
+        this._chromaticColors = new ChromaticColorProvider();
+        this._currentColorProivder = this._monoChromaticColors;
+
 		// timer for tweening the current spacing value
 		final Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
@@ -127,7 +132,15 @@ public class SpaceGroupView extends FrameAWT implements View {
 			}
 		}, 0, 30);
 	}
-	
+
+    private ColorProvider getColorProivder() {
+        return this._currentColorProivder;
+    }
+
+    private void setColorProvider(ColorProvider colorProvider) {
+        this._currentColorProivder = colorProvider;
+    }
+
 	/**
 	 * Clears the entire scene.
 	 */
@@ -178,10 +191,17 @@ public class SpaceGroupView extends FrameAWT implements View {
                     Point point = ConvertHelper.convertVector3dTojzyPoint(vertex);
                     Coord3d originVect =  center.sub(this._globalCenter).mul(this._currentSpacing).add(this._globalCenter);
                     // update vertex position from polygon
-                    point.xyz = point.xyz.sub(center).add(originVect);
-                    polygons.get(c).get(i).xyz = point.xyz;
+                    polygons.get(c).get(i).xyz = point.xyz.sub(center).add(originVect);
                     vertices.get(i).xyz = point.xyz;
                 }
+            }
+            // update position of vertex points
+            for(int i = 0; i < m.getVertices().size(); i++) {
+                Vector3D vertex = m.getVertices().get(i);
+                Point point = ConvertHelper.convertVector3dTojzyPoint(vertex);
+                Coord3d originVect =  center.sub(this._globalCenter).mul(this._currentSpacing).add(this._globalCenter);
+                // update vertex position from polygon
+                vertices.get(i).xyz = point.xyz.sub(center).add(originVect);
             }
 		}
 	}
@@ -228,6 +248,16 @@ public class SpaceGroupView extends FrameAWT implements View {
 	    for (Mesh m : meshes) {
             List<Polygon> polygons = new LinkedList<Polygon>();
             List<Point> vertices = new LinkedList<Point>();
+
+            /*Color faceColor;
+            if (showChromaticFaces) {
+                faceColor = Color.random();
+                faceColor.a = Faces_Color.a;
+            }
+            else {
+                faceColor = Faces_Color;
+            } */
+
             // create polygons
             for (com.Softwareprojekt.interfaces.Polygon poly : m.getFaces()) {
                 Polygon nPoly = ConvertHelper.convertPolygonToPickablePolygon(poly);
@@ -235,31 +265,21 @@ public class SpaceGroupView extends FrameAWT implements View {
                 nPoly.setWireframeWidth(Wireframe_Width);
                 nPoly.setWireframeDisplayed(showWireframe);
                 nPoly.setFaceDisplayed(showFaces);
+                nPoly.setColor(this.getColorProivder().getColor(m, nPoly));
                 polygons.add(nPoly);
-                // set poly color
-                if (showChromaticFaces) {
-                    Color faceColor = Color.random();
-                    faceColor.a = Faces_Color.a;
-                    nPoly.setColor(faceColor);
-                }
-                else {
-                    nPoly.setColor(Faces_Color);
-                }
-
-                this._chartFaces.add(nPoly);
                 drawables.add(nPoly);
-
-                // add vertices
-                for (com.Softwareprojekt.interfaces.Vector3D vertice : poly.getVertices()) {
-                    Point point = new Point(ConvertHelper.convertVector3dTojzyCoord3d(vertice), Vertex_Color, Vertice_Size);
-                    point.setDisplayed(showVertices);
-                    this._chartVertices.add(point);
-                    drawables.add(point);
-                    vertices.add(point);
-                }
+                this._chartFaces.add(nPoly);
             }
-            // add to internal structure
             this._meshToPolygons.put(m, polygons);
+
+            // create vertices
+            for (com.Softwareprojekt.interfaces.Vector3D vertice : m.getVertices()) {
+                Point point = new Point(ConvertHelper.convertVector3dTojzyCoord3d(vertice), Vertex_Color, Vertex_Size);
+                point.setDisplayed(showVertices);
+                this._chartVertices.add(point);
+                drawables.add(point);
+                vertices.add(point);
+            }
             this._meshToVertices.put(m, vertices);
         }
 
@@ -281,26 +301,32 @@ public class SpaceGroupView extends FrameAWT implements View {
 		final boolean showFaces = this._controller.getViewOption(Controller.ViewOptions.ShowFaces);
 		final boolean showWireframe = this._controller.getViewOption(Controller.ViewOptions.ShowWireframe);
 		final boolean showChromaticFaces = this._controller.getViewOption(Controller.ViewOptions.ShowChromaticFaces);
-		
-		// update polygon visibility
-		for (Polygon poly : this._chartFaces) {
-			poly.setWireframeDisplayed(showWireframe);
-			poly.setFaceDisplayed(showFaces);
-			// set poly color
-			if (showChromaticFaces) {
-				Color faceColor = Color.random();
-				faceColor.a = Faces_Color.a;
-				poly.setColor(faceColor);
-			}
-			else {
-				poly.setColor(Faces_Color);
-			}
-		}
-		
-		// update vertices visibility
-		for(Point vertex : this._chartVertices) {
-			vertex.setDisplayed(showVertices);
-		}
+
+        if (showChromaticFaces) {
+            this.setColorProvider(this._chromaticColors);
+        }
+        else {
+            this.setColorProvider(this._monoChromaticColors);
+        }
+
+        Iterator<Mesh> iter = this._meshToVertices.keySet().iterator();
+        while(iter.hasNext()) {
+            Mesh m = iter.next();
+            List<Polygon> polygons = this._meshToPolygons.get(m);
+            List<Point> vertices = this._meshToVertices.get(m);
+
+            // update polygon visibility
+            for (Polygon poly : polygons) {
+                poly.setWireframeDisplayed(showWireframe);
+                poly.setFaceDisplayed(showFaces);
+                poly.setColor(this.getColorProivder().getColor(m, poly));
+            }
+
+            // update vertices visibility
+            for(Point vertex : vertices) {
+                vertex.setDisplayed(showVertices);
+            }
+        }
 
 		this._showSpacing = this._controller.getViewOption(Controller.ViewOptions.ShowSpacing);
 		this.calculatePolygonPosition();
