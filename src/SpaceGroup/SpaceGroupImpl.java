@@ -5,12 +5,18 @@ import interfaces.SpaceGroup;
 import interfaces.Transformation;
 import interfaces.TransformationFactory;
 import interfaces.Vector3D;
+import interfaces.Matrix3D;
 
+import org.la4j.LinearAlgebra;
+import org.la4j.inversion.MatrixInverter;
+import org.la4j.vector.functor.VectorFunction;
 
 import java.util.HashSet;
+import java.util.List;
+import java.util.ArrayList;
 import java.util.Set;
 
-import org.la4j.matrix.functor.MatrixFunction;
+//import org.la4j.matrix.functor.MatrixFunction;
 
 
 
@@ -52,11 +58,11 @@ public class SpaceGroupImpl implements SpaceGroup {
 		int iteration = 0;
 		int prevSize = 0;
 		// every Transformation is calculated modulo this parallelotop:
-		Set<Transformation> moduloBase = new HashSet<Transformation>();
+		List<Vector3D> moduloBase = new ArrayList<Vector3D>();
 		// 3x3x3 should be big enough, ...
-		moduloBase.add( factory.translation( 3, 0, 0 ) );
-		moduloBase.add( factory.translation( 0, 3, 0 ) );
-		moduloBase.add( factory.translation( 0, 0, 3 ) );
+		moduloBase.add( new Vector3D(new double[] { 3,0,0 }) );
+		moduloBase.add( new Vector3D(new double[] { 0,3,0 }) );
+		moduloBase.add( new Vector3D(new double[] { 0,0,3 }) );
 
 		while( res.size() > prevSize ) {
 			if( !cond(iteration, res.size())) {
@@ -76,7 +82,7 @@ public class SpaceGroupImpl implements SpaceGroup {
 		return iteration < 100;
 	}
 
-	protected Set<Transformation> combineSimple( Set<Transformation> moduloBase, Set<Transformation> set, Set<Transformation> creators) {
+	protected Set<Transformation> combineSimple( List<Vector3D> moduloBase, Set<Transformation> set, Set<Transformation> creators) {
 		//List<Iterator<Transformation>> i = new ArrayList<Iterator<Transformation>>();
 		Set<Transformation> res = new HashSet<Transformation>(set);
 		for( Transformation t : set) {
@@ -93,7 +99,7 @@ public class SpaceGroupImpl implements SpaceGroup {
 	}
 	
 
-	private Transformation fitIntoBase( Set<Transformation> moduloBase, Transformation t) {
+	private Transformation fitIntoBase( List<Vector3D> moduloBase, Transformation t) {
 		Vector3D p0 = new Vector3D( new double[] { 0, 0, 0 } );
 
 		Vector3D p = t.apply(p0);
@@ -101,6 +107,35 @@ public class SpaceGroupImpl implements SpaceGroup {
 		Transformation transBackIntoModuloBase = factory.translation( shift.get(0), shift.get(1), shift.get(2) );
 		
 		return transBackIntoModuloBase.composition(t);
+	}
+
+	private Vector3D calcShift( List<Vector3D> moduloBase, Vector3D point) {
+		// 1. calculate TransformationMatrix:
+		Matrix3D orthoToBase = new Matrix3D(3,3);
+		{
+			for( int irow=0; irow<3; irow++ ) {
+				for( int icol=0; icol<3; icol++ ) {
+					orthoToBase.set(irow,icol, moduloBase.get(icol).get(irow) );
+				}
+			}
+			MatrixInverter inverter = orthoToBase.withInverter(LinearAlgebra.GAUSS_JORDAN);
+			orthoToBase = new Matrix3D( inverter.inverse() );
+			//orthoToBase = inverter.invert(LinearAlgebra.DENSE_FACTORY);
+		}
+		// 2. transform point into moduloBase:
+		Vector3D pointInBase = new Vector3D( orthoToBase.multiply(point) );
+		// 3. calcShift:
+		Vector3D shift = null;
+		{
+			VectorFunction calcShift = new VectorFunction() {
+				public double evaluate(int i, double val) {
+					return -Math.floor(val);
+				}
+			};
+			shift = new Vector3D( pointInBase.transform(calcShift) );
+
+		}
+		return shift;
 	}
 
 	/*protected Set<Transformation> combine( Set<Transformation> moduloBase, Set<Transformation> set, Set<Transformation> creators) {
