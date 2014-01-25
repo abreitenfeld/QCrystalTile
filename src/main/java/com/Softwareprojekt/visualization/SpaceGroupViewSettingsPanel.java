@@ -27,7 +27,7 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 		
 		this.setPreferredSize(new Dimension(50, 600));
 		this.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
-		this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foregrond_Color));
+		this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
 		
 		final BoxLayout layout = new BoxLayout(this, BoxLayout.PAGE_AXIS);
 		this.setLayout(layout);

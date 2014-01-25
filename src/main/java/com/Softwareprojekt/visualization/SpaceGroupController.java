@@ -15,7 +15,7 @@ public class SpaceGroupController implements Controller {
 	private final Model _model;
 	private final View _view;
 	private final EnumSet<ViewOptions> _options = EnumSet.of(ViewOptions.ShowVertices, ViewOptions.ShowWireframe, ViewOptions.ShowFaces);
-	private VisualizationSteps _step = VisualizationSteps.ConvexHull;
+	private VisualizationSteps _step = VisualizationSteps.VoronoiTesselation;
 	
 	/**
 	 * Factory method to create controller.
@@ -92,7 +92,7 @@ public class SpaceGroupController implements Controller {
         Mesh qMesh;
 		// generate points
 		PointList p = new PointList();
-		p.gen_randomPoints(20);
+		p.gen_randomPoints(25);
 		
 		// iterate over transformation set
 		/*Iterator<Transformation> iter = this._model.getSpaceGroup().getTransformations().iterator();
