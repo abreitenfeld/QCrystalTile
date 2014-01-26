@@ -24,7 +24,7 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 	private final JTextField _inputZCoord;
 	
 	private static final int Slider_Min_Step = 0;
-	private static final int Slider_Max_Step = 2;
+	private static final int Slider_Max_Step = 1;
 	private static final float Min_Coord_Value = 0f;
 	private static final float Max_Coord_Value = 1f;
 	private static Dimension Field_Size = new Dimension(60, 30);
@@ -34,7 +34,7 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		this._controller = controller;
 		
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
-		this.setPreferredSize(new Dimension(600, 40));
+		this.setPreferredSize(new Dimension(600, 60));
 		this.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
 		this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
 		
@@ -47,9 +47,9 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		this._inputZCoord.setPreferredSize(Field_Size);
 		
 		// create the step slider
-		this._stepSlider= new JSlider(JSlider.HORIZONTAL, Slider_Min_Step, Slider_Max_Step, 0);
+		this._stepSlider = new JSlider(JSlider.HORIZONTAL, Slider_Min_Step, Slider_Max_Step, 0);
 		this._stepSlider.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
-		this._stepSlider.setPreferredSize(new Dimension(500, 24));
+		this._stepSlider.setPreferredSize(new Dimension(200, 50));
 		this._stepSlider.setSnapToTicks(true);
 		this._stepSlider.setMajorTickSpacing(1);
 		this._stepSlider.setPaintTicks(true);
@@ -57,9 +57,8 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		
 		// create the labels of slider
 		Hashtable labels = new Hashtable();
-		labels.put(new Integer(0), new JLabel(bundle.getString("convexHull")) );
-		labels.put(new Integer(1), new JLabel(bundle.getString("delaunayTriangulation")) );
-		labels.put(new Integer(2), new JLabel(bundle.getString("voronoiTesselation")) );
+		labels.put(new Integer(0), new JLabel(bundle.getString("spaceGroup")) );
+		labels.put(new Integer(1), new JLabel(bundle.getString("tiling")) );
 		this._stepSlider.setLabelTable(labels);
 
 		this.add(new Label("XYZ"));
@@ -67,8 +66,8 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		this.add(this._inputYCoord);
 		this.add(this._inputZCoord);
 		
-		//this.add(new Label(bundle.getString("visualizationStep")));
-		//this.add(this._stepSlider);
+		this.add(new Label(bundle.getString("visualizationStep")));
+		this.add(this._stepSlider);
 		
 		this.invalidateViewOptions();
 		
@@ -84,9 +83,8 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		if (e.getSource() == this._stepSlider) {
 			// sets the current visualization step in controller
 			switch (this._stepSlider.getValue()) {
-				case 0: this._controller.setVisualizationStep(VisualizationSteps.ConvexHull); break;
-				case 1: this._controller.setVisualizationStep(VisualizationSteps.DelaunayTriangulation); break;
-				case 2: this._controller.setVisualizationStep(VisualizationSteps.VoronoiTesselation); break;
+				case 0: this._controller.setVisualizationStep(VisualizationSteps.ScatterPlot); break;
+				case 1: this._controller.setVisualizationStep(VisualizationSteps.VoronoiTesselation); break;
 			}
 		}
 	}
@@ -120,9 +118,8 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 	public void invalidateViewOptions() {
 		// set current visualization step
 		switch (this._controller.getVisualizationStep()) {
-			case ConvexHull: this._stepSlider.setValue(0); break;
-			case DelaunayTriangulation: this._stepSlider.setValue(1); break;
-			case VoronoiTesselation: this._stepSlider.setValue(2); break;
+			case ScatterPlot: this._stepSlider.setValue(0); break;
+			case VoronoiTesselation: this._stepSlider.setValue(1); break;
 		}
 		
 		// set coordinates to input fields

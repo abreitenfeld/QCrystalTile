@@ -1,6 +1,8 @@
 package com.Softwareprojekt.Utilities;
 
+import java.util.List;
 import com.Softwareprojekt.interfaces.Vector3D;
+import com.Softwareprojekt.interfaces.Mesh;
 import org.jzy3d.maths.Coord3d;
 import org.jzy3d.plot3d.primitives.Point;
 import org.jzy3d.plot3d.primitives.Polygon;
@@ -58,5 +60,9 @@ public class ConvertHelper {
 	public static Point convertVector3dTojzyPoint(Vector3D vector) {
 		return new Point(convertVector3dTojzyCoord3d(vector));
 	}
+
+    public static Mesh convertPointListToMesh(List<Vector3D> points) {
+        return new ImmutableMesh(points);
+    }
 	
 }

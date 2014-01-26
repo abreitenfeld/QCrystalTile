@@ -51,7 +51,7 @@ public class SpaceGroupView extends FrameAWT implements View {
 	
 	public static final float Origin_Point_Size = 15f;	
 	public static final float Min_Spacing_Factor = 1f;
-	public static final float Max_Spacing_Factor = 2f;
+	public static final float Max_Spacing_Factor = 3f;
 	public static final float Wireframe_Width = 1.5f;
 	public static final float Vertex_Size = 5f;
 	public static final Color Vertex_Color = new Color(255,100,100);
@@ -84,7 +84,7 @@ public class SpaceGroupView extends FrameAWT implements View {
 		this._chart = AWTChartComponentFactory.chart(Quality.Nicest, IChartComponentFactory.Toolkit.awt);
 		this._chart.getView().setBackgroundColor(Viewport_Background);
 		this._chart.getView().setSquared(true);
-			
+
 		// create moveable point
 		this._originPoint = new Point(new Coord3d(), Color.BLUE, Origin_Point_Size);
 		this._originPoint.setDisplayed(true);
@@ -248,15 +248,6 @@ public class SpaceGroupView extends FrameAWT implements View {
 	    for (Mesh m : meshes) {
             List<Polygon> polygons = new LinkedList<Polygon>();
             List<Point> vertices = new LinkedList<Point>();
-
-            /*Color faceColor;
-            if (showChromaticFaces) {
-                faceColor = Color.random();
-                faceColor.a = Faces_Color.a;
-            }
-            else {
-                faceColor = Faces_Color;
-            } */
 
             // create polygons
             for (com.Softwareprojekt.interfaces.Polygon poly : m.getFaces()) {
