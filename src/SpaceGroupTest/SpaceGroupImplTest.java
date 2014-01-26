@@ -34,10 +34,10 @@ public class SpaceGroupImplTest {
 		
 		Set<Transformation> resultSet = sg.getTransformations();
 		
-		System.out.println("result:");
+		/*System.out.println("result:");
 		for( Transformation trans : resultSet ) {
 			System.out.println(trans.getAsHomogeneous());
-		}
+		}*/
 		
 		// remember: 4 rotations
 		assertEquals("result set cardinality", 4, resultSet.size());
@@ -67,10 +67,10 @@ public class SpaceGroupImplTest {
 		
 		Set<Transformation> resultSet = sg.getTransformations();
 		
-		System.out.println("result:");
+		/*System.out.println("result:");
 		for( Transformation trans : resultSet ) {
 			System.out.println(trans.getAsHomogeneous());
-		}
+		}*/
 		
 		// remember: 24 rotations
 		assertEquals("result set cardinality", 24, resultSet.size());
@@ -112,7 +112,7 @@ public class SpaceGroupImplTest {
 		}
 		
 		// 24 rotations * 3 * 3
-		assertEquals("result set cardinality", 72, resultSet.size());
+		assertEquals("result set cardinality", 24, resultSet.size());
 		Transformation rotationZ = TransformationImpl.factory.rotationZ(90);
 		System.out.println("rotationZ: ");
 		System.out.println( rotationZ.getAsHomogeneous());

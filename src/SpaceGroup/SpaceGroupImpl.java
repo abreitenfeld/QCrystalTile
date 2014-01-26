@@ -60,9 +60,9 @@ public class SpaceGroupImpl implements SpaceGroup {
 		// every Transformation is calculated modulo this parallelotop:
 		List<Vector3D> moduloBase = new ArrayList<Vector3D>();
 		// 3x3x3 should be big enough, ...
-		moduloBase.add( new Vector3D(new double[] { 3,0,0 }) );
-		moduloBase.add( new Vector3D(new double[] { 0,3,0 }) );
-		moduloBase.add( new Vector3D(new double[] { 0,0,3 }) );
+		moduloBase.add( new Vector3D(new double[] { 1,0,0 }) );
+		moduloBase.add( new Vector3D(new double[] { 0,1,0 }) );
+		moduloBase.add( new Vector3D(new double[] { 0,0,1 }) );
 
 		while( res.size() > prevSize ) {
 			//System.out.println(
@@ -104,7 +104,11 @@ public class SpaceGroupImpl implements SpaceGroup {
 		Vector3D p0 = new Vector3D( new double[] { 0, 0, 0 } );
 
 		Vector3D p = t.apply(p0);
+		if( !p.equals(p0))
+			System.out.print("point: " + p);
 		Vector3D shift = calcShift(moduloBase, p);
+		if( !p.equals(p0))
+			System.out.println(", shift: " + shift );
 		Transformation transBackIntoModuloBase = factory.translation( shift.get(0), shift.get(1), shift.get(2) );
 		
 		return transBackIntoModuloBase.composition(t);
@@ -112,14 +116,17 @@ public class SpaceGroupImpl implements SpaceGroup {
 
 	private Vector3D calcShift( List<Vector3D> moduloBase, Vector3D point) {
 		// 1. calculate TransformationMatrix:
+		//Matrix3D orthoToBase = new Matrix3D(3,3);
 		Matrix3D orthoToBase = new Matrix3D(3,3);
+		Matrix3D baseToOrtho = new Matrix3D(3,3);
+
 		{
 			for( int irow=0; irow<3; irow++ ) {
 				for( int icol=0; icol<3; icol++ ) {
-					orthoToBase.set(irow,icol, moduloBase.get(icol).get(irow) );
+					baseToOrtho.set(irow,icol, moduloBase.get(icol).get(irow) );
 				}
 			}
-			MatrixInverter inverter = orthoToBase.withInverter(LinearAlgebra.GAUSS_JORDAN);
+			MatrixInverter inverter = baseToOrtho.withInverter(LinearAlgebra.GAUSS_JORDAN);
 			orthoToBase = new Matrix3D( inverter.inverse() );
 			//orthoToBase = inverter.invert(LinearAlgebra.DENSE_FACTORY);
 		}
@@ -134,6 +141,7 @@ public class SpaceGroupImpl implements SpaceGroup {
 				}
 			};
 			shift = new Vector3D( pointInBase.transform(calcShift) );
+			shift = new Vector3D( baseToOrtho.multiply(shift) );
 
 		}
 		return shift;
