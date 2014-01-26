@@ -18,7 +18,8 @@ import SpaceGroup.TransformationImpl;
 public class SpaceGroupImplTest {
 
 	@Test
-	public void testSpaceGroupImplRotationSimple() {
+	public void testSimpleRotation() {
+	//public void testSpaceGroupImplRotationSimple() {
 		LatticeType lt = new LatticeTypeImpl(LatticeType.CenteringType.P, LatticeType.System.CUBIC);
 		Set<Transformation> base = new HashSet<Transformation>();
 		base.add(
@@ -48,7 +49,7 @@ public class SpaceGroupImplTest {
 	}
 
 	@Test
-	public void testSpaceGroupImpl() {
+	public void testRotation() {
 		LatticeType lt = new LatticeTypeImpl(LatticeType.CenteringType.P, LatticeType.System.CUBIC);
 		Set<Transformation> base = new HashSet<Transformation>();
 		base.add(
@@ -78,6 +79,40 @@ public class SpaceGroupImplTest {
 		System.out.println("rotationZ: ");
 		System.out.println( rotationZ.getAsHomogeneous());
 		assertTrue("derived rotation in the result set", resultSet.contains(rotationZ));
+	}
+
+	@Test
+	public void testTranslation() {
+		LatticeType lt = new LatticeTypeImpl(LatticeType.CenteringType.P, LatticeType.System.CUBIC);
+		Set<Transformation> base = new HashSet<Transformation>();
+		base.add(
+				TransformationImpl.factory.translation(1,0,0)
+			);
+		base.add(
+				TransformationImpl.factory.translation(0,1,0)
+			);
+		base.add(
+				TransformationImpl.factory.translation(0,0,1)
+			);
+		System.out.println("base:");
+		for( Transformation trans : base) {
+			System.out.println(trans.getAsHomogeneous());
+		}
+		SpaceGroup sg = new SpaceGroupImpl(lt, base);
+		// this base should give all rotations about multiples of 90 degree
+		// around all axes
+		
+		Set<Transformation> resultSet = sg.getTransformations();
+		
+		/*System.out.println("result:");
+		for( Transformation trans : resultSet ) {
+			System.out.println(trans.getAsHomogeneous());
+		}*/
+		
+		// remember: 8 positions
+		assertEquals("result set cardinality", 8, resultSet.size());
+		Transformation derived = TransformationImpl.factory.translation(1,1,1);
+		assertTrue("derived translation in the result set", resultSet.contains(derived));
 	}
 
 	@Test
@@ -111,12 +146,11 @@ public class SpaceGroupImplTest {
 			System.out.println(trans.getAsHomogeneous());
 		}
 		
-		// 24 rotations * 3 * 3
+		// 24 rotations * ?
 		assertEquals("result set cardinality", 24, resultSet.size());
-		Transformation rotationZ = TransformationImpl.factory.rotationZ(90);
-		System.out.println("rotationZ: ");
+		/*Transformation rotationZ = TransformationImpl.factory.rotationZ(90)derived.out.println("rotationZ: ");
 		System.out.println( rotationZ.getAsHomogeneous());
-		assertTrue("derived rotation in the result set", resultSet.contains(rotationZ));
+		assertTrue("derived rotation in the result set", resultSet.contains(rotationZ));*/
 	}
 
 	/*@Test

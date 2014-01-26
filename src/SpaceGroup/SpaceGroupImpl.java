@@ -47,9 +47,9 @@ public class SpaceGroupImpl implements SpaceGroup {
 		// every Transformation is calculated modulo this parallelotop:
 		List<Vector3D> moduloBase = new ArrayList<Vector3D>();
 		// 3x3x3 should be big enough, ...
-		moduloBase.add( new Vector3D(new double[] { 1,0,0 }) );
-		moduloBase.add( new Vector3D(new double[] { 0,1,0 }) );
-		moduloBase.add( new Vector3D(new double[] { 0,0,1 }) );
+		moduloBase.add( new Vector3D(new double[] { 2,0,0 }) );
+		moduloBase.add( new Vector3D(new double[] { 0,2,0 }) );
+		moduloBase.add( new Vector3D(new double[] { 0,0,2 }) );
 
 		return getTransformations(moduloBase);
 	}
@@ -126,8 +126,10 @@ public class SpaceGroupImpl implements SpaceGroup {
 			System.out.print("point: " + p);
 		Vector3D shift = calcShift(moduloBase, p);
 		if( !p.equals(p0))
-			System.out.println(", shift: " + shift );
+			System.out.print(", shift: " + shift );
 		Transformation transBackIntoModuloBase = factory.translation( shift.get(0), shift.get(1), shift.get(2) );
+		if( !p.equals(p0))
+			System.out.println(", res =  " + transBackIntoModuloBase.composition(t).translationPart() );
 		
 		return transBackIntoModuloBase.composition(t);
 	}
@@ -155,7 +157,7 @@ public class SpaceGroupImpl implements SpaceGroup {
 		{
 			VectorFunction calcShift = new VectorFunction() {
 				public double evaluate(int i, double val) {
-					return -Math.floor(val);
+					return -Math.floor(val + 0.05);
 				}
 			};
 			shift = new Vector3D( pointInBase.transform(calcShift) );
