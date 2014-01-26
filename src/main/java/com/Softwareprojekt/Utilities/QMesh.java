@@ -3,17 +3,9 @@ package com.Softwareprojekt.Utilities;
 import com.Softwareprojekt.interfaces.Mesh;
 import com.Softwareprojekt.interfaces.Polygon;
 import com.Softwareprojekt.interfaces.Vector3D;
-
 import java.util.LinkedList;
 import java.util.List;
 
-/**
- * Created with IntelliJ IDEA.
- * User: jakob
- * Date: 11/15/13
- * Time: 4:25 PM
- * To change this template use File | Settings | File Templates.
- */
 
 public class QMesh implements Mesh {
 
