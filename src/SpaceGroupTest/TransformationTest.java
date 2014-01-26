@@ -18,39 +18,78 @@ import SpaceGroup.TransformationFactoryImpl;
 public class TransformationTest {
 	
 	@Test
-	public void testConstructors() {
+	public void testConstructorRotationX() throws Exception {
+		testConstructorsWithSingleRot(0);
+	}
+	@Test
+	public void testConstructorRotationY() throws Exception {
+		testConstructorsWithSingleRot(1);
+	}
+	@Test
+	public void testConstructorRotationZ() throws Exception {
+		testConstructorsWithSingleRot(2);
+	}
+
+	public void testConstructorsWithSingleRot(int axis) throws Exception {
 		for( int angle=0; angle<12; angle++) {
-			double rotZDeg = angle*360/12;
-			double rotZ = Math.toRadians(rotZDeg);
-			System.out.println("rotZ: " + rotZ);
-			Matrix4D matr = new Matrix4D(
-					new double[][] {
-						{ Math.cos(rotZ), -Math.sin(rotZ), 0, 0},
-						{ Math.sin(rotZ), Math.cos(rotZ), 0, 0},
-						{ 0, 0, 1, 0 },
-						{0,0,0,1}
-					}
-				);
-			
-			Matrix3D linear = new Matrix3D(
-					new double[][] {
-						{ Math.cos(rotZ), -Math.sin(rotZ), 0},
-						{ Math.sin(rotZ), Math.cos(rotZ), 0},
-						{ 0, 0, 1 },
-					}
-				);
-			System.out.println("linear: " + linear);
+			double rotDeg = angle*360/12;
+			double rot = Math.toRadians(rotDeg);
+			//System.out.println("rotZ: " + rotZ);
+			Matrix4D matr = getRotationMatrix4D(axis, rot);
+			Matrix3D linear = getRotationMatrix3D(axis, rot);
 				
 			Vector3D translation = new Vector3D(
 					new double[] { 0, 0, 0 }
 				);
 			
 			TransformationImpl transformationFromLinearMatr = new TransformationImpl(linear,translation);
-			TransformationImpl transformationFromAngles = new TransformationImpl(new Vector3D(new double[]{ 0, 0, rotZDeg }),translation);
-			assertEquals("correct result for TransformationImpl(Matrix3D, Vector3D) for angle 360/" + angle, matr, transformationFromLinearMatr.getAsHomogeneous());
-			assertEquals("correct result for TransformationImpl(Vector3D, Vector3D) for angle 360/" + angle, matr, transformationFromAngles.getAsHomogeneous());
+			double[] aAngle = new double[] { 0, 0, 0 };
+			aAngle[axis] = rotDeg;
+			TransformationImpl transformationFromAngles = new TransformationImpl(new Vector3D(aAngle),translation);
+			assertEquals("axis:" + axis + " check TransformationImpl(Matrix3D, Vector3D) for angle 360/" + angle, matr, transformationFromLinearMatr.getAsHomogeneous());
+			assertEquals("axis:" + axis + " check TransformationImpl(Vector3D, Vector3D) for angle 360/" + angle, matr, transformationFromAngles.getAsHomogeneous());
 		}
 
+	}
+
+	private Matrix3D getRotationMatrix3D(int axis, double angle) throws Exception {
+		return new Matrix3D(getRotationMatrix4D(axis, angle).slice(0,0,3,3));
+	}
+
+	private Matrix4D getRotationMatrix4D(int axis, double angle) throws Exception {
+		switch( axis ) {
+			case 0: {
+				return new Matrix4D(
+					new double[][] {
+						{ 1, 0, 0, 0 },
+						{ 0, Math.cos(angle), -Math.sin(angle), 0 },
+						{ 0, Math.sin(angle), Math.cos(angle), 0 },
+						{0,0,0,1}
+					}
+				);
+			}
+			case 1: {
+				return new Matrix4D(
+					new double[][] {
+						{ Math.cos(angle), 0, Math.sin(angle), 0 },
+						{ 0, 1, 0, 0 },
+						{ -Math.sin(angle), 0, Math.cos(angle), 0 },
+						{0,0,0,1}
+					}
+				);
+			}
+			case 2: {
+				return new Matrix4D(
+					new double[][] {
+						{ Math.cos(angle), -Math.sin(angle), 0, 0},
+						{ Math.sin(angle), Math.cos(angle), 0, 0},
+						{ 0, 0, 1, 0 },
+						{0,0,0,1}
+					}
+				);
+			}
+		};
+		throw new Exception( "axis not found" );
 	}
 
 	@Test

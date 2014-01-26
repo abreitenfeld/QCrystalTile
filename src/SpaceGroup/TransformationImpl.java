@@ -16,11 +16,12 @@ import interfaces.Vector3D;
 public class TransformationImpl implements Transformation {
 
 	public TransformationImpl(Matrix3D linearPart_, Vector3D translationPart) {
-		Matrix3D linearPart = new Matrix3D(linearPart_.transform(new MatrixFunction() {
+		Matrix3D linearPart = linearPart_;
+		/*Matrix3D linearPart = new Matrix3D(linearPart_.transform(new MatrixFunction() {
 			public double evaluate(int irow, int icol, double val) {
 				return Math.toRadians(val);
 			}
-		}));
+		}));*/
 
 		rotations = calcRotations( linearPart );
 		//System.out.println( "rotations: " + rotations );
@@ -29,11 +30,11 @@ public class TransformationImpl implements Transformation {
 	
 	public TransformationImpl(Matrix4D homogeneousM) {
 		Matrix3D linearPart_ = new Matrix3D( homogeneousM.slice(0,0,3,3) );
-		Matrix3D linearPart = new Matrix3D(linearPart_.transform(new MatrixFunction() {
+		Matrix3D linearPart = linearPart_; /*new Matrix3D(linearPart_.transform(new MatrixFunction() {
 			public double evaluate(int irow, int icol, double val) {
 				return Math.toRadians(val);
 			}
-		}));
+		}));*/
 		rotations = calcRotations( linearPart );
 		this.translationPart = new Vector3D( homogeneousM.getColumn(3).sliceLeft(3));
 	}
