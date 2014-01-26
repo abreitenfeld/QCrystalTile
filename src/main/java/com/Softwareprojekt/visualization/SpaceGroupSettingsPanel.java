@@ -13,8 +13,6 @@ import java.util.ResourceBundle;
 import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 
 public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, View, KeyListener {
 
@@ -36,9 +34,9 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		this._controller = controller;
 		
 		this.setLayout(new FlowLayout(FlowLayout.LEFT));
-		this.setPreferredSize(new Dimension(600, 70));
+		this.setPreferredSize(new Dimension(600, 40));
 		this.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
-		this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foregrond_Color));
+		this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
 		
 		// create coord inputs
 		this._inputXCoord = new JTextField();
@@ -50,8 +48,8 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		
 		// create the step slider
 		this._stepSlider= new JSlider(JSlider.HORIZONTAL, Slider_Min_Step, Slider_Max_Step, 0);
-		this._stepSlider.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foregrond_Color));
-		this._stepSlider.setPreferredSize(new Dimension(500, 50));
+		this._stepSlider.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
+		this._stepSlider.setPreferredSize(new Dimension(500, 24));
 		this._stepSlider.setSnapToTicks(true);
 		this._stepSlider.setMajorTickSpacing(1);
 		this._stepSlider.setPaintTicks(true);
@@ -69,8 +67,8 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		this.add(this._inputYCoord);
 		this.add(this._inputZCoord);
 		
-		this.add(new Label(bundle.getString("visualizationStep")));
-		this.add(this._stepSlider);
+		//this.add(new Label(bundle.getString("visualizationStep")));
+		//this.add(this._stepSlider);
 		
 		this.invalidateViewOptions();
 		

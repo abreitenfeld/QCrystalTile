@@ -35,7 +35,6 @@ public class SpaceGroupModel implements Model {
 	@Override
 	public void setPoint(Vector3D point) {
 		this._point = point;
-		System.out.println(point.toString());
 	}
 
 }

@@ -4,6 +4,8 @@ import com.Softwareprojekt.interfaces.Vector3D;
 import org.jzy3d.maths.Coord3d;
 import org.jzy3d.plot3d.primitives.Point;
 import org.jzy3d.plot3d.primitives.Polygon;
+import org.jzy3d.plot3d.primitives.pickable.Pickable;
+import org.jzy3d.plot3d.primitives.pickable.PickablePolygon;
 
 public class ConvertHelper {
 
@@ -22,7 +24,23 @@ public class ConvertHelper {
 		
 		return poly;
 	}
-	
+
+    /**
+     * Converts a polygon to a jzy3d polygon.
+     * @param polygon
+     * @return
+     */
+    public static PickablePolygon convertPolygonToPickablePolygon(com.Softwareprojekt.interfaces.Polygon polygon) {
+        final PickablePolygon poly = new PickablePolygon();
+        // enumerate over all vertices
+        for (int i = 0; i < polygon.getVertices().size(); i++) {
+            Vector3D vector = polygon.getVertices().get(i);
+            poly.add(convertVector3dTojzyPoint(vector));
+        }
+
+        return poly;
+    }
+
 	/**
 	 * Convert a vector3d to a jzy3d coord3d.
 	 * @param vector
