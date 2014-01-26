@@ -44,25 +44,43 @@ public class SpaceGroupImpl implements SpaceGroup {
 
 	@Override
 	public Set<Transformation> getTransformations() {
-		if(transformations == null)
-			closure();
-		return transformations;
-	}
-	
-	protected void closure() {
-		transformations = closure(generatingSet);
-	}
-	
-	protected Set<Transformation> closure(Set<Transformation> creators) {
-		Set<Transformation> res = new HashSet<Transformation>(creators);
-		int iteration = 0;
-		int prevSize = 0;
 		// every Transformation is calculated modulo this parallelotop:
 		List<Vector3D> moduloBase = new ArrayList<Vector3D>();
 		// 3x3x3 should be big enough, ...
 		moduloBase.add( new Vector3D(new double[] { 1,0,0 }) );
 		moduloBase.add( new Vector3D(new double[] { 0,1,0 }) );
 		moduloBase.add( new Vector3D(new double[] { 0,0,1 }) );
+
+		return getTransformations(moduloBase);
+	}
+
+	public Set<Transformation> getTransformations(
+			/* resulting Transformations are restricted to the parallelotope
+			 * specified by the following base vectors: */
+			List<Vector3D> moduloBase 
+	) {
+		if(transformations == null)
+			closure(moduloBase);
+		return transformations;
+	}
+	
+	protected void closure(
+			List<Vector3D> moduloBase 
+	) {
+		transformations = closure(generatingSet, moduloBase);
+	}
+	
+	protected Set<Transformation> closure(
+			Set<Transformation> creators, 
+			List<Vector3D> moduloBase 
+	) {
+		Set<Transformation> res = new HashSet<Transformation>();
+		for( Transformation t : creators ) {
+			res.add( fitIntoBase( moduloBase, t));
+		}
+
+		int iteration = 0;
+		int prevSize = 0;
 
 		while( res.size() > prevSize ) {
 			//System.out.println(
