@@ -18,8 +18,38 @@ import SpaceGroup.TransformationImpl;
 public class SpaceGroupImplTest {
 
 	@Test
+	public void testSpaceGroupImplRotationSimple() {
+		LatticeType lt = new LatticeTypeImpl(LatticeType.CenteringType.P, LatticeType.System.CUBIC);
+		Set<Transformation> base = new HashSet<Transformation>();
+		base.add(
+				TransformationImpl.factory.rotationX(90)
+			);
+		System.out.println("base:");
+		for( Transformation trans : base) {
+			System.out.println(trans.getAsHomogeneous());
+		}
+		SpaceGroup sg = new SpaceGroupImpl(lt, base);
+		// this base should give all rotations about multiples of 90 degree
+		// around all axes
+		
+		Set<Transformation> resultSet = sg.getTransformations();
+		
+		System.out.println("result:");
+		for( Transformation trans : resultSet ) {
+			System.out.println(trans.getAsHomogeneous());
+		}
+		
+		// remember: 4 rotations
+		assertEquals("result set cardinality", 4, resultSet.size());
+		/*Transformation rotationZ = TransformationImpl.factory.rotationZ(90);
+		System.out.println("rotationZ: ");
+		System.out.println( rotationZ.getAsHomogeneous());
+		assertTrue("derived rotation in the result set", resultSet.contains(rotationZ));*/
+	}
+
+	@Test
 	public void testSpaceGroupImpl() {
-		LatticeType lt = new LatticeTypeImpl(/*"test", */LatticeType.CenteringType.P, LatticeType.System.CUBIC);
+		LatticeType lt = new LatticeTypeImpl(LatticeType.CenteringType.P, LatticeType.System.CUBIC);
 		Set<Transformation> base = new HashSet<Transformation>();
 		base.add(
 				TransformationImpl.factory.rotationX(90)
@@ -42,8 +72,47 @@ public class SpaceGroupImplTest {
 			System.out.println(trans.getAsHomogeneous());
 		}
 		
-		// remember 24 rotations
+		// remember: 24 rotations
 		assertEquals("result set cardinality", 24, resultSet.size());
+		Transformation rotationZ = TransformationImpl.factory.rotationZ(90);
+		System.out.println("rotationZ: ");
+		System.out.println( rotationZ.getAsHomogeneous());
+		assertTrue("derived rotation in the result set", resultSet.contains(rotationZ));
+	}
+
+	@Test
+	public void testRestriction() {
+		LatticeType lt = new LatticeTypeImpl(LatticeType.CenteringType.P, LatticeType.System.CUBIC);
+		Set<Transformation> base = new HashSet<Transformation>();
+		base.add(
+				TransformationImpl.factory.rotationX(90)
+			);
+		base.add(
+				TransformationImpl.factory.rotationY(90)
+			);
+		base.add(
+				TransformationImpl.factory.translation(1,0,0)
+		);
+		/*base.add(
+				TransformationImpl.factory.translation(0,1,0)
+		);*/
+		System.out.println("base:");
+		for( Transformation trans : base) {
+			System.out.println(trans.getAsHomogeneous());
+		}
+		SpaceGroup sg = new SpaceGroupImpl(lt, base);
+		// this base should give all rotations about multiples of 90 degree
+		// around all axes
+		
+		Set<Transformation> resultSet = sg.getTransformations();
+		
+		System.out.println("result:");
+		for( Transformation trans : resultSet ) {
+			System.out.println(trans.getAsHomogeneous());
+		}
+		
+		// 24 rotations * 3 * 3
+		assertEquals("result set cardinality", 72, resultSet.size());
 		Transformation rotationZ = TransformationImpl.factory.rotationZ(90);
 		System.out.println("rotationZ: ");
 		System.out.println( rotationZ.getAsHomogeneous());

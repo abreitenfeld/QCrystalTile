@@ -65,6 +65,7 @@ public class SpaceGroupImpl implements SpaceGroup {
 		moduloBase.add( new Vector3D(new double[] { 0,0,3 }) );
 
 		while( res.size() > prevSize ) {
+			//System.out.println(
 			if( !cond(iteration, res.size())) {
 				System.out.println("breaking the closure loop!");
 				break;
@@ -79,7 +80,7 @@ public class SpaceGroupImpl implements SpaceGroup {
 	}
 	
 	protected boolean cond(int iteration, int currentSize) {
-		return iteration < 100;
+		return iteration < 10;
 	}
 
 	protected Set<Transformation> combineSimple( List<Vector3D> moduloBase, Set<Transformation> set, Set<Transformation> creators) {

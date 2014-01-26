@@ -157,6 +157,11 @@ public class TransformationTest {
 
 	@Test
 	public void testComposition() {
-		fail("Not yet implemented");
+		Transformation t1 = new TransformationImpl( new Vector3D( new double[] { 0, 0, 0 } ), new Vector3D(new double[] { 0,0,0 }) );
+		Transformation t2 = new TransformationImpl( new Vector3D( new double[] { 0, 90, 0 } ), new Vector3D(new double[] { 0,0,0 }) );
+		Transformation res = new TransformationImpl( new Vector3D( new double[] { 0, 90, 0 } ), new Vector3D(new double[] { 0,0,0 }) );
+		System.out.println(res.getAsHomogeneous());
+		assertEquals( "", res, t1.composition(t2));
+
 	}
 }

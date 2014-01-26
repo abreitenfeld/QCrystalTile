@@ -148,6 +148,7 @@ public class TransformationImpl implements Transformation {
 	@Override
 	public Transformation composition(Transformation b) {
 		Matrix4D matr = new Matrix4D(this.getAsHomogeneous().multiply(b.getAsHomogeneous()));
+		//System.out.println("res" + matr);
 		TransformationImpl ret = new TransformationImpl(matr);
 		ret.rasterize();
 		return ret;
@@ -170,8 +171,8 @@ public class TransformationImpl implements Transformation {
 	private double rasterRot(double angle) {
 		int division = 12; // => raster = 1/12 
 
-		double translationTolerance = 1/36; // has to be smaller than 1/division !
-		return Math.floor( angle*division + translationTolerance ) / division;
+		double tolerance = 1.0/36.0; // has to be smaller than 1/division !
+		return (Math.floor( angle /(2*Math.PI) *division + tolerance )%division) / division * 2*Math.PI ;
 	}
 	
 	@Override
