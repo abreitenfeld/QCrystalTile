@@ -98,11 +98,10 @@ public class SpaceGroupImpl implements SpaceGroup {
 	}
 	
 	protected boolean cond(int iteration, int currentSize) {
-		return iteration < 10;
+		return iteration < 20;
 	}
 
 	protected Set<Transformation> combineSimple( List<Vector3D> moduloBase, Set<Transformation> set, Set<Transformation> creators) {
-		//List<Iterator<Transformation>> i = new ArrayList<Iterator<Transformation>>();
 		Set<Transformation> res = new HashSet<Transformation>(set);
 		for( Transformation t : set) {
 			for( Transformation b : creators) {
@@ -122,14 +121,14 @@ public class SpaceGroupImpl implements SpaceGroup {
 		Vector3D p0 = new Vector3D( new double[] { 0, 0, 0 } );
 
 		Vector3D p = t.apply(p0);
-		if( !p.equals(p0))
-			System.out.print("point: " + p);
+		/*if( !p.equals(p0))
+			System.out.print("point: " + p);*/
 		Vector3D shift = calcShift(moduloBase, p);
-		if( !p.equals(p0))
-			System.out.print(", shift: " + shift );
+		/*if( !p.equals(p0))
+			System.out.print(", shift: " + shift );*/
 		Transformation transBackIntoModuloBase = factory.translation( shift.get(0), shift.get(1), shift.get(2) );
-		if( !p.equals(p0))
-			System.out.println(", res =  " + transBackIntoModuloBase.composition(t).translationPart() );
+		/*if( !p.equals(p0))
+			System.out.println(", res =  " + transBackIntoModuloBase.composition(t).translationPart() );*/
 		
 		return transBackIntoModuloBase.composition(t);
 	}

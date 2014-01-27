@@ -8,6 +8,7 @@ import java.util.Set;
 import interfaces.LatticeType;
 import interfaces.SpaceGroup;
 import interfaces.Transformation;
+import interfaces.Vector3D;
 
 import org.junit.Test;
 
@@ -141,13 +142,25 @@ public class SpaceGroupImplTest {
 		
 		Set<Transformation> resultSet = sg.getTransformations();
 		
-		System.out.println("result:");
+		/*System.out.println("result:");
 		for( Transformation trans : resultSet ) {
 			System.out.println(trans.getAsHomogeneous());
-		}
+		}*/
 		
-		// 24 rotations * ?
-		assertEquals("result set cardinality", 24, resultSet.size());
+
+		/*int count = 0;
+		for( Transformation trans : resultSet ) {
+			if( trans.translationPart().equals( new Vector3D( new double[] { 0, 1, 1 }) ) ) {
+				//if( trans.linearPart().get(0,0) == 1) {
+					System.out.println(count + ": hash: " + trans.hashCode() + "\n" + trans.linearPart() );
+					count ++;
+				//}
+			}
+		}
+		System.out.println("count: " + count );*/
+		
+		// 24 rotations * 8 positions:
+		assertEquals("result set cardinality", 24 * 8, resultSet.size());
 		/*Transformation rotationZ = TransformationImpl.factory.rotationZ(90)derived.out.println("rotationZ: ");
 		System.out.println( rotationZ.getAsHomogeneous());
 		assertTrue("derived rotation in the result set", resultSet.contains(rotationZ));*/

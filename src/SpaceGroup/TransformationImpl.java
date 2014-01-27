@@ -15,29 +15,37 @@ import interfaces.Vector3D;
 
 public class TransformationImpl implements Transformation {
 
-	public TransformationImpl(Matrix3D linearPart_, Vector3D translationPart) {
-		Matrix3D linearPart = linearPart_;
-		/*Matrix3D linearPart = new Matrix3D(linearPart_.transform(new MatrixFunction() {
-			public double evaluate(int irow, int icol, double val) {
-				return Math.toRadians(val);
-			}
-		}));*/
-
-		rotations = calcRotations( linearPart );
-		//System.out.println( "rotations: " + rotations );
+	public TransformationImpl(Matrix3D linearPart, Vector3D translationPart) {
+		this.rotations = calcRotations( linearPart );
 		this.translationPart = translationPart;
+		
+		this.rasterize();
 	}
 	
 	public TransformationImpl(Matrix4D homogeneousM) {
-		Matrix3D linearPart_ = new Matrix3D( homogeneousM.slice(0,0,3,3) );
-		Matrix3D linearPart = linearPart_; /*new Matrix3D(linearPart_.transform(new MatrixFunction() {
-			public double evaluate(int irow, int icol, double val) {
-				return Math.toRadians(val);
-			}
-		}));*/
-		rotations = calcRotations( linearPart );
+		Matrix3D linearPart = new Matrix3D( homogeneousM.slice(0,0,3,3) );
+
+		this.rotations = calcRotations( linearPart );
 		this.translationPart = new Vector3D( homogeneousM.getColumn(3).sliceLeft(3));
+
+		this.rasterize();
 	}
+	public TransformationImpl(
+			Vector3D rot, // rotation (in Degrees) around x-, y-, z-axis (applies z after y after x)
+			Vector3D translation
+	) {
+		this.rotations = 
+			new Vector3D( rot.transform( new VectorFunction() {
+				public double evaluate(int i, double val) {
+					return Math.toRadians(val);
+				}
+			}));
+		this.translationPart = new Vector3D( translation );
+
+		this.rasterize();
+
+	}
+
 	private Vector3D calcRotations(Matrix3D linearPart) {
 		// code from "Computing Euler angles from a rotation matrix" by Gregory G. Slabaugh:
 		double rotX = 0, rotY = 0, rotZ = 0;
@@ -69,19 +77,6 @@ public class TransformationImpl implements Transformation {
 			}
 		}
 		return new Vector3D( new double[] { rotX, rotY, rotZ } );
-	}
-
-	public TransformationImpl(
-		Vector3D rot, // rotation around x-, y-, z-axis (applies z after y after x)
-		Vector3D translation) {
-			this.rotations = 
-				new Vector3D( rot.transform( new VectorFunction() {
-					public double evaluate(int i, double val) {
-						return Math.toRadians(val);
-					}
-				}));
-			this.translationPart = new Vector3D( translation );
-
 	}
 
 	@Override
@@ -150,7 +145,7 @@ public class TransformationImpl implements Transformation {
 		Matrix4D matr = new Matrix4D(this.getAsHomogeneous().multiply(b.getAsHomogeneous()));
 		//System.out.println("res" + matr);
 		TransformationImpl ret = new TransformationImpl(matr);
-		ret.rasterize();
+		//ret.rasterize();
 		return ret;
 	}
 	
@@ -232,7 +227,7 @@ public class TransformationImpl implements Transformation {
 	
 	private static MatrixFunction roundToInt= new MatrixFunction() {
 			public double evaluate(int arg0, int arg1, double entry) {
-				return new Double(entry).intValue();
+				return new Double(entry + 0.005).intValue();
 			}
 		};
 	/*private static MatrixFunction round = new MatrixFunction() {
