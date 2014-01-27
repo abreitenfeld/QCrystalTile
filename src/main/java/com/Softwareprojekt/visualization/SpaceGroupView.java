@@ -51,10 +51,29 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 	private final List<Point> _chartVertices = new LinkedList<Point>();
 	private final List<Polygon> _chartFaces = new LinkedList<Polygon>();
 
-    private final Map<Mesh, Coord3d> _meshCentroids = new HashMap<Mesh, Coord3d>();
-    private final Map<Mesh, Boolean> _meshVisibility = new HashMap<Mesh, Boolean>();
-    private final Map<Mesh, List<Polygon>> _meshPolygons = new HashMap<Mesh, List<Polygon>>();
-    private final Map<Mesh, List<Point>> _meshVertices = new HashMap<Mesh, List<Point>>();
+    private final Map<Mesh, MeshInformation> _meshes = new HashMap<Mesh, MeshInformation>();
+
+    private class MeshInformation {
+
+        public final Mesh Mesh;
+        public Coord3d Centroid;
+        public boolean Visible;
+        public final List<Polygon> Polygons;
+        public final List<Point> Vertices;
+
+        public MeshInformation(Mesh mesh, List<Polygon> polygons, List<Point> vertices) {
+            this(mesh, Coord3d.ORIGIN, true, polygons, vertices);
+        }
+
+        public MeshInformation(Mesh mesh, Coord3d centroid, boolean visible, List<Polygon> polygons, List<Point> vertices) {
+            this.Mesh = mesh;
+            this.Centroid = centroid;
+            this.Visible = visible;
+            this.Polygons = polygons;
+            this.Vertices = vertices;
+        }
+
+    }
 
     // color providers
     private ColorProvider _currentColorProvider;
@@ -173,10 +192,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 		
 		this._chartFaces.clear();
 		this._chartVertices.clear();
-		this._meshCentroids.clear();
-        this._meshVisibility.clear();
-        this._meshPolygons.clear();
-        this._meshVertices.clear();
+	    this._meshes.clear();
         this._mouseController.getPickingSupport().clear();
 	}
 	
@@ -194,12 +210,13 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 	 * Calculates the position of the meshes according current spacing value.
 	 */
 	private void calculateMeshPosition() {
-        Iterator<Mesh> iter = this._meshVertices.keySet().iterator();
+        Iterator<Mesh> iter = this._meshes.keySet().iterator();
         while(iter.hasNext()) {
 			Mesh m = iter.next();
-            Coord3d centroid = this._meshCentroids.get(m);
-            List<Polygon> polygons = this._meshPolygons.get(m);
-            List<Point> vertices = this._meshVertices.get(m);
+            MeshInformation info = this._meshes.get(m);
+            Coord3d centroid = info.Centroid;
+            List<Polygon> polygons = info.Polygons;
+            List<Point> vertices = info.Vertices;
 
 		    // update position of polygons
             for (int c = 0; c < m.getFaces().size(); c++) {
@@ -231,10 +248,11 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
         int totalVertexCount = 0;
         Coord3d totalVect = Coord3d.ORIGIN;
 
-        Iterator<Mesh> iter = this._meshVertices.keySet().iterator();
+        Iterator<Mesh> iter = this._meshes.keySet().iterator();
         while(iter.hasNext()) {
             Mesh m = iter.next();
-            List<Point> vertices = this._meshVertices.get(m);
+            MeshInformation info = this._meshes.get(m);
+            List<Point> vertices = info.Vertices;
             Coord3d polyCenter = Coord3d.ORIGIN;
 
             for(Point vertex : vertices) {
@@ -244,7 +262,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
                 polyCenter = polyCenter.add(coord);
             }
             // calculate center of polygon
-            this._meshCentroids.put(m, polyCenter.div(vertices.size()));
+            info.Centroid = polyCenter.div(vertices.size());
             totalVertexCount += vertices.size();
         }
         // calculate center of box
@@ -264,7 +282,6 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 	    final List<Mesh> meshes = this._controller.calculateMesh();
 
 	    for (Mesh m : meshes) {
-            this._meshVisibility.put(m, true);
             List<Polygon> polygons = new LinkedList<Polygon>();
             List<Point> vertices = new LinkedList<Point>();
 
@@ -281,7 +298,6 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
                 this._chartFaces.add(nPoly);
                 this._mouseController.getPickingSupport().registerPickableObject(nPoly, m);
             }
-            this._meshPolygons.put(m, polygons);
 
             // create vertices
             for (com.Softwareprojekt.interfaces.Vector3D vertice : m.getVertices()) {
@@ -291,7 +307,8 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
                 drawables.add(point);
                 vertices.add(point);
             }
-            this._meshVertices.put(m, vertices);
+
+            this._meshes.put(m, new MeshInformation(m, polygons, vertices));
         }
 
 		this.calculateMeshCenter();
@@ -321,24 +338,21 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
             this.setColorProvider(this._monoChromaticColors);
         }
 
-        Iterator<Mesh> iter = this._meshVertices.keySet().iterator();
+        Iterator<Mesh> iter = this._meshes.keySet().iterator();
         while(iter.hasNext()) {
             Mesh m = iter.next();
-            if (this._meshVisibility.get(m)) {
-                List<Polygon> polygons = this._meshPolygons.get(m);
-                List<Point> vertices = this._meshVertices.get(m);
+            MeshInformation info = this._meshes.get(m);
 
-                // update polygon visibility
-                for (Polygon poly : polygons) {
-                    poly.setWireframeDisplayed(showWireframe);
-                    poly.setFaceDisplayed(showFaces);
-                    poly.setColor(this.getColorProivder().getColor(m, poly));
-                }
+            // update polygon visibility
+            for (Polygon poly : info.Polygons) {
+                poly.setWireframeDisplayed(showWireframe && info.Visible);
+                poly.setFaceDisplayed(showFaces && info.Visible);
+                poly.setColor(this.getColorProivder().getColor(m, poly));
+            }
 
-                // update vertices visibility
-                for(Point vertex : vertices) {
-                    vertex.setDisplayed(showVertices);
-                }
+            // update vertices visibility
+            for(Point vertex : info.Vertices) {
+                vertex.setDisplayed(showVertices && info.Visible);
             }
         }
 
@@ -351,18 +365,22 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 	}
 
     private void setMeshDisplayed(Mesh mesh, boolean visible) {
-        final List<Polygon> polygons = this._meshPolygons.get(mesh);
-        final List<Point> vertices = this._meshVertices.get(mesh);
+        final MeshInformation info = this._meshes.get(mesh);
+        final boolean showVertices = this._controller.getViewOption(Controller.ViewOptions.ShowVertices);
+        final boolean showFaces = this._controller.getViewOption(Controller.ViewOptions.ShowFaces);
+        final boolean showWireframe = this._controller.getViewOption(Controller.ViewOptions.ShowWireframe);
+        final List<Polygon> polygons = info.Polygons;
+        final List<Point> vertices = info.Vertices;
 
         for(Polygon poly : polygons) {
-            poly.setDisplayed(visible);
-            poly.setWireframeDisplayed(visible);
+            poly.setDisplayed(visible && showFaces);
+            poly.setWireframeDisplayed(visible && showWireframe);
         }
 
         for (Point point : vertices) {
             point.setDisplayed(visible);
         }
-        this._meshVisibility.put(mesh, visible);
+        info.Visible = visible && showVertices;
     }
 
     @Override
@@ -374,8 +392,9 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
             for (int i = 0; i < objects.size(); i++) {
                 if (objects.get(i) instanceof Mesh) {
                     Mesh mesh = (Mesh)objects.get(i);
-                    if (this._meshVisibility.get(mesh)) {
-                        Coord3d centroid = this._meshCentroids.get(mesh);
+                    MeshInformation info = this._meshes.get(mesh);
+                    if (info.Visible) {
+                        Coord3d centroid = info.Centroid;
                         double distance = this._chart.getView().getCamera().getDistance(centroid);
                         if (distance < minDistance) {
                             minDistance = distance;

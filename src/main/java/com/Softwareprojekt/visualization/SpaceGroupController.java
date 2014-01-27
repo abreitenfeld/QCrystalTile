@@ -91,7 +91,8 @@ public class SpaceGroupController implements Controller {
         Mesh qMesh;
 		// generate points
 		PointList p = new PointList();
-		p.gen_randomPoints(25);
+		p.gen_randomPoints(20);
+        //p.add(this.getOriginPoint());
 		
 		// iterate over transformation set
 		/*Iterator<Transformation> iter = this._model.getSpaceGroup().getTransformations().iterator();
