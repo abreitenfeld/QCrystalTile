@@ -37,23 +37,24 @@ import javax.swing.*;
 
 public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListener {
 
-	private final Controller _controller;
-	private final Chart _chart;
-	private final SpaceGroupSelectionPanel _selectionPanel;
-	private final SpaceGroupViewSettingsPanel _viewSettingsPanel;
-	private final SpaceGroupSettingsPanel _settingPanel;
-    private final SpaceGroupViewMouseController _mouseController;
+	protected final Controller _controller;
+    protected final Chart _chart;
+    protected final View[] _subViewControls;
+    protected final SpaceGroupViewMouseController _mouseController;
+    protected final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
 
-	private Coord3d _globalCenter;
-	private final Point _originPoint;
-    private volatile boolean _showSpacing = false;
-    private volatile float _currentSpacing = Min_Spacing_Factor;
-	private final List<Point> _chartVertices = new LinkedList<Point>();
-	private final List<Polygon> _chartFaces = new LinkedList<Polygon>();
+    protected Coord3d _globalCenter;
+    protected final Point _originPoint;
+    protected volatile boolean _showSpacing = false;
+    protected volatile float _currentSpacing = Min_Spacing_Factor;
+    protected final Map<Mesh, MeshInformation> _meshes = new HashMap<Mesh, MeshInformation>();
 
-    private final Map<Mesh, MeshInformation> _meshes = new HashMap<Mesh, MeshInformation>();
+    // color providers
+    protected ColorProvider _currentColorProvider;
+    protected final ColorProvider _monoChromaticColors;
+    protected final ColorProvider _chromaticColors;
 
-    private class MeshInformation {
+    protected class MeshInformation {
 
         public final Mesh Mesh;
         public Coord3d Centroid;
@@ -75,13 +76,6 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 
     }
 
-    // color providers
-    private ColorProvider _currentColorProvider;
-    private final ColorProvider _monoChromaticColors;
-    private final ColorProvider _chromaticColors;
-
-	private final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
-	
 	public static final float Origin_Point_Size = 15f;	
 	public static final float Min_Spacing_Factor = 1f;
 	public static final float Max_Spacing_Factor = 3f;
@@ -135,14 +129,16 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
         this._currentColorProvider = this._monoChromaticColors;
 
 		// add components
-		this._selectionPanel = new SpaceGroupSelectionPanel(this._controller);
-		this.add(this._selectionPanel, BorderLayout.PAGE_START);
-		
-        this._settingPanel = new SpaceGroupSettingsPanel(this._controller);
-        this.add(this._settingPanel, BorderLayout.PAGE_END);
+        final SpaceGroupSelectionPanel selectionPanel = new SpaceGroupSelectionPanel(this._controller);
+		this.add(selectionPanel, BorderLayout.PAGE_START);
+
+        final SpaceGroupSettingsPanel settingPanel = new SpaceGroupSettingsPanel(this._controller);
+        this.add(settingPanel, BorderLayout.PAGE_END);
         
-        this._viewSettingsPanel = new SpaceGroupViewSettingsPanel(this._controller);
-        this.add(this._viewSettingsPanel, BorderLayout.LINE_END);
+        final SpaceGroupViewSettingsPanel viewSettingsPanel = new SpaceGroupViewSettingsPanel(this._controller);
+        this.add(viewSettingsPanel, BorderLayout.LINE_END);
+
+        this._subViewControls = new View[] {selectionPanel, settingPanel, viewSettingsPanel};
 
 		super.initialize(_chart, Default_Size, "SpaceGroup Visualizer");
 
@@ -180,18 +176,20 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 	 * Clears the entire scene.
 	 */
 	protected void clearScene() {
-		// remove polygons
-		for (Polygon poly : this._chartFaces) {
-			this._chart.removeDrawable(poly, false);
-		}
-		
-		// remove vertices
-		for(Point vertice : this._chartVertices) {
-			this._chart.removeDrawable(vertice, false);
-		}
-		
-		this._chartFaces.clear();
-		this._chartVertices.clear();
+        Iterator<Mesh> iter = this._meshes.keySet().iterator();
+        while (iter.hasNext()) {
+            Mesh m = iter.next();
+            MeshInformation info = this._meshes.get(m);
+            // remove polygons
+            for (Polygon poly : info.Polygons) {
+                this._chart.removeDrawable(poly, false);
+            }
+
+            // remove vertices
+            for(Point vertex : info.Vertices) {
+                this._chart.removeDrawable(vertex, false);
+            }
+        }
 	    this._meshes.clear();
         this._mouseController.getPickingSupport().clear();
 	}
@@ -295,7 +293,6 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
                 nPoly.setColor(this.getColorProivder().getColor(m, nPoly));
                 polygons.add(nPoly);
                 drawables.add(nPoly);
-                this._chartFaces.add(nPoly);
                 this._mouseController.getPickingSupport().registerPickableObject(nPoly, m);
             }
 
@@ -303,7 +300,6 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
             for (com.Softwareprojekt.interfaces.Vector3D vertice : m.getVertices()) {
                 Point point = new Point(ConvertHelper.convertVector3dTojzyCoord3d(vertice), Vertex_Color, Vertex_Size);
                 point.setDisplayed(showVertices);
-                this._chartVertices.add(point);
                 drawables.add(point);
                 vertices.add(point);
             }
@@ -318,9 +314,11 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
         this._originPoint.xyz = ConvertHelper.convertVector3dTojzyCoord3d(this._controller.getOriginPoint());
 
 		this._chart.getScene().add(drawables);
-		this._viewSettingsPanel.invalidateView();
-		this._settingPanel.invalidateView();
-		this._selectionPanel.invalidateView();
+
+        // invalidate view of sub controls
+        for(View view : this._subViewControls) {
+            view.invalidateView();
+        }
 	}
 	
 	@Override
@@ -358,10 +356,11 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 
 		this._showSpacing = this._controller.getViewOption(Controller.ViewOptions.ShowSpacing);
 		this.calculateMeshPosition();
-		
-		this._viewSettingsPanel.invalidateViewOptions();
-		this._settingPanel.invalidateViewOptions();
-		this._selectionPanel.invalidateViewOptions();
+
+        // invalidate view options of sub controls
+        for(View view : this._subViewControls) {
+		    view.invalidateViewOptions();
+        }
 	}
 
     private void setMeshDisplayed(Mesh mesh, boolean visible) {
