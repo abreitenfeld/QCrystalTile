@@ -1,10 +1,9 @@
 package com.Softwareprojekt.visualization;
 
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.UIManager;
+
 import com.Softwareprojekt.Utilities.ImmutableMesh;
 
 import com.Softwareprojekt.Utilities.*;
@@ -119,7 +118,7 @@ public class SpaceGroupController implements Controller {
 		    	break;
 		    case VoronoiTesselation:
                 qMesh = QVoronoi.call(p);
-                qMesh = removeVerticeFromMesh(qMesh.getVertices().get(0), qMesh);
+                qMesh = removeVertexFromMesh(qMesh.getVertices().get(0), qMesh);
                 for (Polygon poly : qMesh.getFaces()) {
                     PointList cellPoints = new PointList();
                     cellPoints.addAll(poly.getVertices());
@@ -136,7 +135,7 @@ public class SpaceGroupController implements Controller {
 	 * @param point
 	 * @param mesh
 	 */
-	private static Mesh removeVerticeFromMesh(Vector3D point, Mesh mesh) {
+	private static Mesh removeVertexFromMesh(Vector3D point, Mesh mesh) {
 		List<Vector3D> vertices = new LinkedList<Vector3D>(mesh.getVertices());
 		List<Polygon> polys = new LinkedList<Polygon>();
 		

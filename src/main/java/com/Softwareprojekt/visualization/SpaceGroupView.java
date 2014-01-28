@@ -8,19 +8,14 @@ import java.util.Timer;
 
 import com.Softwareprojekt.Utilities.ConvertHelper;
 
-import com.Softwareprojekt.Utilities.ExtendedPickingSupport;
 import com.Softwareprojekt.interfaces.*;
 import com.Softwareprojekt.interfaces.View;
 import org.jzy3d.bridge.awt.FrameAWT;
 import org.jzy3d.chart.Chart;
-import org.jzy3d.chart.ChartLauncher;
-import org.jzy3d.chart.controllers.mouse.camera.ICameraMouseController;
 import org.jzy3d.chart.factories.AWTChartComponentFactory;
 import org.jzy3d.chart.factories.IChartComponentFactory;
 import org.jzy3d.colors.Color;
-import org.jzy3d.maths.Coord2d;
 import org.jzy3d.maths.Coord3d;
-import org.jzy3d.maths.IntegerCoord2d;
 import org.jzy3d.maths.Rectangle;
 import org.jzy3d.picking.IObjectPickedListener;
 import org.jzy3d.picking.PickingSupport;
@@ -29,18 +24,13 @@ import org.jzy3d.plot3d.primitives.Point;
 import org.jzy3d.plot3d.primitives.Polygon;
 import org.jzy3d.plot3d.primitives.pickable.PickablePolygon;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
-import org.jzy3d.plot3d.rendering.scene.Graph;
 
-import javax.media.opengl.GL;
-import javax.media.opengl.glu.GLU;
-import javax.swing.*;
-
-public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListener {
+public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListener, SpaceGroupViewControllerListener {
 
 	protected final Controller _controller;
     protected final Chart _chart;
     protected final View[] _subViewControls;
-    protected final SpaceGroupViewMouseController _mouseController;
+    protected final SpaceGroupViewChartController _chartController;
     protected final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
 
     protected Coord3d _globalCenter;
@@ -87,7 +77,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 	public static final Color Foreground_Color = Color.WHITE;
 	public static final Color Viewport_Background = new Color(105, 105, 105);
 	public static final Rectangle Default_Size = new Rectangle(1024, 768);
-	public static final long Pick_Timeout = 1;
+
 	/**
 	 * Constructor of view.
 	 * @param controller
@@ -100,7 +90,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 		this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(Foreground_Color));
 		this._showSpacing = _controller.getViewOption(Controller.ViewOptions.ShowSpacing);
 		this._currentSpacing = this._showSpacing ? Max_Spacing_Factor : Min_Spacing_Factor;
-        // stop application listener
+        // window listener
         this.addWindowListener(new WindowAdapter() {
             @Override
             public void windowClosing(WindowEvent e) {
@@ -111,11 +101,10 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 		this._chart = AWTChartComponentFactory.chart(Quality.Nicest, IChartComponentFactory.Toolkit.awt);
 		this._chart.getView().setBackgroundColor(Viewport_Background);
 		this._chart.getView().setSquared(true);
-        // set up default mouse controller
-        this._mouseController = new SpaceGroupViewMouseController(this._chart);
-        this._mouseController.getPickingSupport().addObjectPickedListener(this);
-        this._chart.addKeyController();
-        this._chart.addScreenshotKeyController();
+        // setup key and mouse controller
+        this._chartController = new SpaceGroupViewChartController(this._chart);
+        this._chartController.getPickingSupport().addObjectPickedListener(this);
+        this._chartController.addControllerListener(this);
         //this._chart.getView().getCamera().
 
 		// create moveable point
@@ -164,12 +153,23 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 		}, 0, 30);
 	}
 
-    private ColorProvider getColorProivder() {
+    protected ColorProvider getColorProvider() {
         return this._currentColorProvider;
     }
 
-    private void setColorProvider(ColorProvider colorProvider) {
-        this._currentColorProvider = colorProvider;
+    protected void setColorProvider(ColorProvider colorProvider) {
+        if (this._currentColorProvider != colorProvider) {
+            this._currentColorProvider = colorProvider;
+            // update face color
+            Iterator<Mesh> iter = this._meshes.keySet().iterator();
+            while(iter.hasNext()) {
+                Mesh m = iter.next();
+                MeshInformation info = this._meshes.get(m);
+                for(Polygon poly : info.Polygons) {
+                    poly.setColor(this._currentColorProvider.getColor(m, poly));
+                }
+            }
+        }
     }
 
 	/**
@@ -191,7 +191,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
             }
         }
 	    this._meshes.clear();
-        this._mouseController.getPickingSupport().clear();
+        this._chartController.getPickingSupport().clear();
 	}
 	
 	/**
@@ -250,18 +250,17 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
         while(iter.hasNext()) {
             Mesh m = iter.next();
             MeshInformation info = this._meshes.get(m);
-            List<Point> vertices = info.Vertices;
             Coord3d polyCenter = Coord3d.ORIGIN;
 
-            for(Point vertex : vertices) {
+            for(Point vertex : info.Vertices) {
                 Coord3d coord = vertex.xyz;
                 // count total number of vertices
                 totalVect = totalVect.add(coord);
                 polyCenter = polyCenter.add(coord);
             }
             // calculate center of polygon
-            info.Centroid = polyCenter.div(vertices.size());
-            totalVertexCount += vertices.size();
+            info.Centroid = polyCenter.div(info.Vertices.size());
+            totalVertexCount += info.Vertices.size();
         }
         // calculate center of box
         this._globalCenter = totalVect.div(totalVertexCount);
@@ -290,15 +289,15 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
                 nPoly.setWireframeWidth(Wireframe_Width);
                 nPoly.setWireframeDisplayed(showWireframe);
                 nPoly.setFaceDisplayed(showFaces);
-                nPoly.setColor(this.getColorProivder().getColor(m, nPoly));
+                nPoly.setColor(this.getColorProvider().getColor(m, nPoly));
                 polygons.add(nPoly);
                 drawables.add(nPoly);
-                this._mouseController.getPickingSupport().registerPickableObject(nPoly, m);
+                this._chartController.getPickingSupport().registerPickableObject(nPoly, m);
             }
 
             // create vertices
-            for (com.Softwareprojekt.interfaces.Vector3D vertice : m.getVertices()) {
-                Point point = new Point(ConvertHelper.convertVector3dTojzyCoord3d(vertice), Vertex_Color, Vertex_Size);
+            for (com.Softwareprojekt.interfaces.Vector3D vertex : m.getVertices()) {
+                Point point = new Point(ConvertHelper.convertVector3dTojzyCoord3d(vertex), Vertex_Color, Vertex_Size);
                 point.setDisplayed(showVertices);
                 drawables.add(point);
                 vertices.add(point);
@@ -327,14 +326,6 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
                 || this._controller.getViewOption(Controller.ViewOptions.ShowVertices);
 		final boolean showFaces = this._controller.getViewOption(Controller.ViewOptions.ShowFaces);
 		final boolean showWireframe = this._controller.getViewOption(Controller.ViewOptions.ShowWireframe);
-		final boolean showChromaticFaces = this._controller.getViewOption(Controller.ViewOptions.ShowChromaticFaces);
-
-        if (showChromaticFaces) {
-            this.setColorProvider(this._chromaticColors);
-        }
-        else {
-            this.setColorProvider(this._monoChromaticColors);
-        }
 
         Iterator<Mesh> iter = this._meshes.keySet().iterator();
         while(iter.hasNext()) {
@@ -342,10 +333,10 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
             MeshInformation info = this._meshes.get(m);
 
             // update polygon visibility
-            for (Polygon poly : info.Polygons) {
+            for(Polygon poly : info.Polygons) {
                 poly.setWireframeDisplayed(showWireframe && info.Visible);
                 poly.setFaceDisplayed(showFaces && info.Visible);
-                poly.setColor(this.getColorProivder().getColor(m, poly));
+                poly.setColor(this.getColorProvider().getColor(m, poly));
             }
 
             // update vertices visibility
@@ -364,49 +355,67 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 	}
 
     private void setMeshDisplayed(Mesh mesh, boolean visible) {
-        final MeshInformation info = this._meshes.get(mesh);
         final boolean showVertices = this._controller.getViewOption(Controller.ViewOptions.ShowVertices);
         final boolean showFaces = this._controller.getViewOption(Controller.ViewOptions.ShowFaces);
         final boolean showWireframe = this._controller.getViewOption(Controller.ViewOptions.ShowWireframe);
-        final List<Polygon> polygons = info.Polygons;
-        final List<Point> vertices = info.Vertices;
 
-        for(Polygon poly : polygons) {
-            poly.setDisplayed(visible && showFaces);
+        final MeshInformation info = this._meshes.get(mesh);
+        info.Visible = visible;
+        for(Polygon poly : info.Polygons) {
             poly.setWireframeDisplayed(visible && showWireframe);
+            poly.setFaceDisplayed(visible && showFaces);
         }
 
-        for (Point point : vertices) {
-            point.setDisplayed(visible);
+        for(Point point : info.Vertices) {
+            point.setDisplayed(visible && showVertices);
         }
-        info.Visible = visible && showVertices;
+    }
+
+    @Override
+    public void actionPerformed(Action action, List<Mesh> meshes) {
+         if (action == Action.showAll) {
+             Iterator<Mesh> iter = this._meshes.keySet().iterator();
+             while(iter.hasNext()) {
+                 Mesh m = iter.next();
+                 MeshInformation info = this._meshes.get(m);
+                 if (!info.Visible) {
+                     this.setMeshDisplayed(m, true);
+                 }
+             }
+         }
+        else if (action == Action.setChromaticColors) {
+             this.setColorProvider(this._chromaticColors);
+        }
+        else if (action == Action.setMonochromColors) {
+             this.setColorProvider(this._monoChromaticColors);
+         }
     }
 
     @Override
     public void objectPicked(List<? extends Object> objects, PickingSupport pickingSupport) {
-        if (System.currentTimeMillis() - this._mouseController.getPickingSupport().getLastPickTime() >= Pick_Timeout) {
-            double minDistance = Double.MAX_VALUE;
-            Mesh selectedMesh = null;
+        double minDistance = Double.MAX_VALUE;
+        Mesh selectedMesh = null;
 
-            for (int i = 0; i < objects.size(); i++) {
-                if (objects.get(i) instanceof Mesh) {
-                    Mesh mesh = (Mesh)objects.get(i);
-                    MeshInformation info = this._meshes.get(mesh);
-                    if (info.Visible) {
-                        Coord3d centroid = info.Centroid;
-                        double distance = this._chart.getView().getCamera().getDistance(centroid);
-                        if (distance < minDistance) {
-                            minDistance = distance;
-                            selectedMesh = mesh;
-                        }
+        for (int i = 0; i < objects.size(); i++) {
+            if (objects.get(i) instanceof Mesh) {
+                Mesh mesh = (Mesh)objects.get(i);
+                MeshInformation info = this._meshes.get(mesh);
+                if (info.Visible) {
+                    Coord3d centroid = info.Centroid;
+                    double distance = this._chart.getView().getCamera().getDistance(centroid);
+                    if (distance < minDistance) {
+                        minDistance = distance;
+                        selectedMesh = mesh;
                     }
                 }
             }
+        }
 
-            // make selected mesh invisible
-            if (selectedMesh != null) {
-                this.setMeshDisplayed(selectedMesh, false);
-            }
+        // make selected mesh invisible
+        if (selectedMesh != null) {
+            this.setMeshDisplayed(selectedMesh, false);
+            //MeshInformation info = this._meshes.get(selectedMesh);
+            //this._chart.setViewPoint(info.Centroid);
         }
     }
 }

@@ -16,7 +16,6 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 	private final JToggleButton _btnWireframe;
 	private final JToggleButton _btnFace;
 	private final JToggleButton _btnSpacing;
-	private final JToggleButton _btnChromaticFaces;
 	private final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
 	private static final Dimension BUTTON_SIZE = new Dimension(40, 40);
 	private static final Color Selected_Color = Color.green;
@@ -46,11 +45,6 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 		_btnFace.setToolTipText(bundle.getString("showFaces"));
 		styleButton(_btnFace);
 		this.add(_btnFace);
-
-		_btnChromaticFaces = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("poly_chromatic.png")));
-		_btnChromaticFaces.setToolTipText(bundle.getString("showChromaticFaces"));
-		styleButton(_btnChromaticFaces);
-		this.add(_btnChromaticFaces);
 		
 		_btnSpacing = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("poly_spacing.png")));
 		_btnSpacing.setToolTipText(bundle.getString("showSpacing"));
@@ -64,7 +58,6 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 		this._btnWireframe.addActionListener(this);
 		this._btnFace.addActionListener(this);
 		this._btnSpacing.addActionListener(this);
-		this._btnChromaticFaces.addActionListener(this);
 	}
 	
 	private static void styleButton(AbstractButton btn) {
@@ -86,9 +79,6 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 		else if (e.getSource() == _btnSpacing) {
 			this._controller.setViewOption(Controller.ViewOptions.ShowSpacing, _btnSpacing.isSelected());
 		}
-		else if (e.getSource() == _btnChromaticFaces) {
-			this._controller.setViewOption(Controller.ViewOptions.ShowChromaticFaces, _btnChromaticFaces.isSelected());
-		}
 	}
 
 	@Override
@@ -102,7 +92,6 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 		this._btnWireframe.setSelected(this._controller.getViewOption(Controller.ViewOptions.ShowWireframe));
 		this._btnFace.setSelected(this._controller.getViewOption(Controller.ViewOptions.ShowFaces));
 		this._btnSpacing.setSelected(this._controller.getViewOption(Controller.ViewOptions.ShowSpacing));
-		this._btnChromaticFaces.setSelected(this._controller.getViewOption(Controller.ViewOptions.ShowChromaticFaces));
 	}
 	
 }

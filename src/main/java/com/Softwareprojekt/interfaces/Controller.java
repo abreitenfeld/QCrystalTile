@@ -15,6 +15,6 @@ public interface Controller {
 	VisualizationSteps getVisualizationStep();
 	List<Mesh> calculateMesh();
 	
-	public enum ViewOptions { ShowVertices, ShowWireframe, ShowFaces, ShowSpacing, ShowChromaticFaces };
+	public enum ViewOptions { ShowVertices, ShowWireframe, ShowFaces, ShowSpacing };
 	public enum VisualizationSteps { ScatterPlot, ConvexHull, DelaunayTriangulation, VoronoiTesselation };
 }
