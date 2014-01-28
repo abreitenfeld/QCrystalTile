@@ -1,4 +1,4 @@
-package loader;
+package com.Softwareprojekt.app.loader;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
@@ -9,7 +9,8 @@ import java.util.LinkedList;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import SpaceGroup.TransformationImpl;
+import com.Softwareprojekt.app.SpaceGroup.TransformationImpl;
+
 
 public class loader {
 

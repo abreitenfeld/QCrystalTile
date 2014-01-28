@@ -1,20 +1,21 @@
-package SpaceGroupTest;
+package com.Softwareprojekt.app.SpaceGroupTest;
 
 import static org.junit.Assert.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
-import interfaces.LatticeType;
-import interfaces.SpaceGroup;
-import interfaces.Transformation;
-import interfaces.Vector3D;
 
 import org.junit.Test;
 
-import SpaceGroup.SpaceGroupImpl;
-import SpaceGroup.LatticeTypeImpl;
-import SpaceGroup.TransformationImpl;
+import com.Softwareprojekt.app.SpaceGroup.LatticeTypeImpl;
+import com.Softwareprojekt.app.SpaceGroup.SpaceGroupImpl;
+import com.Softwareprojekt.app.SpaceGroup.TransformationImpl;
+import com.Softwareprojekt.app.interfaces.LatticeType;
+import com.Softwareprojekt.app.interfaces.SpaceGroup;
+import com.Softwareprojekt.app.interfaces.Transformation;
+import com.Softwareprojekt.app.interfaces.Vector3D;
+
 
 public class SpaceGroupImplTest {
 

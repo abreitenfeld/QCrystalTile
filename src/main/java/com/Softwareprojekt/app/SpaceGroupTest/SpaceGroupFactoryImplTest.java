@@ -1,22 +1,23 @@
-package SpaceGroupTest;
+package com.Softwareprojekt.app.SpaceGroupTest;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-import interfaces.InvalidSpaceGroupIDException;
-import interfaces.SpaceGroup;
 //import interfaces.SpaceGroupFactory;
 //import interfaces.SpaceGroupID;
-import interfaces.Transformation;
 
 import java.io.IOException;
 import java.util.Set;
 
 import org.json.simple.parser.ParseException;
 
-import InternationalShortSymbol.ID;
-import SpaceGroup.SpaceGroupImpl;
-import InternationalShortSymbol.SpaceGroupFactoryImpl;
+import com.Softwareprojekt.app.InternationalShortSymbol.ID;
+import com.Softwareprojekt.app.InternationalShortSymbol.SpaceGroupFactoryImpl;
+import com.Softwareprojekt.app.SpaceGroup.SpaceGroupImpl;
+import com.Softwareprojekt.app.interfaces.InvalidSpaceGroupIDException;
+import com.Softwareprojekt.app.interfaces.SpaceGroup;
+import com.Softwareprojekt.app.interfaces.Transformation;
+
 
 public class SpaceGroupFactoryImplTest {
 

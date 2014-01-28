@@ -1,4 +1,4 @@
-package interfaces;
+package com.Softwareprojekt.app.interfaces;
 
 /* an implementation should provide a constructor that takes a String.
  * furthermore, the following code should print "true":

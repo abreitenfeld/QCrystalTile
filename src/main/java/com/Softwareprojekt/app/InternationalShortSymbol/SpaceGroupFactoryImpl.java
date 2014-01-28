@@ -1,4 +1,4 @@
-package InternationalShortSymbol;
+package com.Softwareprojekt.app.InternationalShortSymbol;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -11,16 +11,17 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import SpaceGroup.LatticeTypeImpl;
-import SpaceGroup.SpaceGroupImpl;
-import SpaceGroup.TransformationImpl;
+import com.Softwareprojekt.app.SpaceGroup.LatticeTypeImpl;
+import com.Softwareprojekt.app.SpaceGroup.SpaceGroupImpl;
+import com.Softwareprojekt.app.SpaceGroup.TransformationImpl;
+import com.Softwareprojekt.app.interfaces.InvalidSpaceGroupIDException;
+import com.Softwareprojekt.app.interfaces.LatticeType;
+import com.Softwareprojekt.app.interfaces.Matrix4D;
+import com.Softwareprojekt.app.interfaces.SpaceGroup;
+import com.Softwareprojekt.app.interfaces.SpaceGroupFactory;
+import com.Softwareprojekt.app.interfaces.Transformation;
 
-import interfaces.LatticeType;
-import interfaces.Matrix4D;
-import interfaces.InvalidSpaceGroupIDException;
-import interfaces.SpaceGroup;
-import interfaces.SpaceGroupFactory;
-import interfaces.Transformation;
+
 
 public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
 	JSONParser parser;

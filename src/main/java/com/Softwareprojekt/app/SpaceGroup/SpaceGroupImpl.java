@@ -1,15 +1,16 @@
-package SpaceGroup;
+package com.Softwareprojekt.app.SpaceGroup;
 
-import interfaces.LatticeType;
-import interfaces.SpaceGroup;
-import interfaces.Transformation;
-import interfaces.TransformationFactory;
-import interfaces.Vector3D;
-import interfaces.Matrix3D;
 
 import org.la4j.LinearAlgebra;
 import org.la4j.inversion.MatrixInverter;
 import org.la4j.vector.functor.VectorFunction;
+
+import com.Softwareprojekt.app.interfaces.LatticeType;
+import com.Softwareprojekt.app.interfaces.Matrix3D;
+import com.Softwareprojekt.app.interfaces.SpaceGroup;
+import com.Softwareprojekt.app.interfaces.Transformation;
+import com.Softwareprojekt.app.interfaces.TransformationFactory;
+import com.Softwareprojekt.app.interfaces.Vector3D;
 
 import java.util.HashSet;
 import java.util.List;

@@ -1,12 +1,13 @@
-package SpaceGroup;
+package com.Softwareprojekt.app.SpaceGroup;
 
 import org.la4j.factory.CCSFactory;
 
-import interfaces.Matrix3D;
-import interfaces.Matrix4D;
-import interfaces.Transformation;
-import interfaces.TransformationFactory;
-import interfaces.Vector3D;
+import com.Softwareprojekt.app.interfaces.Matrix3D;
+import com.Softwareprojekt.app.interfaces.Matrix4D;
+import com.Softwareprojekt.app.interfaces.Transformation;
+import com.Softwareprojekt.app.interfaces.TransformationFactory;
+import com.Softwareprojekt.app.interfaces.Vector3D;
+
 
 public class TransformationFactoryImpl implements TransformationFactory {
 

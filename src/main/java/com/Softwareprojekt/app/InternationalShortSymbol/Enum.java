@@ -1,10 +1,11 @@
-package InternationalShortSymbol;
+package com.Softwareprojekt.app.InternationalShortSymbol;
 
 import java.util.AbstractList;
 import java.util.ArrayList;
 
-import interfaces.InvalidSpaceGroupIDException;
-import interfaces.SpaceGroupEnumeration;
+import com.Softwareprojekt.app.interfaces.InvalidSpaceGroupIDException;
+import com.Softwareprojekt.app.interfaces.SpaceGroupEnumeration;
+
 
 public class Enum extends AbstractList<ID> implements SpaceGroupEnumeration<ID> {
 

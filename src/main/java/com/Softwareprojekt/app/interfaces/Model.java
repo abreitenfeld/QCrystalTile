@@ -1,4 +1,4 @@
-package interfaces;
+package com.Softwareprojekt.app.interfaces;
 
 public interface Model {
 	public SpaceGroup getSpaceGroup();

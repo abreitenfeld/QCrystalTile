@@ -1,19 +1,21 @@
-package SpaceGroupTest;
+package com.Softwareprojekt.app.SpaceGroupTest;
 
 import static org.junit.Assert.*;
-import interfaces.Matrix3D;
-import interfaces.Matrix4D;
-import interfaces.Transformation;
-import interfaces.TransformationFactory;
-import interfaces.Vector3D;
 
 import org.la4j.factory.CRSFactory;
 
 import org.junit.Test;
+
+import com.Softwareprojekt.app.SpaceGroup.TransformationFactoryImpl;
+import com.Softwareprojekt.app.SpaceGroup.TransformationImpl;
+import com.Softwareprojekt.app.interfaces.Matrix3D;
+import com.Softwareprojekt.app.interfaces.Matrix4D;
+import com.Softwareprojekt.app.interfaces.Transformation;
+import com.Softwareprojekt.app.interfaces.TransformationFactory;
+import com.Softwareprojekt.app.interfaces.Vector3D;
+
 import java.util.Random;
 
-import SpaceGroup.TransformationImpl;
-import SpaceGroup.TransformationFactoryImpl;
 
 public class TransformationTest {
 	

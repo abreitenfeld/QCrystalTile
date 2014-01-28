@@ -1,4 +1,4 @@
-package interfaces;
+package com.Softwareprojekt.app.interfaces;
 
 
 public interface SpaceGroupFactory<SpaceGroupKey extends SpaceGroupID> {

@@ -1,4 +1,4 @@
-package loader;
+package com.Softwareprojekt.app.loader;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
