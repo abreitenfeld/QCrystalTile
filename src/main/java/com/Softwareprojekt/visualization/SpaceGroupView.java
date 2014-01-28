@@ -335,5 +335,4 @@ public class SpaceGroupView extends FrameAWT implements View {
 		this._settingPanel.invalidateViewOptions();
 		this._selectionPanel.invalidateViewOptions();
 	}
-	
 }

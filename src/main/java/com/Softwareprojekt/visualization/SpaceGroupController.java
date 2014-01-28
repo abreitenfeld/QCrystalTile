@@ -1,10 +1,8 @@
 package com.Softwareprojekt.visualization;
 
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
-import javax.swing.UIManager;
 import com.Softwareprojekt.Utilities.ImmutableMesh;
 
 import com.Softwareprojekt.Utilities.*;
@@ -83,7 +81,7 @@ public class SpaceGroupController implements Controller {
 	
 	/**
 	 * Calculates the mesh according visualization step.
-	 * @param p
+	 * @param
 	 * @return
 	 */
 	@Override
@@ -93,7 +91,6 @@ public class SpaceGroupController implements Controller {
 		// generate points
 		PointList p = new PointList();
 		p.gen_randomPoints(20);
-		
 		// iterate over transformation set
 		/*Iterator<Transformation> iter = this._model.getSpaceGroup().getTransformations().iterator();
 		while(iter.hasNext()) {
