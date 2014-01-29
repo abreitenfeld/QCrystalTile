@@ -13,7 +13,7 @@ public class SpaceGroupController implements Controller {
 
 	private final Model _model;
 	private final View _view;
-	private final EnumSet<ViewOptions> _options = EnumSet.of(ViewOptions.ShowVertices, ViewOptions.ShowWireframe, ViewOptions.ShowFaces);
+	private final EnumSet<ViewOptions> _options = EnumSet.of(ViewOptions.ShowWireframe, ViewOptions.ShowFaces, ViewOptions.showAxeBox);
 	private VisualizationSteps _step = VisualizationSteps.VoronoiTesselation;
 
 	/**

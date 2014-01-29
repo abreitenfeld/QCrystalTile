@@ -33,11 +33,15 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		super();
 		this._controller = controller;
 		
-		this.setLayout(new FlowLayout(FlowLayout.LEFT));
-		this.setPreferredSize(new Dimension(600, 60));
+		this.setLayout(new GridLayout(0,2));
+		this.setPreferredSize(new Dimension(100, 60));
 		this.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
 		this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
-		
+
+        final JPanel leftPanel = new JPanel();
+        leftPanel.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
+        leftPanel.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
+        leftPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
 		// create coord inputs
 		this._inputXCoord = new JTextField();
 		this._inputXCoord.setPreferredSize(Field_Size);
@@ -45,7 +49,11 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		this._inputYCoord.setPreferredSize(Field_Size);
 		this._inputZCoord = new JTextField();
 		this._inputZCoord.setPreferredSize(Field_Size);
-		
+
+        final JPanel rightPanel = new JPanel();
+        rightPanel.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
+        rightPanel.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
+        rightPanel.setLayout(new FlowLayout(FlowLayout.RIGHT));
 		// create the step slider
 		this._stepSlider = new JSlider(JSlider.HORIZONTAL, Slider_Min_Step, Slider_Max_Step, 0);
 		this._stepSlider.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
@@ -61,14 +69,17 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		labels.put(new Integer(1), new JLabel(bundle.getString("tiling")) );
 		this._stepSlider.setLabelTable(labels);
 
-		this.add(new Label("XYZ"));
-		this.add(this._inputXCoord);
-		this.add(this._inputYCoord);
-		this.add(this._inputZCoord);
-		
-		this.add(new Label(bundle.getString("visualizationStep")));
-		this.add(this._stepSlider);
-		
+        leftPanel.add(new Label("XYZ"));
+        leftPanel.add(this._inputXCoord);
+        leftPanel.add(this._inputYCoord);
+        leftPanel.add(this._inputZCoord);
+
+        rightPanel.add(new Label(bundle.getString("visualizationStep")));
+        rightPanel.add(this._stepSlider);
+
+        this.add(leftPanel);
+        this.add(rightPanel);
+
 		this.invalidateViewOptions();
 		
 		// attach listeners

@@ -24,6 +24,7 @@ import org.jzy3d.plot3d.primitives.Point;
 import org.jzy3d.plot3d.primitives.Polygon;
 import org.jzy3d.plot3d.primitives.pickable.PickablePolygon;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
+import org.jzy3d.plot3d.rendering.view.modes.CameraMode;
 import org.jzy3d.plot3d.rendering.view.modes.ViewPositionMode;
 
 public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListener, SpaceGroupViewControllerListener {
@@ -77,7 +78,9 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 	public static final Color Faces_Color = new Color(135, 206, 235, 170);
 	public static final Color Foreground_Color = Color.WHITE;
 	public static final Color Viewport_Background = new Color(105, 105, 105);
+    public static final Color Grid_Color = new Color(192, 192, 192);
 	public static final Rectangle Default_Size = new Rectangle(1024, 768);
+    public static final Dimension Min_Size = new Dimension(500, 450);
 
 	/**
 	 * Constructor of view.
@@ -88,6 +91,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 		this._controller = controller;
         this.setExtendedState(this.getExtendedState() | Frame.MAXIMIZED_BOTH);
 		this.setLayout(new BorderLayout());
+        this.setMinimumSize(Min_Size);
 		this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(Foreground_Color));
 		this._showSpacing = _controller.getViewOption(Controller.ViewOptions.ShowSpacing);
 		this._currentSpacing = this._showSpacing ? Max_Spacing_Factor : Min_Spacing_Factor;
@@ -102,6 +106,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 		this._chart = AWTChartComponentFactory.chart(Quality.Nicest, IChartComponentFactory.Toolkit.awt);
 		this._chart.getView().setBackgroundColor(Viewport_Background);
 		this._chart.getView().setSquared(true);
+        this._chart.getAxeLayout().setMainColor(Grid_Color);
         // setup key and mouse controller
         this._chartController = new SpaceGroupViewChartController(this._chart);
         this._chartController.getPickingSupport().addObjectPickedListener(this);
@@ -348,6 +353,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 
 		this._showSpacing = this._controller.getViewOption(Controller.ViewOptions.ShowSpacing);
 		this.calculateMeshPosition();
+        this._chart.getView().setAxeBoxDisplayed(this._controller.getViewOption(Controller.ViewOptions.showAxeBox));
 
         // invalidate view options of sub controls
         for(View view : this._subViewControls) {

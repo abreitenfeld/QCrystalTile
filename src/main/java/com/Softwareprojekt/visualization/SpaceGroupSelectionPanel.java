@@ -41,8 +41,10 @@ public class SpaceGroupSelectionPanel extends Panel implements View, ActionListe
 			new CenteringTypeListItem(LatticeType.CenteringType.C),
 			new CenteringTypeListItem(LatticeType.CenteringType.F)
 		});
-		
+        this._centeringTypeList.setFocusable(false);
+
 		this._spaceGroupList = new JComboBox<SpaceGroupID>();
+        this._spaceGroupList.setFocusable(false);
 
 		this.add(new Label(bundle.getString("centeringType")));
 		this.add(this._centeringTypeList);
