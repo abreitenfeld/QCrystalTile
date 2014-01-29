@@ -46,9 +46,11 @@ public class SpaceGroupSelectionPanel extends Panel implements View, ActionListe
 
 		this.add(new Label(bundle.getString("centeringType")));
 		this.add(this._centeringTypeList);
-		
+
 		this.add(new Label(bundle.getString("spaceGroup")));
 		this.add(this._spaceGroupList);
+
+        // TODO prepare item lists for spaceGroupList
 
         this._spaceGroupList.addActionListener(this);
         this._centeringTypeList.addActionListener(this);
@@ -59,16 +61,19 @@ public class SpaceGroupSelectionPanel extends Panel implements View, ActionListe
 
 	@Override
 	public void invalidateViewOptions() {
-		//this._spaceGroupList.setSelectedItem(this._controller.getModel().getSpaceGrou;
+		//this._spaceGroupList.setSelectedItem(this._controller.getModel().getSpaceGroup().getID());
 	}
 
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == this._centeringTypeList) {
-
+            final CenteringTypeListItem type = (CenteringTypeListItem) this._centeringTypeList.getSelectedItem();
+            System.out.println(type.getType());
+            // TODO update SpaceGroupList according selected CenteringType
         }
         else if (e.getSource() == this._spaceGroupList) {
-
+            final SpaceGroupID groupID = (SpaceGroupID) this._spaceGroupList.getSelectedItem();
+            this._controller.getModel().setSpaceGroup(groupID);
         }
     }
 }

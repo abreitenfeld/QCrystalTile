@@ -24,6 +24,7 @@ import org.jzy3d.plot3d.primitives.Point;
 import org.jzy3d.plot3d.primitives.Polygon;
 import org.jzy3d.plot3d.primitives.pickable.PickablePolygon;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
+import org.jzy3d.plot3d.rendering.view.modes.ViewPositionMode;
 
 public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListener, SpaceGroupViewControllerListener {
 
@@ -372,7 +373,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
     }
 
     @Override
-    public void actionPerformed(Action action, List<Mesh> meshes) {
+    public void actionPerformed(Action action) {
          if (action == Action.showAll) {
              Iterator<Mesh> iter = this._meshes.keySet().iterator();
              while(iter.hasNext()) {
@@ -388,7 +389,16 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
         }
         else if (action == Action.setMonochromColors) {
              this.setColorProvider(this._monoChromaticColors);
-         }
+        }
+        else if (action == Action.setViewPositionFree) {
+             this._chart.getView().setViewPositionMode(ViewPositionMode.FREE);
+        }
+        else if (action == Action.setViewPositionTop) {
+            this._chart.getView().setViewPositionMode(ViewPositionMode.TOP);
+        }
+        else if (action == Action.setViewPositionProfile) {
+            this._chart.getView().setViewPositionMode(ViewPositionMode.PROFILE);
+        }
     }
 
     @Override

@@ -42,31 +42,62 @@ public class SpaceGroupViewChartController extends AWTCameraMouseController {
         miShowAll.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                raiseControllerAction(SpaceGroupViewControllerListener.Action.showAll, null);
+                raiseControllerAction(SpaceGroupViewControllerListener.Action.showAll);
             }
         });
 
+        // create view menu items
+        final JMenu mnuView = new JMenu(bundle.getString("camera"));
+        final JMenuItem miViewFree = new JMenuItem(bundle.getString("cameraFree"));
+        miViewFree.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                raiseControllerAction(SpaceGroupViewControllerListener.Action.setViewPositionFree);
+            }
+        });
+
+        final JMenuItem miViewTop = new JMenuItem(bundle.getString("cameraTop"));
+        miViewTop.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                raiseControllerAction(SpaceGroupViewControllerListener.Action.setViewPositionTop);
+            }
+        });
+
+        final JMenuItem miViewProfile = new JMenuItem(bundle.getString("cameraProfile"));
+        miViewProfile.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                raiseControllerAction(SpaceGroupViewControllerListener.Action.setViewPositionProfile);
+            }
+        });
+        mnuView.add(miViewFree);
+        mnuView.add(miViewTop);
+        mnuView.add(miViewProfile);
+
+        // crate face tinting menu items
         final JMenu mnuFaceTinting = new JMenu(bundle.getString("faces"));
         final JMenuItem miMonochromColors = new JMenuItem(bundle.getString("monochromaticColors"));
         miMonochromColors.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                raiseControllerAction(SpaceGroupViewControllerListener.Action.setMonochromColors, null);
+                raiseControllerAction(SpaceGroupViewControllerListener.Action.setMonochromColors);
+            }
+        });
+
+        final JMenuItem miChromaticColors = new JMenuItem(bundle.getString("chromaticColors"));
+        miChromaticColors.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                raiseControllerAction(SpaceGroupViewControllerListener.Action.setChromaticColors);
             }
         });
         mnuFaceTinting.add(miMonochromColors);
-
-        final JMenuItem miChromColors = new JMenuItem(bundle.getString("chromaticColors"));
-        miChromColors.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                raiseControllerAction(SpaceGroupViewControllerListener.Action.setChromaticColors, null);
-            }
-        });
-        mnuFaceTinting.add(miChromColors);
+        mnuFaceTinting.add(miChromaticColors);
 
         this._contextMenu.add(miShowAll);
         this._contextMenu.addSeparator();
+        this._contextMenu.add(mnuView);
         this._contextMenu.add(mnuFaceTinting);
     }
 
@@ -87,9 +118,9 @@ public class SpaceGroupViewChartController extends AWTCameraMouseController {
         return this._pickingSupport;
     }
 
-    protected void raiseControllerAction(SpaceGroupViewControllerListener.Action action, List<Mesh> meshes) {
+    protected void raiseControllerAction(SpaceGroupViewControllerListener.Action action) {
         for(SpaceGroupViewControllerListener listener : this._listeners) {
-            listener.actionPerformed(action, meshes);
+            listener.actionPerformed(action);
         }
     }
 

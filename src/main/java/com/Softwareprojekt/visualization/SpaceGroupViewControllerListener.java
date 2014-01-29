@@ -7,8 +7,9 @@ import java.util.List;
 
 public interface SpaceGroupViewControllerListener extends EventListener {
 
-    public enum Action { showAll, hideAll, setMonochromColors, setChromaticColors };
+    public enum Action { showAll, hideAll, setMonochromColors, setChromaticColors, setViewPositionTop,
+    setViewPositionProfile, setViewPositionFree };
 
-    public void actionPerformed(Action action, List<Mesh> meshes);
+    public void actionPerformed(Action action);
 
 }
