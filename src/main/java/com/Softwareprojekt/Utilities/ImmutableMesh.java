@@ -32,7 +32,16 @@ public class ImmutableMesh implements Mesh {
 	public ImmutableMesh(Collection<Vector3D> vertices, Collection<Polygon> polys) {
 		this(new ArrayList<Vector3D>(vertices), new ArrayList<Polygon>(polys));
 	}
-	
+
+    /**
+     * Constructor f a mesh.
+     * @param vertices
+     */
+    public ImmutableMesh(List<Vector3D> vertices) {
+        this._vertices = Collections.unmodifiableList(vertices);
+        this._polygons = Collections.unmodifiableList(new ArrayList<Polygon>(0));
+    }
+
 	/**
 	 * Constructor f a mesh.
 	 * @param vertices

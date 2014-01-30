@@ -91,6 +91,10 @@ public class SpaceGroupController implements Controller {
 		// generate points
 		PointList p = new PointList();
 		p.gen_randomPoints(20);
+
+        //p.add(this.getOriginPoint());
+		
+
 		// iterate over transformation set
 		/*Iterator<Transformation> iter = this._model.getSpaceGroup().getTransformations().iterator();
 		while(iter.hasNext()) {
@@ -100,6 +104,9 @@ public class SpaceGroupController implements Controller {
 		
 		// trigger qhull wrapper according current viz step
 		switch (this.getVisualizationStep()) {
+            case ScatterPlot:
+                mesh.add(ConvertHelper.convertPointListToMesh(p));
+                break;
 		    case ConvexHull:
                 mesh.add(QConvex.call(p));
 		    	break;
