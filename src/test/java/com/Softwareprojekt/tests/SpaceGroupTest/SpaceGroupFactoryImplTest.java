@@ -1,4 +1,4 @@
-package com.Softwareprojekt.app.SpaceGroupTest;
+package com.Softwareprojekt.SpaceGroupTest;
 
 import static org.junit.Assert.*;
 import org.junit.Test;
@@ -11,12 +11,12 @@ import java.util.Set;
 
 import org.json.simple.parser.ParseException;
 
-import com.Softwareprojekt.app.InternationalShortSymbol.ID;
-import com.Softwareprojekt.app.InternationalShortSymbol.SpaceGroupFactoryImpl;
-import com.Softwareprojekt.app.SpaceGroup.SpaceGroupImpl;
-import com.Softwareprojekt.app.interfaces.InvalidSpaceGroupIDException;
-import com.Softwareprojekt.app.interfaces.SpaceGroup;
-import com.Softwareprojekt.app.interfaces.Transformation;
+import com.Softwareprojekt.InternationalShortSymbol.ID;
+import com.Softwareprojekt.InternationalShortSymbol.SpaceGroupFactoryImpl;
+import com.Softwareprojekt.SpaceGroup.SpaceGroupImpl;
+import com.Softwareprojekt.interfaces.InvalidSpaceGroupIDException;
+import com.Softwareprojekt.interfaces.SpaceGroup;
+import com.Softwareprojekt.interfaces.Transformation;
 
 
 public class SpaceGroupFactoryImplTest {

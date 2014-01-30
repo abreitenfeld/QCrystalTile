@@ -1,4 +1,4 @@
-package com.Softwareprojekt.app.SpaceGroupTest;
+package com.Softwareprojekt.SpaceGroupTest;
 
 import static org.junit.Assert.*;
 
@@ -6,13 +6,13 @@ import org.la4j.factory.CRSFactory;
 
 import org.junit.Test;
 
-import com.Softwareprojekt.app.SpaceGroup.TransformationFactoryImpl;
-import com.Softwareprojekt.app.SpaceGroup.TransformationImpl;
-import com.Softwareprojekt.app.interfaces.Matrix3D;
-import com.Softwareprojekt.app.interfaces.Matrix4D;
-import com.Softwareprojekt.app.interfaces.Transformation;
-import com.Softwareprojekt.app.interfaces.TransformationFactory;
-import com.Softwareprojekt.app.interfaces.Vector3D;
+import com.Softwareprojekt.SpaceGroup.TransformationFactoryImpl;
+import com.Softwareprojekt.SpaceGroup.TransformationImpl;
+import com.Softwareprojekt.interfaces.Matrix3D;
+import com.Softwareprojekt.interfaces.Matrix4D;
+import com.Softwareprojekt.interfaces.Transformation;
+import com.Softwareprojekt.interfaces.TransformationFactory;
+import com.Softwareprojekt.interfaces.Vector3D;
 
 import java.util.Random;
 

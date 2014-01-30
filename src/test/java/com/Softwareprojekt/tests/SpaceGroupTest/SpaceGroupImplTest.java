@@ -1,4 +1,4 @@
-package com.Softwareprojekt.app.SpaceGroupTest;
+package com.Softwareprojekt.SpaceGroupTest;
 
 import static org.junit.Assert.*;
 
@@ -8,13 +8,13 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import com.Softwareprojekt.app.SpaceGroup.LatticeTypeImpl;
-import com.Softwareprojekt.app.SpaceGroup.SpaceGroupImpl;
-import com.Softwareprojekt.app.SpaceGroup.TransformationImpl;
-import com.Softwareprojekt.app.interfaces.LatticeType;
-import com.Softwareprojekt.app.interfaces.SpaceGroup;
-import com.Softwareprojekt.app.interfaces.Transformation;
-import com.Softwareprojekt.app.interfaces.Vector3D;
+import com.Softwareprojekt.SpaceGroup.LatticeTypeImpl;
+import com.Softwareprojekt.SpaceGroup.SpaceGroupImpl;
+import com.Softwareprojekt.SpaceGroup.TransformationImpl;
+import com.Softwareprojekt.interfaces.LatticeType;
+import com.Softwareprojekt.interfaces.SpaceGroup;
+import com.Softwareprojekt.interfaces.Transformation;
+import com.Softwareprojekt.interfaces.Vector3D;
 
 
 public class SpaceGroupImplTest {

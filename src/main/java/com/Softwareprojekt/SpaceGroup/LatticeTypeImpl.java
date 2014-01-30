@@ -1,6 +1,6 @@
-package com.Softwareprojekt.app.SpaceGroup;
+package com.Softwareprojekt.SpaceGroup;
 
-import com.Softwareprojekt.app.interfaces.LatticeType;
+import com.Softwareprojekt.interfaces.LatticeType;
 
 public class LatticeTypeImpl implements LatticeType {
 

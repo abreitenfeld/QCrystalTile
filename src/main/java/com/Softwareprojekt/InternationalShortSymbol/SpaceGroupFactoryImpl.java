@@ -1,4 +1,4 @@
-package com.Softwareprojekt.app.InternationalShortSymbol;
+package com.Softwareprojekt.InternationalShortSymbol;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -11,15 +11,15 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.Softwareprojekt.app.SpaceGroup.LatticeTypeImpl;
-import com.Softwareprojekt.app.SpaceGroup.SpaceGroupImpl;
-import com.Softwareprojekt.app.SpaceGroup.TransformationImpl;
-import com.Softwareprojekt.app.interfaces.InvalidSpaceGroupIDException;
-import com.Softwareprojekt.app.interfaces.LatticeType;
-import com.Softwareprojekt.app.interfaces.Matrix4D;
-import com.Softwareprojekt.app.interfaces.SpaceGroup;
-import com.Softwareprojekt.app.interfaces.SpaceGroupFactory;
-import com.Softwareprojekt.app.interfaces.Transformation;
+import com.Softwareprojekt.SpaceGroup.LatticeTypeImpl;
+import com.Softwareprojekt.SpaceGroup.SpaceGroupImpl;
+import com.Softwareprojekt.SpaceGroup.TransformationImpl;
+import com.Softwareprojekt.interfaces.InvalidSpaceGroupIDException;
+import com.Softwareprojekt.interfaces.LatticeType;
+import com.Softwareprojekt.interfaces.Matrix4D;
+import com.Softwareprojekt.interfaces.SpaceGroup;
+import com.Softwareprojekt.interfaces.SpaceGroupFactory;
+import com.Softwareprojekt.interfaces.Transformation;
 
 
 

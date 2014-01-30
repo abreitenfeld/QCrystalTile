@@ -1,8 +1,8 @@
-package com.Softwareprojekt.app.InternationalShortSymbol;
+package com.Softwareprojekt.InternationalShortSymbol;
 
 
-import com.Softwareprojekt.app.interfaces.InvalidSpaceGroupIDException;
-import com.Softwareprojekt.app.interfaces.SpaceGroupID;
+import com.Softwareprojekt.interfaces.InvalidSpaceGroupIDException;
+import com.Softwareprojekt.interfaces.SpaceGroupID;
 
 /* this is just a wrapper class for String, to make it incompatible with an other spacegroupID */
 public class ID implements SpaceGroupID {
