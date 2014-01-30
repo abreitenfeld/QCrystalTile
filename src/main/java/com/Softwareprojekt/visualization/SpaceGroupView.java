@@ -27,8 +27,11 @@ import org.jzy3d.plot3d.rendering.canvas.Quality;
 import org.jzy3d.plot3d.rendering.view.modes.CameraMode;
 import org.jzy3d.plot3d.rendering.view.modes.ViewPositionMode;
 
+import javax.swing.*;
+
 public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListener, SpaceGroupViewControllerListener {
 
+    // interna
 	protected final Controller _controller;
     protected final Chart _chart;
     protected final View[] _subViewControls;
@@ -280,6 +283,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 		final boolean showWireframe = this._controller.getViewOption(Controller.ViewOptions.ShowWireframe);
 
         this.clearScene();
+        this.invalidateViewOptions();
 
         final List<AbstractDrawable> drawables = new LinkedList<AbstractDrawable>();
 	    final List<Mesh> meshes = this._controller.calculateMesh();
@@ -430,8 +434,6 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
         // make selected mesh invisible
         if (selectedMesh != null) {
             this.setMeshDisplayed(selectedMesh, false);
-            //MeshInformation info = this._meshes.get(selectedMesh);
-            //this._chart.setViewPoint(info.Centroid);
         }
     }
 }

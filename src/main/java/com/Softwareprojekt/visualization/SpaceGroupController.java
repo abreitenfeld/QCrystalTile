@@ -1,8 +1,11 @@
 package com.Softwareprojekt.visualization;
 
 import java.util.EnumSet;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
+
+import com.Softwareprojekt.InternationalShortSymbol.SpaceGroupFactoryImpl;
 import com.Softwareprojekt.Utilities.ImmutableMesh;
 
 import com.Softwareprojekt.Utilities.*;
@@ -32,7 +35,6 @@ public class SpaceGroupController implements Controller {
 		this._model = model;
 		this._view = new SpaceGroupView(this);
 		this._view.invalidateView();
-		this._view.invalidateViewOptions();
 	}
 	
 	@Override
@@ -56,8 +58,31 @@ public class SpaceGroupController implements Controller {
 		this._model.setPoint(point);
 		this._view.invalidateView();
 	}
-	
-	/**
+
+    @Override
+    public void setSpaceGroup(SpaceGroup spaceGroup) {
+        this._model.setSpaceGroup(spaceGroup);
+        this._view.invalidateView();
+    }
+
+    @Override
+    public void setSpaceGroup(SpaceGroupID id) {
+        try {
+            final SpaceGroupFactory factory = new SpaceGroupFactoryImpl();
+            this._model.setSpaceGroup(factory.createSpaceGroup(id));
+            this._view.invalidateView();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public SpaceGroup getSpaceGroup() {
+        return this._model.getSpaceGroup();
+    }
+
+    /**
 	 * Returns true if the specified view option is turned on otherwise false..
 	 */
 	public boolean getViewOption(ViewOptions option) { return this._options.contains(option); }
@@ -90,8 +115,8 @@ public class SpaceGroupController implements Controller {
         Mesh qMesh;
 		// generate points
 		PointList p = new PointList();
-		p.gen_randomPoints(20);
 
+        p.gen_randomPoints(20);
         //p.add(this.getOriginPoint());
 		
 
@@ -100,7 +125,7 @@ public class SpaceGroupController implements Controller {
 		while(iter.hasNext()) {
 			Transformation transform = iter.next();
 			p.add(transform.apply(this._model.getPoint()));
-		}*/
+		} */
 		
 		// trigger qhull wrapper according current viz step
 		switch (this.getVisualizationStep()) {

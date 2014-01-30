@@ -4,7 +4,7 @@ import java.util.ResourceBundle;
 
 import com.Softwareprojekt.interfaces.LatticeType;
 
-public class CenteringTypeListItem {
+public class CenteringTypeListItem implements Comparable<CenteringTypeListItem> {
 
 	private final LatticeType.CenteringType _type;
 	private static final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
@@ -20,13 +20,22 @@ public class CenteringTypeListItem {
 
 	@Override
 	public String toString() {
-		switch(this._type) {
-			case C: return String.format(String_Pattern, bundle.getString("singleFaceCentred"), this._type.toString());
-			case F: return String.format(String_Pattern, bundle.getString("allFaceCentred"), this._type.toString());
-			case I: return String.format(String_Pattern, bundle.getString("bodyCentred"), this._type.toString());
-			case P: return String.format(String_Pattern, bundle.getString("primitive"), this._type.toString());
-			default: return this._type.toString();
-		}
+        if (this._type != null) {
+            switch(this._type) {
+                case C: return String.format(String_Pattern, bundle.getString("singleFaceCentred"), this._type.toString());
+                case F: return String.format(String_Pattern, bundle.getString("allFaceCentred"), this._type.toString());
+                case I: return String.format(String_Pattern, bundle.getString("bodyCentred"), this._type.toString());
+                case P: return String.format(String_Pattern, bundle.getString("primitive"), this._type.toString());
+                default: return this._type.toString();
+            }
+        }
+        else {
+            return "";
+        }
 	}
-	
+
+    @Override
+    public int compareTo(CenteringTypeListItem o) {
+        return this.toString().compareTo(o.toString());
+    }
 }

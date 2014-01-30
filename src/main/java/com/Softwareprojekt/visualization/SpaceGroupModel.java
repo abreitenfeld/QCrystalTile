@@ -1,9 +1,8 @@
 package com.Softwareprojekt.visualization;
 
-import com.Softwareprojekt.interfaces.Model;
-import com.Softwareprojekt.interfaces.SpaceGroup;
-import com.Softwareprojekt.interfaces.SpaceGroupID;
-import com.Softwareprojekt.interfaces.Vector3D;
+import com.Softwareprojekt.InternationalShortSymbol.ID;
+import com.Softwareprojekt.InternationalShortSymbol.SpaceGroupFactoryImpl;
+import com.Softwareprojekt.interfaces.*;
 
 public class SpaceGroupModel implements Model {
 
@@ -15,6 +14,13 @@ public class SpaceGroupModel implements Model {
 	 */
 	SpaceGroupModel() {
 		super();
+        /*try {
+            final SpaceGroupFactory factory = new SpaceGroupFactoryImpl();
+            this._currentGroup = factory.createSpaceGroup(new ID("I4(1)32"));
+        }
+        catch(Exception e) {
+            e.printStackTrace();
+        }*/
 	}
 	
 	@Override
@@ -23,8 +29,8 @@ public class SpaceGroupModel implements Model {
 	}
 	
 	@Override
-	public void setSpaceGroup(SpaceGroupID id) {
-		// TODO instantiate space group here
+	public void setSpaceGroup(SpaceGroup spaceGroup) {
+		this._currentGroup = spaceGroup;
 	}
 
 	@Override
