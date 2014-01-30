@@ -13,7 +13,11 @@ public class CenteringTypeListItem {
 	public CenteringTypeListItem(LatticeType.CenteringType type) {
 		this._type = type;
 	}
-	
+
+    public LatticeType.CenteringType getType() {
+        return this._type;
+    }
+
 	@Override
 	public String toString() {
 		switch(this._type) {
