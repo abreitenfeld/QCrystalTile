@@ -48,6 +48,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
     protected ColorProvider _currentColorProvider;
     protected final ColorProvider _monoChromaticColors;
     protected final ColorProvider _chromaticColors;
+    protected final ColorProvider _faceColors;
 
     protected class MeshInformation {
 
@@ -124,6 +125,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
         // setup color providers
         this._monoChromaticColors = new MonochromaticColorProvider(Faces_Color);
         this._chromaticColors = new ChromaticColorProvider();
+        this._faceColors =new FaceColorProvider();
         this._currentColorProvider = this._monoChromaticColors;
 
 		// add components
@@ -408,6 +410,8 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
         }
         else if (action == Action.setViewPositionProfile) {
             this._chart.getView().setViewPositionMode(ViewPositionMode.PROFILE);
+        }else if (action == Action.setFaceColors) {
+             this.setColorProvider(this._faceColors);
         }
     }
 

@@ -92,8 +92,16 @@ public class SpaceGroupViewChartController extends AWTCameraMouseController {
                 raiseControllerAction(SpaceGroupViewControllerListener.Action.setChromaticColors);
             }
         });
+        final JMenuItem miFaceColors = new JMenuItem(bundle.getString("faceColors"));
+        miFaceColors.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                raiseControllerAction(SpaceGroupViewControllerListener.Action.setFaceColors);
+            }
+        });
         mnuFaceTinting.add(miMonochromColors);
         mnuFaceTinting.add(miChromaticColors);
+        mnuFaceTinting.add(miFaceColors);
 
         this._contextMenu.add(miShowAll);
         this._contextMenu.addSeparator();
