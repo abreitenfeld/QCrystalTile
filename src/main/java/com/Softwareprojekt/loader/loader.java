@@ -22,14 +22,13 @@ public class loader {
 		BufferedReader br;
 		LinkedList <String> lines=new LinkedList<String>();
 		try {
-			br = new BufferedReader(new FileReader("src/loader/SpaceGroupTable.txt"));
+			br = new BufferedReader(new FileReader("src/main/resources/SpaceGroupTable.txt"));
 			String str;		
 			int linenum=0;
 			while((str=br.readLine())!=null){
 				linenum++;
 				lines.add(clean(str));
 			}
-			System.out.println("lines: "+linenum);
 			for (int i=0;i< 245;i++){lines.removeFirst();}
 			for(int j=0;j<lines.size();j++){
 				if (lines.get(j).length()>30&&(lines.get(j).substring(0, 30).equals(" Number of Symmetry Operators "))){
@@ -52,7 +51,7 @@ public class loader {
 					list.add(obj);
 				}
 			}
-			FileWriter file = new FileWriter("src/loader/SpaceGroups.txt");
+			FileWriter file = new FileWriter("src/main/resources/SpaceGroups.txt");
 			file.write(list.toJSONString());
 			file.flush();
 			file.close();

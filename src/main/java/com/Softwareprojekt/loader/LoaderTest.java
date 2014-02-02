@@ -1,4 +1,4 @@
-package com.Softwareprojekt.app.loader;
+package com.Softwareprojekt.loader;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -19,7 +19,7 @@ public class LoaderTest {
 	 */
 	public static void main(String[] args) throws FileNotFoundException, IOException, ParseException {
 		JSONParser parser=new JSONParser();
-		JSONArray spacegroups  = (JSONArray) parser.parse(new FileReader("src/loader/SpaceGroups.txt"));
+		JSONArray spacegroups  = (JSONArray) parser.parse(new FileReader("src/main/resources/SpaceGroups.txt"));
 		for (int i=0;i<spacegroups.size();i++){
 			   JSONObject elem=(JSONObject)spacegroups.get(i);
 			   String name = (String)elem.get("SpaceGroupName");
@@ -32,7 +32,6 @@ public class LoaderTest {
 					   j++;
 					   System.out.println(x);
 				   }
-				   System.out.println("Anzahl Transformationen: "+j);
 			   }
 		}
 	}

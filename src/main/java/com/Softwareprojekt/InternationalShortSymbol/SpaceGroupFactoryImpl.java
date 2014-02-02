@@ -30,7 +30,7 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
 
 	public SpaceGroupFactoryImpl() throws FileNotFoundException, IOException, ParseException {
 		parser=new JSONParser();
-		spacegroups  = (JSONArray) parser.parse(new FileReader("src/loader/SpaceGroups.txt"));
+		spacegroups  = (JSONArray) parser.parse(new FileReader("src/main/resources/SpaceGroups.txt"));
 		return;
 	}
 	
@@ -100,9 +100,7 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
 		int j=0;
 		boolean negative=false;
 		while(i<line.length()){
-			System.out.println("check start: "+line.substring(i,i+1));
 			if (line.substring(i,i+1).matches("[+,-]")){
-				System.out.println("False");
 				if (line.charAt(i)=='-'){
 					++i;
 					if(line.substring(i,i+1).matches("[X,Y,Z]")){
@@ -121,13 +119,11 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
 				}
 			}
 			else if (line.substring(i,i+1).matches("[0-9]")){
-				System.out.println("Zahl");
 				j=i+1;
 				while(line.charAt(j)!='/'){
 					j=j+1;
 				}
 				double zaehler=Double.valueOf(line.substring(i,j));
-				System.out.println("Slash gefunden");
 				j=j+1;
 				int k=j;
 				while(line.substring(k,k+1).matches("[0-9]")){
@@ -135,10 +131,8 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
 				}
 				double nenner=Double.valueOf(line.substring(j,k));
 				
-				System.out.println("End of number");
 				if (negative==false){
 					ret[3]=zaehler/nenner;
-					System.out.println(ret[3]);
 				}else{
 					ret[3]=Double.parseDouble("-"+line.substring(i,j));
 					negative=false;
@@ -146,10 +140,8 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
 				i=k;
 			}
 			else if(line.substring(i,i+1).matches("[X,Y,Z]")){
-				System.out.println("xcheck");
 				ret[getPos(line.charAt(i))]=1;
 				++i;
-				System.out.println("xfin");
 			}
 		}
 		
