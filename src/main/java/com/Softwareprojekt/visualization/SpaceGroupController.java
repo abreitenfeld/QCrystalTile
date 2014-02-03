@@ -15,7 +15,8 @@ public class SpaceGroupController implements Controller {
 
 	private final Model _model;
 	private final View _view;
-	private final EnumSet<ViewOptions> _options = EnumSet.of(ViewOptions.ShowWireframe, ViewOptions.ShowFaces, ViewOptions.showAxeBox);
+	private final EnumSet<ViewOptions> _options = EnumSet.of(ViewOptions.ShowWireframe, ViewOptions.ShowFaces
+            , ViewOptions.showAxeBox);
 	private VisualizationSteps _step = VisualizationSteps.VoronoiTesselation;
 
 	/**
@@ -118,14 +119,13 @@ public class SpaceGroupController implements Controller {
 
         p.gen_randomPoints(20);
         //p.add(this.getOriginPoint());
-		
 
 		// iterate over transformation set
 		/*Iterator<Transformation> iter = this._model.getSpaceGroup().getTransformations().iterator();
 		while(iter.hasNext()) {
 			Transformation transform = iter.next();
 			p.add(transform.apply(this._model.getPoint()));
-		} */
+		}*/
 		
 		// trigger qhull wrapper according current viz step
 		switch (this.getVisualizationStep()) {

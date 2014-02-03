@@ -14,13 +14,13 @@ public class SpaceGroupModel implements Model {
 	 */
 	SpaceGroupModel() {
 		super();
-        /*try {
+        try {
             final SpaceGroupFactory factory = new SpaceGroupFactoryImpl();
             this._currentGroup = factory.createSpaceGroup(new ID("I4(1)32"));
         }
         catch(Exception e) {
             e.printStackTrace();
-        }*/
+        }
 	}
 	
 	@Override

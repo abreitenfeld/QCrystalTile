@@ -22,6 +22,6 @@ public interface Controller {
 
 	List<Mesh> calculateMesh();
 	
-	public enum ViewOptions { ShowVertices, ShowWireframe, ShowFaces, ShowSpacing, showAxeBox };
+	public enum ViewOptions { ShowVertices, ShowWireframe, ShowFaces, ShowSpacing, showAxeBox, ShowLabeledMeshes };
 	public enum VisualizationSteps { ScatterPlot, ConvexHull, DelaunayTriangulation, VoronoiTesselation };
 }

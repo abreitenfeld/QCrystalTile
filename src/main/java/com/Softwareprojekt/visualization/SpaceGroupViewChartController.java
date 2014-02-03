@@ -1,10 +1,8 @@
 package com.Softwareprojekt.visualization;
 
 import com.Softwareprojekt.Utilities.ExtendedPickingSupport;
-import com.Softwareprojekt.interfaces.Mesh;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.controllers.mouse.camera.AWTCameraMouseController;
-import org.jzy3d.maths.Coord3d;
 import org.jzy3d.maths.IntegerCoord2d;
 import org.jzy3d.plot3d.rendering.scene.Graph;
 import org.jzy3d.plot3d.rendering.view.modes.ViewPositionMode;
@@ -26,7 +24,6 @@ public class SpaceGroupViewChartController extends AWTCameraMouseController {
     protected final Chart _chart;
     protected final GLU glu = new GLU();
     protected final JPopupMenu _contextMenu;
-    protected final List<SpaceGroupViewControllerListener> _listeners = new LinkedList<SpaceGroupViewControllerListener>();
 
     protected final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
 
@@ -38,13 +35,6 @@ public class SpaceGroupViewChartController extends AWTCameraMouseController {
         this._pickingSupport = new ExtendedPickingSupport();
 
         this._contextMenu = new JPopupMenu();
-        final JMenuItem miShowAll = new JMenuItem(bundle.getString("showAll"));
-        miShowAll.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                raiseControllerAction(SpaceGroupViewControllerListener.Action.showAll);
-            }
-        });
 
         // create view menu items
         final JMenu mnuView = new JMenu(bundle.getString("camera"));
@@ -52,7 +42,7 @@ public class SpaceGroupViewChartController extends AWTCameraMouseController {
         miViewFree.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                raiseControllerAction(SpaceGroupViewControllerListener.Action.setViewPositionFree);
+                _chart.getView().setViewPositionMode(ViewPositionMode.FREE);
             }
         });
 
@@ -60,7 +50,7 @@ public class SpaceGroupViewChartController extends AWTCameraMouseController {
         miViewTop.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                raiseControllerAction(SpaceGroupViewControllerListener.Action.setViewPositionTop);
+                _chart.getView().setViewPositionMode(ViewPositionMode.TOP);
             }
         });
 
@@ -68,45 +58,17 @@ public class SpaceGroupViewChartController extends AWTCameraMouseController {
         miViewProfile.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                raiseControllerAction(SpaceGroupViewControllerListener.Action.setViewPositionProfile);
+                _chart.getView().setViewPositionMode(ViewPositionMode.PROFILE);
             }
         });
         mnuView.add(miViewFree);
         mnuView.add(miViewTop);
         mnuView.add(miViewProfile);
-
-        // crate face tinting menu items
-        final JMenu mnuFaceTinting = new JMenu(bundle.getString("faces"));
-        final JMenuItem miMonochromColors = new JMenuItem(bundle.getString("monochromaticColors"));
-        miMonochromColors.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                raiseControllerAction(SpaceGroupViewControllerListener.Action.setMonochromColors);
-            }
-        });
-
-        final JMenuItem miChromaticColors = new JMenuItem(bundle.getString("chromaticColors"));
-        miChromaticColors.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                raiseControllerAction(SpaceGroupViewControllerListener.Action.setChromaticColors);
-            }
-        });
-        final JMenuItem miFaceColors = new JMenuItem(bundle.getString("faceColors"));
-        miFaceColors.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                raiseControllerAction(SpaceGroupViewControllerListener.Action.setFaceColors);
-            }
-        });
-        mnuFaceTinting.add(miMonochromColors);
-        mnuFaceTinting.add(miChromaticColors);
-        mnuFaceTinting.add(miFaceColors);
-
-        this._contextMenu.add(miShowAll);
-        this._contextMenu.addSeparator();
         this._contextMenu.add(mnuView);
-        this._contextMenu.add(mnuFaceTinting);
+    }
+
+    public JPopupMenu getPopupMenu() {
+        return this._contextMenu;
     }
 
     @Override
@@ -114,22 +76,8 @@ public class SpaceGroupViewChartController extends AWTCameraMouseController {
         //super.mouseWheelMoved(e);
     }
 
-    public void addControllerListener(SpaceGroupViewControllerListener listener) {
-        this._listeners.add(listener);
-    }
-
-    public void removeControllerListener(SpaceGroupViewControllerListener listener) {
-        this._listeners.remove(listener);
-    }
-
     public ExtendedPickingSupport getPickingSupport() {
         return this._pickingSupport;
-    }
-
-    protected void raiseControllerAction(SpaceGroupViewControllerListener.Action action) {
-        for(SpaceGroupViewControllerListener listener : this._listeners) {
-            listener.actionPerformed(action);
-        }
     }
 
     @Override

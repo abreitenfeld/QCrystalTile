@@ -16,6 +16,7 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 	private final JToggleButton _btnWireframe;
 	private final JToggleButton _btnFace;
 	private final JToggleButton _btnSpacing;
+    private final JToggleButton _btnLabeling;
 	private final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
 	private static final Dimension BUTTON_SIZE = new Dimension(40, 40);
 	private static final Color Selected_Color = Color.green;
@@ -36,6 +37,11 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 		styleButton(_btnVertices);
 		this.add(_btnVertices);
 
+        _btnLabeling = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("mesh_labels.png")));
+        _btnLabeling.setToolTipText(bundle.getString("showLabeling"));
+        styleButton(_btnLabeling);
+        this.add(_btnLabeling);
+
 		_btnWireframe = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("poly_wire.png")));
 		_btnWireframe.setToolTipText(bundle.getString("showWireframe"));
 		styleButton(_btnWireframe);
@@ -55,6 +61,7 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 		
 		// attach action listener
 		this._btnVertices.addActionListener(this);
+        this._btnLabeling.addActionListener(this);
 		this._btnWireframe.addActionListener(this);
 		this._btnFace.addActionListener(this);
 		this._btnSpacing.addActionListener(this);
@@ -70,6 +77,9 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 		if (e.getSource() == _btnVertices) {
 			this._controller.setViewOption(Controller.ViewOptions.ShowVertices, _btnVertices.isSelected());
 		}
+        else if (e.getSource() == _btnLabeling) {
+            this._controller.setViewOption(Controller.ViewOptions.ShowLabeledMeshes, _btnLabeling.isSelected());
+        }
 		else if (e.getSource() == _btnFace) {
 			this._controller.setViewOption(Controller.ViewOptions.ShowFaces, _btnFace.isSelected());
 		}
@@ -89,6 +99,7 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 	@Override
 	public void invalidateViewOptions() {
 		this._btnVertices.setSelected(this._controller.getViewOption(Controller.ViewOptions.ShowVertices));
+        this._btnLabeling.setSelected(this._controller.getViewOption(Controller.ViewOptions.ShowLabeledMeshes));
 		this._btnWireframe.setSelected(this._controller.getViewOption(Controller.ViewOptions.ShowWireframe));
 		this._btnFace.setSelected(this._controller.getViewOption(Controller.ViewOptions.ShowFaces));
 		this._btnSpacing.setSelected(this._controller.getViewOption(Controller.ViewOptions.ShowSpacing));

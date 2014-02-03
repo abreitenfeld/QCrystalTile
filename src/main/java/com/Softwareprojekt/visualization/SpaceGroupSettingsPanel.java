@@ -14,11 +14,12 @@ import javax.swing.*;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, View, KeyListener {
+public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, View, KeyListener, ActionListener {
 
 	private final Controller _controller;
 	private final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
 	private final JSlider _stepSlider;
+    private final JButton _btnCalculate;
 	private final JTextField _inputXCoord;
 	private final JTextField _inputYCoord;
 	private final JTextField _inputZCoord;
@@ -50,6 +51,9 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		this._inputZCoord = new JTextField();
 		this._inputZCoord.setPreferredSize(Field_Size);
 
+        this._btnCalculate = new JButton(bundle.getString("calculate"));
+        this._btnCalculate.setEnabled(false);
+
         final JPanel rightPanel = new JPanel();
         rightPanel.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
         rightPanel.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
@@ -73,6 +77,7 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
         leftPanel.add(this._inputXCoord);
         leftPanel.add(this._inputYCoord);
         leftPanel.add(this._inputZCoord);
+        leftPanel.add(this._btnCalculate);
 
         rightPanel.add(new Label(bundle.getString("visualizationStep")));
         rightPanel.add(this._stepSlider);
@@ -87,6 +92,7 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		this._inputYCoord.addKeyListener(this);
 		this._inputZCoord.addKeyListener(this);
 		this._stepSlider.addChangeListener(this);
+        this._btnCalculate.addActionListener(this);
 	}
 	
 	@Override
@@ -148,9 +154,12 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 
 	@Override
 	public void keyReleased(KeyEvent e) {
-		if (Character.isDigit(e.getKeyChar())) {
-			this.applyPoint();
-		}
+        this._btnCalculate.setEnabled(true);
 	}
 
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        this._btnCalculate.setEnabled(false);
+        this.applyPoint();
+    }
 }
