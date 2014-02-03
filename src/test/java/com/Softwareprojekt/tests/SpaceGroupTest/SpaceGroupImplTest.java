@@ -1,4 +1,4 @@
-package com.Softwareprojekt.SpaceGroupTest;
+package com.Softwareprojekt.tests.SpaceGroupTest;
 
 import static org.junit.Assert.*;
 
