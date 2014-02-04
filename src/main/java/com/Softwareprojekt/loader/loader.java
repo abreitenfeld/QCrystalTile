@@ -39,7 +39,6 @@ public class loader {
 						j++;
 					}
 					String[] symline=lines.get(j).split("=");
-
 					String transformations="";
 					j++;
 					while(symline[0].equals(" symmetry")){
@@ -47,6 +46,7 @@ public class loader {
 						symline=lines.get(j).split("=");
 						j++;
 					}
+					
 					obj.put("Transformations", transformations);
 					list.add(obj);
 				}

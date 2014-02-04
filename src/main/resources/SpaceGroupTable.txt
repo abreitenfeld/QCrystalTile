@@ -977,7 +977,7 @@
 <li> symmetry= X,Y,Z </li>
 <li> symmetry= -X,-Y,Z </li>
 <li> symmetry= 1/4+X,1/4-Y,1/4+Z </li>
-<li> symmetry= 1/4-X,1/4+Y,1/4+Z </li> {*!!*}
+<li> symmetry= 1/4-X,1/4+Y,1/4+Z </li>
 <li> symmetry= X,1/2+Y,1/2+Z </li>
 <li> symmetry= -X,1/2-Y,1/2+Z </li>
 <li> symmetry= 1/4+X,3/4-Y,3/4+Z </li>
@@ -1921,7 +1921,7 @@
 <h2><a name="86">86   P4(2)/n </a></h2>
 <li> Number of Symmetry Operators =  8  </li>
 <li> Space Group Name =  P4(2)/n  </li>
-<li> Crystal System =  TETRAGOANL  </li>
+<li> Crystal System =  TETRAGONAL  </li>
 <li> Laue Class =  4/m  </li>
 <li> Point Group =  4/m  </li>
 <li> Patterson Space Group # = <a href="http://homepage.univie.ac.at/nikos.pinotsis/spacegroup.html#83">83</a>
@@ -2551,9 +2551,9 @@
 </li><li> Lattice Type =  P  </li>
 <li> symmetry= X,Y,Z </li>
 <li> symmetry= -X,-Y,Z </li>
-<li> symmetry= Y,-X,-Z </li> {**}
-<li> symmetry= -Y,X,-Z </li> {**}
-<li> symmetry= X,-Y,Z </li>  {**}
+<li> symmetry= Y,-X,-Z </li>
+<li> symmetry= -Y,X,-Z </li>
+<li> symmetry= X,-Y,Z </li>
 <li> symmetry= -X,Y,Z </li>
 <li> symmetry= Y,X,-Z </li>
 <li> symmetry= -Y,-X,-Z </li>
@@ -2658,7 +2658,7 @@
 <li> symmetry= -Y,X,-Z </li>
 <li> symmetry= X,-Y,1/2+Z </li>
 <li> symmetry= -X,Y,1/2+Z </li>
-<li> symmetry= Y,X,1/2-Z </li>  {***}
+<li> symmetry= Y,X,1/2-Z </li>
 <li> symmetry= -Y,-X,1/2-Z </li>
 <li> symmetry= X+1/2,Y+1/2,Z+1/2 </li>
 <li> symmetry= -X+1/2,-Y+1/2,Z+1/2 </li>
@@ -2666,7 +2666,7 @@
 <li> symmetry= -Y+1/2,X+1/2,-Z+1/2 </li>
 <li> symmetry= X+1/2,-Y+1/2,Z </li>
 <li> symmetry= -X+1/2,Y+1/2,Z </li>
-<li> symmetry= Y+1/2,X+1/2,-Z </li>  {***}
+<li> symmetry= Y+1/2,X+1/2,-Z </li>
 <li> symmetry= -Y+1/2,-X+1/2,-Z </li>
 <li> asymm=  0&lt;=x&lt;=1/2
      and  0&lt;=y&lt;=1/2
@@ -3692,7 +3692,7 @@
 <li> symmetry= 2/3+Y-X,1/3+Y,1/3+Z </li>
 <li> symmetry= 2/3+X,1/3+X-Y,1/3+Z </li>
 <li> symmetry= 1/3+X,2/3+Y,2/3+Z </li>
-<li> symmetry= 1/3-Y,2/3+X-Y,2/3+Z </li>   {***}
+<li> symmetry= 1/3-Y,2/3+X-Y,2/3+Z </li>
 <li> symmetry= 1/3+Y-X,2/3-X,2/3+Z </li>
 <li> symmetry= 1/3-Y,2/3-X,2/3+Z </li>
 <li> symmetry= 1/3+Y-X,2/3+Y,2/3+Z </li>
@@ -3867,7 +3867,7 @@
 <li> symmetry= 2/3+X,1/3+X-Y,1/3+Z </li>
 <li> symmetry= 1/3+X,2/3+Y,2/3+Z </li>
 <li> symmetry= 1/3-Y,2/3+X-Y,2/3+Z </li>
-<li> symmetry= 1/3+Y-X,2/3-X,2/3+Z </li>  {***}
+<li> symmetry= 1/3+Y-X,2/3-X,2/3+Z </li>
 <li> symmetry= 1/3+Y,2/3+X,2/3-Z </li>
 <li> symmetry= 1/3+X-Y,2/3-Y,2/3-Z </li>
 <li> symmetry= 1/3-X,2/3+Y-X,2/3-Z </li>
@@ -5383,7 +5383,7 @@
 <li> symmetry= 1/2+Z,Y,1/2-X </li>
 <li> symmetry= 1/2+Z,-Y,1/2+X </li>
 <li> symmetry= 1/2-Z,Y,1/2+X </li>
-<li> symmetry= 1/2-Z,-Y,1/2-X </li>    {****}
+<li> symmetry= 1/2-Z,-Y,1/2-X </li>
 <li> symmetry= 1/2+X,1/2+Y,Z </li>
 <li> symmetry= 1/2-X,1/2-Y,Z </li>
 <li> symmetry= 1/2-X,1/2+Y,-Z </li>
@@ -5966,7 +5966,7 @@
 <li> Point Group =  -43m  </li>
 <li> Patterson Space Group # = <a href="http://homepage.univie.ac.at/nikos.pinotsis/spacegroup.html#225">225</a>
 </li><li> Lattice Type =  F  </li>
-<li> symmetry= X,Y,Z </li>   {***}
+<li> symmetry= X,Y,Z </li>
 <li> symmetry= -X,-Y,Z </li>
 <li> symmetry= -X,Y,-Z </li>
 <li> symmetry= X,-Y,-Z </li>
@@ -5990,8 +5990,7 @@
 <li> symmetry= 1/2+Z,1/2-Y,1/2-X </li>
 <li> symmetry= 1/2-Z,1/2+Y,1/2-X </li>
 <li> symmetry= 1/2-Z,1/2-Y,1/2+X </li>
-
-<li> symmetry= X,Y+1/2,Z+1/2 </li>   {***}
+<li> symmetry= X,Y+1/2,Z+1/2 </li>
 <li> symmetry= -X,-Y+1/2,Z+1/2 </li>
 <li> symmetry= -X,Y+1/2,-Z+1/2 </li>
 <li> symmetry= X,-Y+1/2,-Z+1/2 </li>
@@ -6016,7 +6015,7 @@
 <li> symmetry= 1/2-Z,+Y,-X </li>
 <li> symmetry= 1/2-Z,-Y,X </li>
 
-<li> symmetry= X+1/2,Y,Z+1/2 </li>   {***}
+<li> symmetry= X+1/2,Y,Z+1/2 </li>
 <li> symmetry= -X+1/2,-Y,Z+1/2 </li>
 <li> symmetry= -X+1/2,Y,-Z+1/2 </li>
 <li> symmetry= X+1/2,-Y,-Z+1/2 </li>
@@ -6041,7 +6040,7 @@
 <li> symmetry= -Z,1/2+Y,-X </li>
 <li> symmetry= -Z,1/2-Y,X </li>
 
-<li> symmetry= X+1/2,Y+1/2,Z </li>   {***}
+<li> symmetry= X+1/2,Y+1/2,Z </li>
 <li> symmetry= -X+1/2,-Y+1/2,Z </li>
 <li> symmetry= -X+1/2,Y+1/2,-Z </li>
 <li> symmetry= X+1/2,-Y+1/2,-Z </li>
@@ -6078,7 +6077,7 @@
 <li> Point Group =  -43m  </li>
 <li> Patterson Space Group # = <a href="http://homepage.univie.ac.at/nikos.pinotsis/spacegroup.html#229">229</a>
 </li><li> Lattice Type =  I  </li>
-<li> symmetry= X,Y,Z </li>                  {***}
+<li> symmetry= X,Y,Z </li>
 <li> symmetry= 1/2-X,-Y,1/2+Z </li>
 <li> symmetry= -X,1/2+Y,1/2-Z </li>
 <li> symmetry= 1/2+X,1/2-Y,-Z </li>
@@ -6103,7 +6102,7 @@
 <li> symmetry= 3/4-Z,3/4+Y,1/4-X </li>
 <li> symmetry= 1/4-Z,3/4-Y,3/4+X </li>
 
-<li> symmetry= X+1/2,Y+1/2,Z+1/2 </li>                  {***}
+<li> symmetry= X+1/2,Y+1/2,Z+1/2 </li>
 <li> symmetry= -X,-Y+1/2,Z </li>
 <li> symmetry= -X+1/2,Y,-Z </li>
 <li> symmetry= X,-Y,-Z+1/2 </li>
