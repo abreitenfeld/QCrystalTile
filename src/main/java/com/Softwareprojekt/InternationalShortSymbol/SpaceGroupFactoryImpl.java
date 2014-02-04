@@ -56,7 +56,6 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
 			}
 		LatticeType lattice= new LatticeTypeImpl(LatticeType.CenteringType.valueOf((String)spgelem.get("LatticeType")),LatticeType.System.valueOf((String)spgelem.get("CrystalSystem")));;
 		SpaceGroup ret= new SpaceGroupImpl(lattice,transformations);
-		System.out.println("return");
 		return ret;
 }
 
@@ -76,7 +75,6 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
 						transform(xyz[2]),
 						{0,0,0,0}
 				}));
-		System.out.println("return");
 		return tMatr;
 		}
 
@@ -96,13 +94,11 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
 	
 	//wandelt String-Schreibweise in Zeilen-Vektoren 
 	private  double[] transform(String line) {
-		System.out.println(line);
 		double[]ret= {0,0,0,0};
 		int i=0;
 		int j=0;
 		boolean negative=false;
 		while(i<line.length()){
-			System.out.println("loop");
 			if (line.substring(i,i+1).matches("[+,-]")){
 				if (line.charAt(i)=='-'){
 					++i;
@@ -136,7 +132,6 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
 						if (negative==false){
 							
 							ret[3]=zaehler/nenner;
-							System.out.println(ret[3]);
 						}else{
 							ret[3]=Double.parseDouble("-"+zaehler/nenner);
 							negative=false;
@@ -171,7 +166,6 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
 				++i;
 			}
 		}
-		System.out.println("return");
 		return ret;
 		
 	}
