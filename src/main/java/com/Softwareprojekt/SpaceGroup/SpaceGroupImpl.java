@@ -48,9 +48,9 @@ public class SpaceGroupImpl implements SpaceGroup {
 		// every Transformation is calculated modulo this parallelotop:
 		List<Vector3D> moduloBase = new ArrayList<Vector3D>();
 		// 3x3x3 should be big enough, ...
-		moduloBase.add( new Vector3D(new double[] { 2,0,0 }) );
-		moduloBase.add( new Vector3D(new double[] { 0,2,0 }) );
-		moduloBase.add( new Vector3D(new double[] { 0,0,2 }) );
+		moduloBase.add( new Vector3D(new double[] { 1,0,0 }) );
+		moduloBase.add( new Vector3D(new double[] { 0,1,0 }) );
+		moduloBase.add( new Vector3D(new double[] { 0,0,1 }) );
 
 		return getTransformations(moduloBase);
 	}

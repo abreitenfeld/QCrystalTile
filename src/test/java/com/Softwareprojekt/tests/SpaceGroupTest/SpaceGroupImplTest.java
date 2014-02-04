@@ -88,13 +88,13 @@ public class SpaceGroupImplTest {
 		LatticeType lt = new LatticeTypeImpl(LatticeType.CenteringType.P, LatticeType.System.CUBIC);
 		Set<Transformation> base = new HashSet<Transformation>();
 		base.add(
-				TransformationImpl.factory.translation(1,0,0)
+				TransformationImpl.factory.translation(0.5,0,0)
 			);
 		base.add(
-				TransformationImpl.factory.translation(0,1,0)
+				TransformationImpl.factory.translation(0,0.5,0)
 			);
 		base.add(
-				TransformationImpl.factory.translation(0,0,1)
+				TransformationImpl.factory.translation(0,0,0.5)
 			);
 		System.out.println("base:");
 		for( Transformation trans : base) {
@@ -113,7 +113,7 @@ public class SpaceGroupImplTest {
 		
 		// remember: 8 positions
 		assertEquals("result set cardinality", 8, resultSet.size());
-		Transformation derived = TransformationImpl.factory.translation(1,1,1);
+		Transformation derived = TransformationImpl.factory.translation(0.5, 0.5, 0.5);
 		assertTrue("derived translation in the result set", resultSet.contains(derived));
 	}
 
@@ -128,7 +128,7 @@ public class SpaceGroupImplTest {
 				TransformationImpl.factory.rotationY(90)
 			);
 		base.add(
-				TransformationImpl.factory.translation(1,0,0)
+				TransformationImpl.factory.translation(0.5,0,0)
 		);
 		/*base.add(
 				TransformationImpl.factory.translation(0,1,0)
