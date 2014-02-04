@@ -7,7 +7,7 @@ import com.Softwareprojekt.interfaces.*;
 public class SpaceGroupModel implements Model {
 
 	private SpaceGroup _currentGroup = null;
-	private Vector3D _point = new Vector3D(new double[] {0, 0, 0});
+	private Vector3D _point = new Vector3D(new double[] { 0.5, 0.5, 0.5 });
 	
 	/**
 	 * Constructor of model.

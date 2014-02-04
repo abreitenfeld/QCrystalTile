@@ -3,6 +3,8 @@ package com.Softwareprojekt.visualization;
 import com.Softwareprojekt.Utilities.ExtendedPickingSupport;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.controllers.mouse.camera.AWTCameraMouseController;
+import org.jzy3d.maths.BoundingBox3d;
+import org.jzy3d.maths.Coord3d;
 import org.jzy3d.maths.IntegerCoord2d;
 import org.jzy3d.plot3d.rendering.scene.Graph;
 import org.jzy3d.plot3d.rendering.view.modes.ViewPositionMode;
@@ -26,6 +28,9 @@ public class SpaceGroupViewChartController extends AWTCameraMouseController {
     protected final JPopupMenu _contextMenu;
 
     protected final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
+
+    private static final float Min_Bounding_Box_Value = -10f;
+    private static final float Max_Bounding_Box_Value = 1f;
 
     public SpaceGroupViewChartController(Chart chart) {
         super(chart);
@@ -74,6 +79,14 @@ public class SpaceGroupViewChartController extends AWTCameraMouseController {
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
         //super.mouseWheelMoved(e);
+        float factor = (e.getWheelRotation() / 10.0f);
+        final BoundingBox3d bound = this._chart.getView().getBounds();
+
+        bound.setXmin(Math.max(Math.min(bound.getXmin() - factor, Max_Bounding_Box_Value), Min_Bounding_Box_Value));
+        bound.setYmin(Math.max(Math.min(bound.getYmin() - factor, Max_Bounding_Box_Value), Min_Bounding_Box_Value));
+        bound.setZmin(Math.max(Math.min(bound.getZmin() - factor, Max_Bounding_Box_Value), Min_Bounding_Box_Value));
+
+        //this._chart.getView().setBoundManual(bound.scale(new Coord3d(0.1,0.1,0.1)));
     }
 
     public ExtendedPickingSupport getPickingSupport() {

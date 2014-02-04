@@ -15,6 +15,7 @@ import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.factories.AWTChartComponentFactory;
 import org.jzy3d.chart.factories.IChartComponentFactory;
 import org.jzy3d.colors.Color;
+import org.jzy3d.maths.BoundingBox3d;
 import org.jzy3d.maths.Coord3d;
 import org.jzy3d.maths.Rectangle;
 import org.jzy3d.picking.IObjectPickedListener;
@@ -25,6 +26,7 @@ import org.jzy3d.plot3d.primitives.Polygon;
 import org.jzy3d.plot3d.primitives.pickable.PickablePolygon;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
 import org.jzy3d.plot3d.rendering.ordering.AbstractOrderingStrategy;
+import org.jzy3d.plot3d.rendering.view.modes.ViewBoundMode;
 import org.jzy3d.plot3d.text.DrawableTextWrapper;
 import org.jzy3d.plot3d.text.align.Halign;
 import org.jzy3d.plot3d.text.align.Valign;
@@ -122,14 +124,16 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 		this._chart.getView().setBackgroundColor(Viewport_Background);
 		this._chart.getView().setSquared(true);
         this._chart.getAxeLayout().setMainColor(Grid_Color);
+        //this._chart.getView().setBoundManual(BoundingBox3d.newBoundsAtOrigin());
+        //this._chart.getView().setBoundMode(ViewBoundMode.MANUAL);
+
         // set ordering strategy for view
-        final AbstractOrderingStrategy strategy = new TextFirstOrderingStrategy();
+        final AbstractOrderingStrategy strategy = new TextFirstOrderingStrategy(this._chart.getView());
         this._chart.getScene().getGraph().setStrategy(strategy);
         // setup key and mouse controller
         this._chartController = new SpaceGroupViewChartController(this._chart);
         this._chartController.getPickingSupport().addObjectPickedListener(this);
         this.createControllerMenuItems();
-        //this._chart.getView().getCamera().
 
 		// create moveable point
 		this._originPoint = new Point(new Coord3d(), Color.BLUE, Origin_Point_Size);
@@ -291,7 +295,6 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 	private synchronized void setSpacing(float spacing) {
 		this._currentSpacing = spacing;
 		this.calculateMeshPosition();
-		this._chart.getView().updateBounds();
 	}
 	
 	/**

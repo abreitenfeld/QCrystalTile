@@ -23,7 +23,8 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 	private final JTextField _inputXCoord;
 	private final JTextField _inputYCoord;
 	private final JTextField _inputZCoord;
-	
+	private final ImageIcon _loadingIcon;
+
 	private static final int Slider_Min_Step = 0;
 	private static final int Slider_Max_Step = 1;
 	private static final float Min_Coord_Value = 0f;
@@ -53,6 +54,7 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 
         this._btnCalculate = new JButton(bundle.getString("calculate"));
         this._btnCalculate.setEnabled(false);
+        this._loadingIcon = new ImageIcon(ClassLoader.getSystemResource("loading.gif"));
 
         final JPanel rightPanel = new JPanel();
         rightPanel.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
@@ -159,7 +161,9 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 
     @Override
     public void actionPerformed(ActionEvent e) {
+        this._btnCalculate.setIcon(this._loadingIcon);
         this._btnCalculate.setEnabled(false);
         this.applyPoint();
+       // this._btnCalculate.setIcon(null);
     }
 }
