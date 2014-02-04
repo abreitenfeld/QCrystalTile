@@ -154,8 +154,8 @@ public class TransformationImpl implements Transformation {
 		for( int i=0; i<3; i++)
 			rotations.set(i, rasterRot(rotations.get(i)));
 
-		final int translationDivision = 4; // => raster = 1/4 
-		final double translationTolerance = 0.1; // has to be smaller than 1/translationDivision !
+		final int translationDivision = 12; // => raster = 1/12
+		final double translationTolerance = 1/36; // has to be smaller than 1/translationDivision !
 		VectorFunction translationFunc = new VectorFunction () {
 			public double evaluate(int index, double val) {
 				return Math.floor( val*translationDivision + translationTolerance) / translationDivision;
