@@ -4,7 +4,7 @@ import com.Softwareprojekt.interfaces.Controller;
 import com.Softwareprojekt.interfaces.LatticeType;
 import com.Softwareprojekt.interfaces.SpaceGroupID;
 import com.Softwareprojekt.interfaces.View;
-import com.Softwareprojekt.InternationalShortSymbol.Enum;
+import com.Softwareprojekt.InternationalShortSymbol.InternationalShortSymbolEnum;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -101,7 +101,7 @@ public class SpaceGroupSelectionPanel extends Panel implements View, ActionListe
 	}
 
     private void prepareSpaceGroupList() {
-        final Enum enu = new Enum();
+        final InternationalShortSymbolEnum enu = new InternationalShortSymbolEnum();
 
         for (LatticeType.CenteringType type : LatticeType.CenteringType.values()) {
             char cCentering = type.toString().charAt(0);

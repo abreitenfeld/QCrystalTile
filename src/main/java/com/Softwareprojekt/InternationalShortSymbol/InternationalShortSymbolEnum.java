@@ -7,9 +7,9 @@ import com.Softwareprojekt.interfaces.InvalidSpaceGroupIDException;
 import com.Softwareprojekt.interfaces.SpaceGroupEnumeration;
 
 
-public class Enum extends AbstractList<ID> implements SpaceGroupEnumeration<ID> {
+public class InternationalShortSymbolEnum extends AbstractList<ID> implements SpaceGroupEnumeration<ID> {
 
-	public Enum() {
+	public InternationalShortSymbolEnum() {
 		list = new ArrayList<ID>();
 		/* to do :
 		 * add all spacegroups ids to the list
