@@ -44,29 +44,38 @@ public class SpaceGroupImpl implements SpaceGroup {
 	}
 
 	@Override
-	public Set<Transformation> getTransformations() {
+	public Set<Transformation> getTransformations(
+		List<Vector3D> moduloSpace, // the space to fill ... (e.g.: {(2,0,0), (0,2,0), (0,0,2) })
+		Vector3D patternIterations // number of unit cells in x-,y-,z-dimension base of the lattice
+	) {
 		// every Transformation is calculated modulo this parallelotop:
-		List<Vector3D> moduloBase = new ArrayList<Vector3D>();
-		// 2x2x2 should be big enough, ...
-		moduloBase.add( new Vector3D(new double[] { 2,0,0 }) );
-		moduloBase.add( new Vector3D(new double[] { 0,2,0 }) );
-		moduloBase.add( new Vector3D(new double[] { 0,0,2 }) );
-
-		return getTransformations(moduloBase);
+		return getTransformations_TryToCache(moduloSpace, patternIterations);
 	}
 
-	public Set<Transformation> getTransformations(
+	public Set<Transformation> getTransformations_TryToCache(
 			/* resulting Transformations are restricted to the parallelotope
 			 * specified by the following base vectors: */
-			List<Vector3D> moduloBase 
+			List<Vector3D> moduloSpace,
+			Vector3D patternIterations // number of unit cells in x-,y-,z-dimension base of the lattice
 	) {
-		if(transformations == null)
-			closure(moduloBase);
+		// only recalculate, at first invocation or if parameters changed:
+		if(
+			transformations == null
+			|| !this.moduloSpace.equals( moduloSpace )
+			|| !this.patternIterations.equals( patternIterations )
+		) {
+			this.moduloSpace = moduloSpace;
+			this.patternIterations = patternIterations;
+			closure_WithBaseCell(moduloSpace, patternIterations);
+		}
 		return transformations;
 	}
 	
-	protected void closure(
-			List<Vector3D> moduloBase 
+	protected void closure_WithBaseCell(
+			/* resulting Transformations are restricted to the parallelotope
+			 * specified by the following base vectors: */
+			List<Vector3D> moduloSpace,
+			Vector3D patternIterations // number of unit cells in x-,y-,z-dimension base of the lattice
 	) {
 		Set<Transformation> creators = new HashSet<Transformation>( this.generatingSet );
 		{ // add translations along the unit cell to the creator set
@@ -74,12 +83,13 @@ public class SpaceGroupImpl implements SpaceGroup {
 			creators.add( factory.translation( 0, 1, 0  ) );
 			creators.add( factory.translation( 0, 0, 1  ) );
 		}
-		transformations = closure(creators, moduloBase);
+		transformations = closure(creators, moduloSpace, patternIterations);
 	}
 	
 	protected Set<Transformation> closure(
 			Set<Transformation> creators, 
-			List<Vector3D> moduloBase 
+			List<Vector3D> moduloBase,
+			Vector3D patternIterations // number of unit cells in x-,y-,z-dimension base of the lattice
 	) {
 		Set<Transformation> res = new HashSet<Transformation>();
 		for( Transformation t : creators ) {
@@ -105,7 +115,7 @@ public class SpaceGroupImpl implements SpaceGroup {
 	}
 	
 	protected boolean cond(int iteration, int currentSize) {
-		return iteration < 8;
+		return iteration < 20;
 	}
 
 	protected Set<Transformation> combineSimple( List<Vector3D> moduloBase, Set<Transformation> set, Set<Transformation> creators) {
@@ -218,6 +228,10 @@ public class SpaceGroupImpl implements SpaceGroup {
 	private LatticeType latticeType;
 	private Set<Transformation> generatingSet;
 	private Set<Transformation> transformations;
+
+	// parameters for calculating the set of transformations:
+	List<Vector3D> moduloSpace; // the space to fill ... (e.g.: {(2,0,0), (0,2,0), (0,0,2) })
+	Vector3D patternIterations; // number of unit cells in x-,y-,z-dimension base of the lattice
 
 	private TransformationFactory factory; 
 }
