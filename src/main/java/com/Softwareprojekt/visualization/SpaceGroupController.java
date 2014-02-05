@@ -114,18 +114,7 @@ public class SpaceGroupController implements Controller {
 	public List<Mesh> calculateMesh() {
 		List mesh = new LinkedList();
         Mesh qMesh;
-		// generate points
-		PointList p = new PointList();
-
-        p.gen_randomPoints(20);
-        //p.add(this.getOriginPoint());
-
-		// iterate over transformation set
-		/*Iterator<Transformation> iter = this._model.getSpaceGroup().getTransformations().iterator();
-		while(iter.hasNext()) {
-			Transformation transform = iter.next();
-			p.add(transform.apply(this._model.getPoint()));
-		}*/
+		PointList p = this._model.getCalculatedPoints();
 		
 		// trigger qhull wrapper according current viz step
 		switch (this.getVisualizationStep()) {

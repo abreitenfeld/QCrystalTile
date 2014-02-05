@@ -13,6 +13,7 @@ import com.Softwareprojekt.interfaces.View;
 import org.jzy3d.bridge.awt.FrameAWT;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.factories.AWTChartComponentFactory;
+import org.jzy3d.chart.factories.ChartComponentFactory;
 import org.jzy3d.chart.factories.IChartComponentFactory;
 import org.jzy3d.colors.Color;
 import org.jzy3d.maths.BoundingBox3d;
@@ -124,8 +125,6 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 		this._chart.getView().setBackgroundColor(Viewport_Background);
 		this._chart.getView().setSquared(true);
         this._chart.getAxeLayout().setMainColor(Grid_Color);
-        //this._chart.getView().setBoundManual(BoundingBox3d.newBoundsAtOrigin());
-        //this._chart.getView().setBoundMode(ViewBoundMode.MANUAL);
 
         // set ordering strategy for view
         final AbstractOrderingStrategy strategy = new TextFirstOrderingStrategy(this._chart.getView());
@@ -471,6 +470,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
         info.Label.setDisplayed(visible && showLabel);
 
         for(Polygon poly : info.Polygons) {
+            poly.setDisplayed(visible);
             poly.setWireframeDisplayed(visible && showWireframe);
             poly.setFaceDisplayed(visible && showFaces);
         }
