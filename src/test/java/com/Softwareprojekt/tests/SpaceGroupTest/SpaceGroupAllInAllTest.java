@@ -21,11 +21,11 @@ public class SpaceGroupAllInAllTest {
 	public void test() throws FileNotFoundException, IOException, ParseException, InvalidSpaceGroupIDException {
 		spaceToFill = new ArrayList<Vector3D>();
 		spaceToFill.add(
-			new Vector3D( new double[] { 1, 0, 0 }));
+			new Vector3D( new double[] { 2, 0, 0 }));
 		spaceToFill.add(
-			new Vector3D( new double[] { 0, 1, 0 }));
+			new Vector3D( new double[] { 0, 2, 0 }));
 		spaceToFill.add(
-			new Vector3D( new double[] { 0, 0, 1 }));
+			new Vector3D( new double[] { 0, 0, 2 }));
 
 		patternIterations = new Vector3D( new double[] { 1,1,1 } );
 

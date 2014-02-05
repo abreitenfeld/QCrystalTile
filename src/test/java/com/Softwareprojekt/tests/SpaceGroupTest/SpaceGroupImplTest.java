@@ -31,10 +31,10 @@ public class SpaceGroupImplTest {
 		base.add(
 				TransformationImpl.factory.rotationX(90)
 			);
-		System.out.println("base:");
+		/*System.out.println("base:");
 		for( Transformation trans : base) {
 			System.out.println(trans.getAsHomogeneous());
-		}
+		}*/
 		SpaceGroup sg = new SpaceGroupImpl(lt, base);
 		// this base should give all rotations about multiples of 90 degree
 		// around all axes
@@ -63,10 +63,10 @@ public class SpaceGroupImplTest {
 		base.add(
 				TransformationImpl.factory.rotationY(90)
 			);
-		System.out.println("base:");
+		/*System.out.println("base:");
 		for( Transformation trans : base) {
 			System.out.println(trans.getAsHomogeneous());
-		}
+		}*/
 		SpaceGroup sg = new SpaceGroupImpl(lt, base);
 		// this base should give all rotations about multiples of 90 degree
 		// around all axes
@@ -80,9 +80,9 @@ public class SpaceGroupImplTest {
 		
 		// remember: 24 rotations
 		assertEquals("result set cardinality", 24, resultSet.size());
+
+		// rotation around Z is in the result set?
 		Transformation rotationZ = TransformationImpl.factory.rotationZ(90);
-		System.out.println("rotationZ: ");
-		System.out.println( rotationZ.getAsHomogeneous());
 		assertTrue("derived rotation in the result set", resultSet.contains(rotationZ));
 	}
 
@@ -102,10 +102,10 @@ public class SpaceGroupImplTest {
 		base.add(
 				TransformationImpl.factory.translation(0,0,0.5)
 			);
-		System.out.println("base:");
+		/*System.out.println("base:");
 		for( Transformation trans : base) {
 			System.out.println(trans.getAsHomogeneous());
-		}
+		}*/
 		SpaceGroup sg = new SpaceGroupImpl(lt, base);
 		// this base should give all rotations about multiples of 90 degree
 		// around all axes
@@ -139,10 +139,10 @@ public class SpaceGroupImplTest {
 		base.add(
 				TransformationImpl.factory.translation(0.5,0,0)
 		);
-		System.out.println("base:");
+		/*System.out.println("base:");
 		for( Transformation trans : base) {
 			System.out.println(trans.getAsHomogeneous());
-		}
+		}*/
 		SpaceGroup sg = new SpaceGroupImpl(lt, base);
 		// this base should give all rotations about multiples of 90 degree
 		// around all axes
