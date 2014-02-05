@@ -26,7 +26,6 @@ public class SpaceGroupAllInAllTest {
 			SpaceGroup sg = factory.createSpaceGroup(id);
 			System.out.println(" ... loaded");
 
-			// test if result is in the unit cell
 			Set<Transformation> transformations = sg.getTransformations();
 			System.out.println("\tcreators size: " + sg.getGeneratingSet().size());
 			System.out.println("\tsize: " + transformations.size());

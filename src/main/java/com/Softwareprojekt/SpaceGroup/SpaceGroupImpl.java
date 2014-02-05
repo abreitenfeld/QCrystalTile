@@ -47,10 +47,10 @@ public class SpaceGroupImpl implements SpaceGroup {
 	public Set<Transformation> getTransformations() {
 		// every Transformation is calculated modulo this parallelotop:
 		List<Vector3D> moduloBase = new ArrayList<Vector3D>();
-		// 3x3x3 should be big enough, ...
-		moduloBase.add( new Vector3D(new double[] { 1,0,0 }) );
-		moduloBase.add( new Vector3D(new double[] { 0,1,0 }) );
-		moduloBase.add( new Vector3D(new double[] { 0,0,1 }) );
+		// 2x2x2 should be big enough, ...
+		moduloBase.add( new Vector3D(new double[] { 2,0,0 }) );
+		moduloBase.add( new Vector3D(new double[] { 0,2,0 }) );
+		moduloBase.add( new Vector3D(new double[] { 0,0,2 }) );
 
 		return getTransformations(moduloBase);
 	}
@@ -68,7 +68,13 @@ public class SpaceGroupImpl implements SpaceGroup {
 	protected void closure(
 			List<Vector3D> moduloBase 
 	) {
-		transformations = closure(generatingSet, moduloBase);
+		Set<Transformation> creators = new HashSet<Transformation>( this.generatingSet );
+		{ // add translations along the unit cell to the creator set
+			creators.add( factory.translation( 1, 0, 0  ) );
+			creators.add( factory.translation( 0, 1, 0  ) );
+			creators.add( factory.translation( 0, 0, 1  ) );
+		}
+		transformations = closure(creators, moduloBase);
 	}
 	
 	protected Set<Transformation> closure(
@@ -84,7 +90,6 @@ public class SpaceGroupImpl implements SpaceGroup {
 		int prevSize = 0;
 
 		while( res.size() > prevSize ) {
-			//System.out.println(
 			if( !cond(iteration, res.size())) {
 				System.out.println("breaking the closure loop!");
 				break;
