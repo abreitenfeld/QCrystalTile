@@ -91,7 +91,7 @@ public class SpaceGroupImpl implements SpaceGroup {
 
 		while( res.size() > prevSize ) {
 			if( !cond(iteration, res.size())) {
-				System.out.println("breaking the closure loop!");
+				System.out.println("breaking the closure loop in iteration " + iteration);
 				break;
 			}
 			prevSize = res.size();
@@ -100,11 +100,12 @@ public class SpaceGroupImpl implements SpaceGroup {
 			);
 			iteration ++;
 		};
+		System.out.println( iteration + " iterations");
 		return res;
 	}
 	
 	protected boolean cond(int iteration, int currentSize) {
-		return iteration < 20;
+		return iteration < 8;
 	}
 
 	protected Set<Transformation> combineSimple( List<Vector3D> moduloBase, Set<Transformation> set, Set<Transformation> creators) {

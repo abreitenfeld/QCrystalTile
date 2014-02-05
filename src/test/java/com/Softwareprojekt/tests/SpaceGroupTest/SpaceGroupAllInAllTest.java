@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import org.junit.Test;
 
 import com.Softwareprojekt.interfaces.*;
+import com.Softwareprojekt.interfaces.LatticeType;
 import com.Softwareprojekt.InternationalShortSymbol.*;
 
 import java.util.Set;
@@ -16,7 +17,7 @@ public class SpaceGroupAllInAllTest {
 
 	@Test
 	public void test() throws FileNotFoundException, IOException, ParseException, InvalidSpaceGroupIDException {
-		SpaceGroupFactory factory = new SpaceGroupFactoryImpl();
+		SpaceGroupFactory<ID> factory = new SpaceGroupFactoryImpl();
 		SpaceGroupEnumeration<ID> sgEnum = new InternationalShortSymbolEnum();
 		//int iSGIndex = 0;
 		//for( ID id : sgEnum ) {
@@ -24,6 +25,13 @@ public class SpaceGroupAllInAllTest {
 			ID id = sgEnum.get(iSGIndex);
 			System.out.print("test loading spaceGroup " + (iSGIndex+1) +  ": \"" + id.stringRepr() + "\"" );
 			SpaceGroup sg = factory.createSpaceGroup(id);
+			if(
+				sg.getLatticeType().getSystem() == LatticeType.System.TRIGONAL
+				|| sg.getLatticeType().getSystem() == LatticeType.System.HEXAGONAL
+			) {
+				System.out.println("leaving out trigonal and hexagonal lattices");
+				continue;
+			}
 			System.out.println(" ... loaded");
 
 			Set<Transformation> transformations = sg.getTransformations();
