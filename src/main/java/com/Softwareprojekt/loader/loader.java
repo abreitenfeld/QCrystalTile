@@ -51,7 +51,7 @@ public class loader {
 					list.add(obj);
 				}
 			}
-			FileWriter file = new FileWriter("src/main/resources/SpaceGroups.txt");
+			FileWriter file = new FileWriter("src/main/resources/SpaceGroups.json");
 			file.write(list.toJSONString());
 			file.flush();
 			file.close();

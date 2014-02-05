@@ -493,21 +493,6 @@
 <li> asymm=  0&lt;=x&lt;=1/2
      and  0&lt;=y&lt;=1/2
      and  0&lt;=z&lt;=1 </li>
-<h2><a name="1017">1017   P2(1)22</a><li><a name="1017">non-standard-origin) </a></li></h2>
-<li> Number of Symmetry Operators =  4  </li>
-<li> Space Group Name =  P2(1)22  </li>
-<li> Crystal System = </li><li>non-standard-origin)  </li>
-<li> Laue Class =  mmm  </li>
-<li> Point Group =  222  </li>
-<li> Patterson Space Group # = <a href="http://homepage.univie.ac.at/nikos.pinotsis/spacegroup.html#47">47</a>
-</li><li> Lattice Type =  P  </li>
-<li> symmetry= X,Y,Z </li>
-<li> symmetry= 1/2+X,-Y,-Z </li>
-<li> symmetry= 1/2-X,-Y,Z </li>
-<li> symmetry= X,Y,-Z </li>
-<li> asymm=  0&lt;=x&lt;=1
-     and  0&lt;=y&lt;=1/2
-     and  0&lt;=z&lt;=1/2 </li>
 <h2><a name="18">18   P2(1)2(1)2 </a></h2>
 <li> Number of Symmetry Operators =  4  </li>
 <li> Space Group Name =  P2(1)2(1)2  </li>
@@ -520,21 +505,6 @@
 <li> symmetry= -X,-Y,Z </li>
 <li> symmetry= 1/2-X,1/2+Y,-Z </li>
 <li> symmetry= 1/2+X,1/2-Y,-Z </li>
-<li> asymm=  0&lt;=x&lt;=1/2
-     and  0&lt;=y&lt;=1/2
-     and  0&lt;=z&lt;=1 </li>
-<h2><a name="1018">1018   P2(1)2(1)2</a><li><a name="1018">non-standard-origin) </a></li></h2>
-<li> Number of Symmetry Operators =  4  </li>
-<li> Space Group Name =  P2(1)2(1)2  </li>
-<li> Crystal System = </li><li>non-standard-origin)  </li>
-<li> Laue Class =  mmm  </li>
-<li> Point Group =  222  </li>
-<li> Patterson Space Group # = <a href="http://homepage.univie.ac.at/nikos.pinotsis/spacegroup.html#47">47</a>
-</li><li> Lattice Type =  P  </li>
-<li> symmetry= X,Y,Z </li>
-<li> symmetry= -X,1/2+Y,-Z </li>
-<li> symmetry= 1/2+X,-Y,-Z </li>
-<li> symmetry= 1/2-X,1/2-Y,Z </li>
 <li> asymm=  0&lt;=x&lt;=1/2
      and  0&lt;=y&lt;=1/2
      and  0&lt;=z&lt;=1 </li>
@@ -1294,25 +1264,6 @@
 <li> symmetry= X+1/2,Y+1/2,-Z </li>
 <li> symmetry= X,-Y,Z </li>
 <li> symmetry= -X,Y,Z </li>
-<li> asymm=  0&lt;=x&lt;=1/2
-     and  0&lt;=y&lt;=1/2
-     and  0&lt;=z&lt;=1/2 </li>
-<h2><a name="1059">1059   Pmmn</a><li><a name="1059">non-standard-origin) </a></li></h2>
-<li> Number of Symmetry Operators =  8  </li>
-<li> Space Group Name =  Pmmn  </li>
-<li> Crystal System = </li><li>non-standard-origin)  </li>
-<li> Laue Class =  mmm  </li>
-<li> Point Group =  mmm  </li>
-<li> Patterson Space Group # = <a href="http://homepage.univie.ac.at/nikos.pinotsis/spacegroup.html#47">47</a>
-</li><li> Lattice Type =  P  </li>
-<li> symmetry= X,Y,Z </li>
-<li> symmetry= 1/2-X,1/2-Y,Z </li>
-<li> symmetry= -X,1/2+Y,-Z </li>
-<li> symmetry= 1/2+X,-Y,-Z </li>
-<li> symmetry= -X,-Y,-Z </li>
-<li> symmetry= X+1/2,Y+1/2,-Z </li>
-<li> symmetry= X,1/2-Y,Z </li>
-<li> symmetry= 1/2-X,Y,Z </li>
 <li> asymm=  0&lt;=x&lt;=1/2
      and  0&lt;=y&lt;=1/2
      and  0&lt;=z&lt;=1/2 </li>
@@ -4255,7 +4206,7 @@
 <h2><a name="183">183   P6mm </a></h2>
 <li> Number of Symmetry Operators =  12  </li>
 <li> Space Group Name =  P6mm  </li>
-<li> Crystal System =  HEXAGOANL  </li>
+<li> Crystal System =  HEXAGONAL  </li>
 <li> Laue Class =  6/mmm  </li>
 <li> Point Group =  6mm  </li>
 <li> Patterson Space Group # = <a href="http://homepage.univie.ac.at/nikos.pinotsis/spacegroup.html#191">191</a>
