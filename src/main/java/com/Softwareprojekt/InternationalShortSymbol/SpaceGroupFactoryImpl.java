@@ -54,7 +54,22 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
 				Transformation t=parseTransform(transformation);
 				transformations.add(t);
 			}
-		LatticeType lattice= new LatticeTypeImpl(LatticeType.CenteringType.valueOf((String)spgelem.get("LatticeType")),LatticeType.System.valueOf((String)spgelem.get("CrystalSystem")));;
+		LatticeType lattice = null;
+		{
+			String systemStr = (String )spgelem.get( "CrystalSystem" );
+			String centeringTypeStr = (String )spgelem.get( "LatticeType" );
+			LatticeType.System system = null;
+			LatticeType.CenteringType centeringType = null;
+			try {
+				system = LatticeType.System.valueOf( systemStr );
+				centeringType = LatticeType.CenteringType.valueOf( centeringTypeStr );
+			}
+			catch( Exception e ) {
+				throw new RuntimeException( "error while parsing lattice: " + e.getMessage() );
+			}
+			lattice = new LatticeTypeImpl( centeringType, system );
+		}
+		//LatticeType lattice = new LatticeTypeImpl(LatticeType.CenteringType.valueOf((String)spgelem.get("LatticeType")),LatticeType.System.valueOf((String)spgelem.get("CrystalSystem")));;
 		SpaceGroup ret= new SpaceGroupImpl(lattice,transformations);
 		return ret;
 }
