@@ -16,6 +16,7 @@ import com.Softwareprojekt.SpaceGroup.SpaceGroupImpl;
 import com.Softwareprojekt.SpaceGroup.TransformationImpl;
 import com.Softwareprojekt.interfaces.InvalidSpaceGroupIDException;
 import com.Softwareprojekt.interfaces.LatticeType;
+import com.Softwareprojekt.interfaces.LatticeType.CenteringType;
 import com.Softwareprojekt.interfaces.Matrix4D;
 import com.Softwareprojekt.interfaces.SpaceGroup;
 import com.Softwareprojekt.interfaces.SpaceGroupFactory;
@@ -28,10 +29,10 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
 	JSONArray spacegroups;
 	
 
-	public SpaceGroupFactoryImpl() throws FileNotFoundException, IOException, ParseException {
-		parser=new JSONParser();
-		spacegroups  = (JSONArray) parser.parse(new FileReader("src/main/resources/SpaceGroups.txt"));
-		return;
+public SpaceGroupFactoryImpl() throws FileNotFoundException, IOException, ParseException {
+	parser=new JSONParser();
+	spacegroups  = (JSONArray) parser.parse(new FileReader("src/main/resources/SpaceGroups.txt"));
+	return;
 	}
 	
 
@@ -189,6 +190,37 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
 		if (c=='X'){return 0;}
 		else if (c=='Y'){return 1;}
 		else{return 2;}
+	}
+	
+	public Set<ID> getIDbyCentering(LatticeType.CenteringType c) {
+		String centering = String.valueOf(c);
+		Set<ID> res= new HashSet<ID>();
+		for (int i = 0; i < spacegroups.size(); i++) {
+			JSONObject obj= (JSONObject)spacegroups.get(i);		
+			if(obj.get("LatticeType").equals(centering)){try {
+				res.add(new ID((String)obj.get("SpaceGroupName")));
+			} catch (InvalidSpaceGroupIDException e) {
+				// TODO Auto-generated catch block
+				System.out.println("wrong ID");;
+			}}
+		}
+		return res;
+	}
+	
+	public Set<ID> getIDbySystem(LatticeType.System s){
+		String system=String.valueOf(s);
+		Set<ID> res= new HashSet<ID>();
+		for (int i = 0; i < spacegroups.size(); i++) {
+			JSONObject obj= (JSONObject)spacegroups.get(i);	
+			if(obj.get("CrystalSystem").equals(system)){
+				try {
+					res.add(new ID((String)obj.get("SpaceGroupName")));
+				} catch (InvalidSpaceGroupIDException e) {
+					// TODO Auto-generated catch block
+					System.out.println("wrong ID");
+				}}
+		}
+		return res;
 	}
 	
 
