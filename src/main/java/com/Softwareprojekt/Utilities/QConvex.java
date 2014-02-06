@@ -51,7 +51,7 @@ public class QConvex extends CallCProgram {
                    System.out.println("**Errors**");
                    error_line_counter++;
                }
-                System.out.println(line);
+               System.out.println(line);
             }
 
    System.err.println("");

@@ -115,7 +115,6 @@ public class SpaceGroupController implements Controller {
 		List mesh = new LinkedList();
         Mesh qMesh;
 		PointList p = this._model.getCalculatedPoints();
-		
 		// trigger qhull wrapper according current viz step
 		switch (this.getVisualizationStep()) {
             case ScatterPlot:
@@ -138,9 +137,7 @@ public class SpaceGroupController implements Controller {
                 for (Polygon poly : qMesh.getFaces()) {
                     PointList cellPoints = new PointList();
                     cellPoints.addAll(poly.getVertices());
-                    if(cellPoints.size() > 2){
                         mesh.add(QConvex.call(cellPoints));
-                    }
                 }
 		    	break;
 	    }
