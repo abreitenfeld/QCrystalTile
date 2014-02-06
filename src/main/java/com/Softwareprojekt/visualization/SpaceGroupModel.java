@@ -5,7 +5,9 @@ import com.Softwareprojekt.InternationalShortSymbol.SpaceGroupFactoryImpl;
 import com.Softwareprojekt.Utilities.PointList;
 import com.Softwareprojekt.interfaces.*;
 
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 public class SpaceGroupModel implements Model {
 
@@ -14,6 +16,8 @@ public class SpaceGroupModel implements Model {
     private boolean _recalculatePoints = true;
 	private final PointList _calculatedPoints = new PointList();
 
+    private static final String Default_Group_ID = "C222(1)";
+
 	/**
 	 * Constructor of model.
 	 */
@@ -21,7 +25,7 @@ public class SpaceGroupModel implements Model {
 		super();
         try {
             final SpaceGroupFactory factory = new SpaceGroupFactoryImpl();
-            this.setSpaceGroup(factory.createSpaceGroup(new ID("I4(1)32")));
+            this.setSpaceGroup(factory.createSpaceGroup(new ID(Default_Group_ID)));
         }
         catch(Exception e) {
             e.printStackTrace();
@@ -66,14 +70,26 @@ public class SpaceGroupModel implements Model {
     protected void computePoints() {
         this._calculatedPoints.clear();
 
-        this._calculatedPoints.gen_randomPoints(25);
+        //this._calculatedPoints.gen_randomPoints(100);
 
         // iterate over transformation set
-		/*Iterator<Transformation> iter = this.getSpaceGroup().getTransformations().iterator();
+        final List<Vector3D> spaceToFill = new ArrayList<Vector3D>();
+        spaceToFill.add(
+                new Vector3D( new double[] { 2, 0, 0 }));
+        spaceToFill.add(
+                new Vector3D( new double[] { 0, 2, 0 }));
+        spaceToFill.add(
+                new Vector3D( new double[] { 0, 0, 2 }));
+
+        Vector3D patternIterations = new Vector3D( new double[] { 1,1,1 } );
+
+		Iterator<Transformation> iter = this.getSpaceGroup().getTransformations(
+                spaceToFill, patternIterations
+        ).iterator();
 		while(iter.hasNext()) {
 			Transformation transform = iter.next();
             this._calculatedPoints.add(transform.apply(this.getPoint()));
-		} */
+		}
     }
 
 }
