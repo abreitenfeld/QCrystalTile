@@ -33,7 +33,8 @@ public class SpaceGroupFactoryImplTest {
 
 		SpaceGroupEnumeration<ID> sgEnum = new InternationalShortSymbolEnum();
 		SpaceGroupFactoryImpl factory = new SpaceGroupFactoryImpl();
-		for( ID id : sgEnum ) {
+		for (int groupIndex=0; groupIndex<230; groupIndex++ ) {
+			ID id = sgEnum.get(groupIndex);
 			System.out.println( id.stringRepr() );
 			SpaceGroup sp= factory.createSpaceGroup(id);
 			Set<Transformation> set = sp.getGeneratingSet();
@@ -41,9 +42,9 @@ public class SpaceGroupFactoryImplTest {
 			int expectedCreatorSize = (Integer )checkNumbers.get(id);
 
 			assertEquals(
-				"checking number of transformations in the generating set",
-				set.size(),
-				expectedCreatorSize
+				"group " + (groupIndex+1) + " (" + id.stringRepr() + "): checking number of transformations in the generating set",
+				expectedCreatorSize,
+				set.size()
 			);
 		}
 	}
