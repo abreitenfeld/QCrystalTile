@@ -29,13 +29,12 @@ public class SpaceGroupFactoryImplTest {
 	@Test
 	public void test() throws InvalidSpaceGroupIDException, ParseException, IOException {
 		Map<ID,Integer> checkNumbers = getMapIDToGeneratorSize();
-		System.out.println( checkNumbers.size() );
 
 		SpaceGroupEnumeration<ID> sgEnum = new InternationalShortSymbolEnum();
 		SpaceGroupFactoryImpl factory = new SpaceGroupFactoryImpl();
 		for (int groupIndex=0; groupIndex<230; groupIndex++ ) {
 			ID id = sgEnum.get(groupIndex);
-			System.out.println( id.stringRepr() );
+			//System.out.println( id.stringRepr() );
 			SpaceGroup sp= factory.createSpaceGroup(id);
 			Set<Transformation> set = sp.getGeneratingSet();
 
