@@ -201,26 +201,9 @@ public class TransformationImpl implements Transformation {
 			Transformation other = (Transformation )other_;
 			return this.getAsHomogeneous().equals(other.getAsHomogeneous());
 		}
-		/*if( other_ instanceof Transformation) {
-			Transformation other = (Transformation )other_;
-			MatrixFunction minus = new MatrixFunction() {
-				public double evaluate(int arg0, int arg1, double arg2) {
-					return -arg2;
-				}
-			};
-			Matrix4D otherMinus = new Matrix4D(other.getAsHomogeneous().transform(minus));
-			Matrix4D diffMatr = new Matrix4D( this.getAsHomogeneous().add( otherMinus ) );
-			for( int row=0; row<4; row++)
-				for( int col=0; col<4; col++)
-					if(diffMatr.get(row, col) > tolerance)
-						return false;
-			return true;
-			//return this.getAsHomogeneous().equals(other);
-		}*/
 		return false;
 	}
 	public int hashCode() {
-		//return 0;
 		Matrix4D matr = new Matrix4D(this.getAsHomogeneous().transform(roundToInt));
 		return matr.hashCode();
 		//return getAsHomogeneous().hashCode();

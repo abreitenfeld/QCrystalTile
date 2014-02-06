@@ -50,6 +50,18 @@ public class ID implements SpaceGroupID {
 	public String stringRepr() {
 		return repr;
 	}
+	@Override
+	public boolean equals(Object o) {
+		if( o instanceof ID ) {
+			return repr.equals( ((ID )o).stringRepr());
+		}
+		return false;
+	}
+	@Override
+	public int hashCode() {
+		return repr.hashCode();
+	}
+
 	private String repr;
 	//private CenteringType centering;
 }
