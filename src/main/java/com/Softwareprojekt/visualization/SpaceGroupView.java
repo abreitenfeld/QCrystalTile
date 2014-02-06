@@ -27,6 +27,7 @@ import org.jzy3d.plot3d.primitives.Polygon;
 import org.jzy3d.plot3d.primitives.pickable.PickablePolygon;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
 import org.jzy3d.plot3d.rendering.ordering.AbstractOrderingStrategy;
+import org.jzy3d.plot3d.rendering.view.modes.CameraMode;
 import org.jzy3d.plot3d.rendering.view.modes.ViewBoundMode;
 import org.jzy3d.plot3d.text.DrawableTextWrapper;
 import org.jzy3d.plot3d.text.align.Halign;
@@ -99,6 +100,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
     public static final Color Grid_Color = new Color(192, 192, 192);
 	public static final Rectangle Default_Size = new Rectangle(1024, 768);
     public static final Dimension Min_Size = new Dimension(500, 450);
+    public static final String Frame_Title = "QCrystalTile";
 
 	/**
 	 * Constructor of view.
@@ -157,7 +159,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 
         this._subViewControls = new View[] {selectionPanel, settingPanel, viewSettingsPanel};
 
-		super.initialize(_chart, Default_Size, "SpaceGroup Visualizer");
+		super.initialize(_chart, Default_Size, Frame_Title);
 
 		// timer for tweening the current spacing value
 		final Timer timer = new Timer();
@@ -209,7 +211,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
         });
 
         // crate face tinting menu items
-        final JMenu mnuFaceTinting = new JMenu(bundle.getString("faces"));
+        final JMenu mnuFaceTinting = new JMenu(bundle.getString("colors"));
         final JMenuItem miMonochromColors = new JMenuItem(bundle.getString("monochromaticColors"));
         miMonochromColors.addActionListener(new ActionListener() {
             @Override
@@ -218,14 +220,14 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
             }
         });
 
-        final JMenuItem miChromaticColors = new JMenuItem(bundle.getString("chromaticColors"));
+        final JMenuItem miChromaticColors = new JMenuItem(bundle.getString("chromaticCellColors"));
         miChromaticColors.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 setColorProvider(_chromaticColors);
             }
         });
-        final JMenuItem miFaceColors = new JMenuItem(bundle.getString("faceColors"));
+        final JMenuItem miFaceColors = new JMenuItem(bundle.getString("chromaticFaceColors"));
         miFaceColors.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {

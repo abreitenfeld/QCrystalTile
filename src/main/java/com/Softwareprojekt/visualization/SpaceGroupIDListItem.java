@@ -3,9 +3,10 @@ package com.Softwareprojekt.visualization;
 import com.Softwareprojekt.interfaces.LatticeType;
 import com.Softwareprojekt.interfaces.SpaceGroupID;
 
+import java.awt.*;
 import java.util.ResourceBundle;
 
-public class SpaceGroupIDListItem {
+public class SpaceGroupIDListItem implements Comparable<SpaceGroupIDListItem>  {
 
     private final SpaceGroupID _id;
     private final String Format = "<html>%s</html>";
@@ -26,5 +27,10 @@ public class SpaceGroupIDListItem {
         string = string.replaceAll(RegExpPattern, ReplacePattern);
         string = String.format(Format, string);
         return string;
+    }
+
+    @Override
+    public int compareTo(SpaceGroupIDListItem o) {
+        return this.toString().compareTo(o.toString());
     }
 }
