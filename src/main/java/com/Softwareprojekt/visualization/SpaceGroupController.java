@@ -138,11 +138,12 @@ public class SpaceGroupController implements Controller {
                 for (Polygon poly : qMesh.getFaces()) {
                     PointList cellPoints = new PointList();
                     cellPoints.addAll(poly.getVertices());
-                    mesh.add(QConvex.call(cellPoints));
+                    if(cellPoints.size() > 2){
+                        mesh.add(QConvex.call(cellPoints));
+                    }
                 }
 		    	break;
 	    }
-		
 		return mesh;
 	}
 	
