@@ -1,7 +1,7 @@
 package com.Softwareprojekt.interfaces;
 
 import org.jzy3d.colors.Color;
-import org.jzy3d.plot3d.primitives.*;
+//import org.jzy3d.plot3d.primitives.*;
 
 public interface ColorProvider {
 

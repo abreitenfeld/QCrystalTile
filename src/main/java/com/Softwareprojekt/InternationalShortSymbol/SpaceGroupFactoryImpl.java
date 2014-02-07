@@ -16,7 +16,6 @@ import com.Softwareprojekt.SpaceGroup.SpaceGroupImpl;
 import com.Softwareprojekt.SpaceGroup.TransformationImpl;
 import com.Softwareprojekt.interfaces.InvalidSpaceGroupIDException;
 import com.Softwareprojekt.interfaces.LatticeType;
-import com.Softwareprojekt.interfaces.LatticeType.CenteringType;
 import com.Softwareprojekt.interfaces.Matrix4D;
 import com.Softwareprojekt.interfaces.SpaceGroup;
 import com.Softwareprojekt.interfaces.SpaceGroupFactory;

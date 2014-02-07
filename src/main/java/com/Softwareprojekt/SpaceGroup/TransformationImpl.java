@@ -128,13 +128,13 @@ public class TransformationImpl implements Transformation {
 		);
 	}
 
-	private Matrix3D calcScaleMatr( Vector3D scale ) {
+	/*private Matrix3D calcScaleMatr( Vector3D scale ) {
 		return new Matrix3D( new double[][] {
 			{ scale.get(0), 0, 0 },
 			{ 0, scale.get(1), 0 },
 			{ 0, 0, scale.get(2) }
 		});
-	}
+	}*/
 
 	@Override
 	public Matrix3D linearPart() {
@@ -191,10 +191,10 @@ public class TransformationImpl implements Transformation {
 
 	}
 
-	private double rasterDouble(int division, double val) {
+	/*private double rasterDouble(int division, double val) {
 		double tolerance = 1/division / 4;
 		return Math.floor( val*division + tolerance ) / division;
-	}
+	}*/
 
 	private double rasterRot(double angle) {
 		int division = 12; // => raster = 1/12 

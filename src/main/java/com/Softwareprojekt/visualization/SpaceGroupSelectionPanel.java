@@ -3,6 +3,7 @@ package com.Softwareprojekt.visualization;
 import com.Softwareprojekt.InternationalShortSymbol.SpaceGroupFactoryImpl;
 import com.Softwareprojekt.interfaces.*;
 import com.Softwareprojekt.InternationalShortSymbol.InternationalShortSymbolEnum;
+import com.Softwareprojekt.InternationalShortSymbol.ID;
 
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -15,23 +16,23 @@ import javax.swing.*;
 
 public class SpaceGroupSelectionPanel extends Panel implements View, ActionListener {
 
-	private final Controller _controller;
+    private final Controller<ID> _controller;
     private final JComboBox<LatticeSystemListItem> _latticeSystemList;
     private final JComboBox<CenteringTypeListItem> _centeringTypeList;
     private final JComboBox<SpaceGroupIDListItem> _spaceGroupList;
     private final Label _informationLabel;
-    private final SpaceGroupEnumeration _spaceGroupIDEnum = new InternationalShortSymbolEnum();
+    private final SpaceGroupEnumeration<ID> _spaceGroupIDEnum = new InternationalShortSymbolEnum();
 
 	private final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
 
-    private final Map<SpaceGroupID, SpaceGroupIDListItem> _idToListItem =
-            new HashMap<SpaceGroupID, SpaceGroupIDListItem>();
-    private final Map<LatticeType.System, List<SpaceGroupID>> _systemToGroupID =
-            new HashMap<LatticeType.System, List<SpaceGroupID>>();
-    private final Map<LatticeType.CenteringType, List<SpaceGroupID>> _centeringTypeToGroupID =
-            new HashMap<LatticeType.CenteringType, List<SpaceGroupID>>();
+    private final Map<ID, SpaceGroupIDListItem> _idToListItem =
+            new HashMap<ID, SpaceGroupIDListItem>();
+    private final Map<LatticeType.System, List<ID>> _systemToGroupID =
+            new HashMap<LatticeType.System, List<ID>>();
+    private final Map<LatticeType.CenteringType, List<ID>> _centeringTypeToGroupID =
+            new HashMap<LatticeType.CenteringType, List<ID>>();
 	
-	public SpaceGroupSelectionPanel(Controller controller) {
+	public SpaceGroupSelectionPanel(Controller<ID> controller) {
 		super();
 		this._controller = controller;
 
@@ -108,19 +109,19 @@ public class SpaceGroupSelectionPanel extends Panel implements View, ActionListe
         try {
             final SpaceGroupFactoryImpl factory = new SpaceGroupFactoryImpl();
             // create list items
-            for (SpaceGroupID id : (SpaceGroupEnumeration<SpaceGroupID>)this._spaceGroupIDEnum) {
+            for (ID id : this._spaceGroupIDEnum) {
                 this._idToListItem.put(id, new SpaceGroupIDListItem(id));
             }
 
             for (LatticeType.System system : LatticeType.System.values()) {
-                Set idSet = factory.getIDbySystem(system);
-                List<SpaceGroupID> idList = Arrays.asList((SpaceGroupID[])idSet.toArray(new SpaceGroupID[idSet.size()]));
+                Set<ID> idSet = factory.getIDbySystem(system);
+                List<ID> idList = Arrays.asList(idSet.toArray(new ID[idSet.size()]));
                 this._systemToGroupID.put(system, idList);
             }
 
             for (LatticeType.CenteringType type : LatticeType.CenteringType.values()) {
-                Set idSet = factory.getIDbyCentering(type);
-                List<SpaceGroupID> idList = Arrays.asList((SpaceGroupID[])idSet.toArray(new SpaceGroupID[idSet.size()]));
+                Set<ID> idSet = factory.getIDbyCentering(type);
+                List<ID> idList = Arrays.asList(idSet.toArray(new ID[idSet.size()]));
                 this._centeringTypeToGroupID.put(type, idList);
             }
         }
@@ -140,7 +141,7 @@ public class SpaceGroupSelectionPanel extends Panel implements View, ActionListe
         return intersect;
     }
 
-    protected  void setSpaceGroupListItems(List<SpaceGroupID> ids) {
+    protected  void setSpaceGroupListItems(List<ID> ids) {
         final List<SpaceGroupIDListItem> items = new ArrayList<SpaceGroupIDListItem>(ids.size());
         this._spaceGroupList.removeAllItems();
 
@@ -168,7 +169,7 @@ public class SpaceGroupSelectionPanel extends Panel implements View, ActionListe
         if (e.getSource() == this._centeringTypeList || e.getSource() == this._latticeSystemList) {
             // filter by centering type
             final CenteringTypeListItem type = (CenteringTypeListItem) this._centeringTypeList.getSelectedItem();
-            final List<SpaceGroupID> filteredByType;
+            final List<ID> filteredByType;
             if (type.getType() != null) {
                 filteredByType = this._centeringTypeToGroupID.get(type.getType());
             }
@@ -178,7 +179,7 @@ public class SpaceGroupSelectionPanel extends Panel implements View, ActionListe
 
             // filter by lattice system
             final LatticeSystemListItem system = (LatticeSystemListItem) this._latticeSystemList.getSelectedItem();
-            final List<SpaceGroupID> filteredBySystem;
+            final List<ID> filteredBySystem;
             if (system.getSystem() != null) {
                 filteredBySystem = this._systemToGroupID.get(system.getSystem());
             }

@@ -3,13 +3,13 @@ package com.Softwareprojekt.loader;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.util.HashSet;
+//import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
-import com.Softwareprojekt.SpaceGroup.TransformationImpl;
+//import com.Softwareprojekt.SpaceGroup.TransformationImpl;
 
 
 public class loader {

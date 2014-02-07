@@ -8,15 +8,17 @@ import java.util.Timer;
 
 import com.Softwareprojekt.Utilities.ConvertHelper;
 
+import com.Softwareprojekt.InternationalShortSymbol.ID;
+
 import com.Softwareprojekt.interfaces.*;
 import com.Softwareprojekt.interfaces.View;
 import org.jzy3d.bridge.awt.FrameAWT;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.factories.AWTChartComponentFactory;
-import org.jzy3d.chart.factories.ChartComponentFactory;
+//import org.jzy3d.chart.factories.ChartComponentFactory;
 import org.jzy3d.chart.factories.IChartComponentFactory;
 import org.jzy3d.colors.Color;
-import org.jzy3d.maths.BoundingBox3d;
+//import org.jzy3d.maths.BoundingBox3d;
 import org.jzy3d.maths.Coord3d;
 import org.jzy3d.maths.Rectangle;
 import org.jzy3d.picking.IObjectPickedListener;
@@ -27,8 +29,8 @@ import org.jzy3d.plot3d.primitives.Polygon;
 import org.jzy3d.plot3d.primitives.pickable.PickablePolygon;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
 import org.jzy3d.plot3d.rendering.ordering.AbstractOrderingStrategy;
-import org.jzy3d.plot3d.rendering.view.modes.CameraMode;
-import org.jzy3d.plot3d.rendering.view.modes.ViewBoundMode;
+//import org.jzy3d.plot3d.rendering.view.modes.CameraMode;
+//import org.jzy3d.plot3d.rendering.view.modes.ViewBoundMode;
 import org.jzy3d.plot3d.text.DrawableTextWrapper;
 import org.jzy3d.plot3d.text.align.Halign;
 import org.jzy3d.plot3d.text.align.Valign;
@@ -39,7 +41,7 @@ import javax.swing.*;
 public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListener {
 
     // interna
-	protected final Controller _controller;
+    protected final Controller<ID> _controller;
     protected final Chart _chart;
     protected final View[] _subViewControls;
     protected final SpaceGroupViewChartController _chartController;
@@ -106,7 +108,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 	 * Constructor of view.
 	 * @param controller
 	 */
-	SpaceGroupView(Controller controller) {
+	SpaceGroupView(Controller<ID> controller) {
 		super();
 
 		this._controller = controller;

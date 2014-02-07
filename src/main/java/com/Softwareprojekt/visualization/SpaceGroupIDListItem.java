@@ -1,23 +1,25 @@
 package com.Softwareprojekt.visualization;
 
-import com.Softwareprojekt.interfaces.LatticeType;
-import com.Softwareprojekt.interfaces.SpaceGroupID;
+//import com.Softwareprojekt.interfaces.LatticeType;
+//import com.Softwareprojekt.interfaces.SpaceGroupID;
 
-import java.awt.*;
-import java.util.ResourceBundle;
+import com.Softwareprojekt.InternationalShortSymbol.*;
+
+/*import java.awt.*;
+import java.util.ResourceBundle;*/
 
 public class SpaceGroupIDListItem implements Comparable<SpaceGroupIDListItem>  {
 
-    private final SpaceGroupID _id;
+    private final ID _id;
     private final String Format = "<html>%s</html>";
     private final String RegExpPattern = "\\((.+?)\\)";
     private final String ReplacePattern = "<sub>$1</sub>";
 
-    public SpaceGroupIDListItem(SpaceGroupID id) {
+    public SpaceGroupIDListItem(ID id) {
         this._id = id;
     }
 
-    public SpaceGroupID getID() {
+    public ID getID() {
         return this._id;
     }
 

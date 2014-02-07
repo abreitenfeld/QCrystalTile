@@ -5,6 +5,8 @@ import com.Softwareprojekt.interfaces.Controller.VisualizationSteps;
 import com.Softwareprojekt.interfaces.Vector3D;
 import com.Softwareprojekt.interfaces.View;
 
+import com.Softwareprojekt.InternationalShortSymbol.ID;
+
 import java.awt.*;
 import java.awt.event.*;
 import java.util.Hashtable;
@@ -16,7 +18,7 @@ import javax.swing.event.ChangeListener;
 
 public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, View, KeyListener, ActionListener {
 
-	private final Controller _controller;
+	private final Controller<ID> _controller;
 	private final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
 	private final JSlider _stepSlider;
     private final JButton _btnCalculate;
@@ -31,7 +33,7 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 	private static final float Max_Coord_Value = 1f;
 	private static Dimension Field_Size = new Dimension(60, 30);
 	
-	public SpaceGroupSettingsPanel(Controller controller) {
+	public SpaceGroupSettingsPanel(Controller<ID> controller) {
 		super();
 		this._controller = controller;
 		
@@ -70,7 +72,7 @@ public class SpaceGroupSettingsPanel extends Panel implements ChangeListener, Vi
 		this._stepSlider.setPaintLabels(true);
 		
 		// create the labels of slider
-		Hashtable labels = new Hashtable();
+		Hashtable<Integer,JLabel> labels = new Hashtable<Integer,JLabel>();
 		labels.put(new Integer(0), new JLabel(bundle.getString("spaceGroup")) );
 		labels.put(new Integer(1), new JLabel(bundle.getString("tiling")) );
 		this._stepSlider.setLabelTable(labels);

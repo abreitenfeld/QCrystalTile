@@ -1,6 +1,6 @@
 package com.Softwareprojekt.Utilities;
 
-import com.Softwareprojekt.interfaces.Vector3D;
+//import com.Softwareprojekt.interfaces.Vector3D;
 
 /**
  * Created with IntelliJ IDEA.
