@@ -16,8 +16,19 @@ import com.Softwareprojekt.interfaces.Vector3D;
 
 import java.util.Random;
 
-
 public class TransformationTest {
+
+	@Test
+	public void specialCase() {
+		Matrix4D matr = new Matrix4D( new double[][] {
+			{1, 0, 0, 0 },
+			{0, -1, 0, 0 },
+			{0, 0, 1, 0 },
+			{0, 0, 0, 1 }
+		} );
+		Transformation t = new TransformationImpl( matr );
+		System.out.println( "test: " + t.getAsHomogeneous() );
+	}
 	
 	@Test
 	public void testConstructorRotationX() throws Exception {

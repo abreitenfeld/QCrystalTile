@@ -1,6 +1,9 @@
 package com.Softwareprojekt.SpaceGroup;
 
+import org.la4j.decomposition.SingularValueDecompositor;
+import org.la4j.factory.Factory;
 import org.la4j.factory.CRSFactory;
+import org.la4j.matrix.Matrix;
 import org.la4j.matrix.functor.MatrixFunction;
 import org.la4j.vector.functor.VectorFunction;
 import org.la4j.vector.Vector;
@@ -17,34 +20,75 @@ import com.Softwareprojekt.interfaces.Vector3D;
 public class TransformationImpl implements Transformation {
 
 	public TransformationImpl(Matrix3D linearPart, Vector3D translationPart) {
-		this.rotations = calcRotations( linearPart );
-		this.translationPart = translationPart;
-		
-		this.rasterize();
+		init(linearPart, translationPart);
 	}
 	
 	public TransformationImpl(Matrix4D homogeneousM) {
 		Matrix3D linearPart = new Matrix3D( homogeneousM.slice(0,0,3,3) );
 
-		this.rotations = calcRotations( linearPart );
-		this.translationPart = new Vector3D( homogeneousM.getColumn(3).sliceLeft(3));
+		Vector3D translationPart = new Vector3D( homogeneousM.getColumn(3).sliceLeft(3));
+		init(linearPart, translationPart);
 
-		this.rasterize();
+		/*this.rotVec = calcRotations( linearPart );
+		this.rasterize();*/
 	}
 	public TransformationImpl(
 			Vector3D rot, // rotation (in Degrees) around x-, y-, z-axis (applies z after y after x)
 			Vector3D translation
 	) {
-		this.rotations = 
+		this.isPureRot = true;
+		this.rotVec = 
 			new Vector3D( rot.transform( new VectorFunction() {
 				public double evaluate(int i, double val) {
 					return Math.toRadians(val);
 				}
 			}));
+		/*this.scale = new Vector3D( new double[] { 1, 1, 1 } );
+		this.rotations1 = new Vector3D( new double[] { 0, 0, 0 } );*/
+
 		this.translationPart = new Vector3D( translation );
 
 		this.rasterize();
+	}
 
+	private void init(Matrix3D linearPart_, Vector3D translationPart) {
+		Matrix3D linearPart = linearPart_;
+		isPureRot = true;
+		// 1. check if inproper rotation:
+		double det = linearPart.determinant();
+		if( det + 1 < 0.01 ) { // det == -1
+			isPureRot = false;
+			linearPart = new Matrix3D( linearPart.multiply(
+					pointReflMatr
+				));
+		}
+		else if( det - 1 < 0.01 || det < 0.01 ) {}
+		else throw new RuntimeException("det error: " + linearPart_.determinant());
+
+		// 2. set fields:
+		this.rotVec = calcRotations( linearPart );
+		this.translationPart = translationPart;
+		// 3. rasterize fields:
+		this.rasterize();
+		/* 1. svd
+		Matrix3D rot1, scale, rot2 = null;
+		//svdResult = null;
+		{
+			Factory matFactory = linearPart.factory(); //new BasicFactory();
+			SingularValueDecompositor svd = new SingularValueDecompositor(linearPart);
+			Matrix[] svdResult = svd.decompose(matFactory);
+			rot2 = new Matrix3D( svdResult[2] );
+			scale = new Matrix3D( svdResult[1] );
+			rot1 = new Matrix3D( svdResult[0] );
+		}
+		System.out.println("svd: ");
+		System.out.println( rot2 );
+		System.out.println( scale );
+		System.out.println( rot1 );*/
+		
+		//this.rotations1 = calcRotations( rot1 );
+		//this.rotVec = calcRotations( linearPart );
+		//this.scale = new Vector3D(new double[] { scale.get(0,0), scale.get(1,1), scale.get(2,2) });
 	}
 
 	private Vector3D calcRotations(Matrix3D linearPart) {
@@ -80,8 +124,7 @@ public class TransformationImpl implements Transformation {
 		return new Vector3D( new double[] { rotX, rotY, rotZ } );
 	}
 
-	@Override
-	public Matrix3D linearPart() {
+	private Matrix3D calcRotationMatr( Vector3D rotations ) {
 		//return linearPart;
 		double rotX = rotations.get(0);
 		double rotY = rotations.get(1) ;
@@ -112,15 +155,37 @@ public class TransformationImpl implements Transformation {
 		);
 	}
 
-	public Vector3D rotations() {
+	private Matrix3D calcScaleMatr( Vector3D scale ) {
+		return new Matrix3D( new double[][] {
+			{ scale.get(0), 0, 0 },
+			{ 0, scale.get(1), 0 },
+			{ 0, 0, scale.get(2) }
+		});
+	}
+
+	@Override
+	public Matrix3D linearPart() {
+		Matrix3D ret = calcRotationMatr( rotVec );
+		if( !isPureRot ) {
+			ret = new Matrix3D(
+				ret.multiply( pointReflMatr ));
+		}
+		return ret;
+		/*Matrix3D rotMatr2 = calcRotationMatr( rotVec );
+		Matrix3D rotMatr1 = calcRotationMatr( rotations1 );
+		Matrix3D scaleMatr = calcScaleMatr( scale );
+		return new Matrix3D( rotMatr2.multiply( scaleMatr.multiply( rotMatr1 ) ) );*/
+	}
+
+	/*public Vector3D rotVec() {
 		return new Vector3D(
-			rotations.transform( new VectorFunction() {
+			rotVec.transform( new VectorFunction() {
 				public double evaluate(int i, double val) {
 					return Math.toDegrees(val);
 				}
 			})
 		);
-	}
+	}*/
 
 	@Override
 	public Vector3D translationPart() {
@@ -151,9 +216,18 @@ public class TransformationImpl implements Transformation {
 	}
 	
 	private void rasterize() {
+		// raster rotVec:
 		for( int i=0; i<3; i++)
-			rotations.set(i, rasterRot(rotations.get(i)));
+			rotVec.set(i, rasterRot(rotVec.get(i)));
+		/*// raster scale:
+		for( int i=0; i<3; i++)
+			scale.set( i, rasterDouble(1, scale.get(i)) );
 
+		// raster rotations1:
+		for( int i=0; i<3; i++)
+			rotations1.set(i, rasterRot(rotations1.get(i)));*/
+
+		// raster translationPart:
 		final int translationDivision = 12; // => raster = 1/12
 		final double translationTolerance = 1/36; // has to be smaller than 1/translationDivision !
 		VectorFunction translationFunc = new VectorFunction () {
@@ -164,6 +238,12 @@ public class TransformationImpl implements Transformation {
 		this.translationPart.transform(translationFunc);
 
 	}
+
+	private double rasterDouble(int division, double val) {
+		double tolerance = 1/division / 4;
+		return Math.floor( val*division + tolerance ) / division;
+	}
+
 	private double rasterRot(double angle) {
 		int division = 12; // => raster = 1/12 
 
@@ -186,9 +266,20 @@ public class TransformationImpl implements Transformation {
 	
 	// rotation around x-,y-,z-axis in radians
 	// (z after y after x)
-	private Vector3D rotations ; 
-	//private Matrix3D linearPart;
+	private Vector3D rotVec ; 
+	private boolean isPureRot;
+	//private Vector3D rotations1 ; 
+	// scale (since this is a spacegroup, the scalation should always be
+	// a reflection (=> values either -1 or 1)
+	//private Vector3D scale;
+
 	private Vector3D translationPart;
+
+	private static Matrix3D pointReflMatr = new Matrix3D( new double[][] {
+					{-1,0,0},
+				    	{0,-1,0},
+				    	{0,0,-1}
+				});
 	
 	/*@Override
 	public int compareTo(Transformation o) {
