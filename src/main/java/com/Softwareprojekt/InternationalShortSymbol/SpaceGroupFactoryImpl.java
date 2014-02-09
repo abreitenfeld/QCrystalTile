@@ -19,11 +19,12 @@ import com.Softwareprojekt.interfaces.LatticeType;
 import com.Softwareprojekt.interfaces.Matrix4D;
 import com.Softwareprojekt.interfaces.SpaceGroup;
 import com.Softwareprojekt.interfaces.SpaceGroupFactory;
+import com.Softwareprojekt.interfaces.SpaceGroupID;
 import com.Softwareprojekt.interfaces.Transformation;
 
 
 
-public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
+public class SpaceGroupFactoryImpl implements SpaceGroupFactory<SpaceGroupID> {
 	JSONParser parser;
 	JSONArray spacegroups;
 	
@@ -35,15 +36,15 @@ public SpaceGroupFactoryImpl() throws FileNotFoundException, IOException, ParseE
 	}
 	
 
-	public SpaceGroup createSpaceGroup(ID key)throws InvalidSpaceGroupIDException{
+	public SpaceGroup createSpaceGroup(SpaceGroupID key)throws InvalidSpaceGroupIDException{
 		Set<Transformation>transformations= new HashSet<Transformation>();
 		int index=-1;
 		
 			try {
 				if (( index=find(key.stringRepr()))<0){throw new InvalidSpaceGroupIDException("wrong SpaceGroupID");}
 			} catch (IOException | ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new RuntimeException( "error while finding Spacegroup: " + e.getMessage() );
+
 			}
 	
 		JSONObject spgelem= (JSONObject)spacegroups.get(index);					// gesuchte Spacegroup
@@ -191,32 +192,31 @@ public SpaceGroupFactoryImpl() throws FileNotFoundException, IOException, ParseE
 		else{return 2;}
 	}
 	
-	public Set<ID> getIDbyCentering(LatticeType.CenteringType c) {
+	public Set<SpaceGroupID> getIDbyCentering(LatticeType.CenteringType c) {
 		String centering = String.valueOf(c);
-		Set<ID> res= new HashSet<ID>();
+		Set<SpaceGroupID> res= new HashSet<SpaceGroupID>();
 		for (int i = 0; i < spacegroups.size(); i++) {
 			JSONObject obj= (JSONObject)spacegroups.get(i);		
 			if(obj.get("LatticeType").equals(centering)){try {
 				res.add(new ID((String)obj.get("SpaceGroupName")));
 			} catch (InvalidSpaceGroupIDException e) {
-				// TODO Auto-generated catch block
-				System.out.println("wrong ID");;
+				throw new RuntimeException( "error while finding Spacegroup: " + e.getMessage() );
+
 			}}
 		}
 		return res;
 	}
 	
-	public Set<ID> getIDbySystem(LatticeType.System s){
+	public Set<SpaceGroupID> getIDbySystem(LatticeType.System s){
 		String system=String.valueOf(s);
-		Set<ID> res= new HashSet<ID>();
+		Set<SpaceGroupID> res= new HashSet<SpaceGroupID>();
 		for (int i = 0; i < spacegroups.size(); i++) {
 			JSONObject obj= (JSONObject)spacegroups.get(i);	
 			if(obj.get("CrystalSystem").equals(system)){
 				try {
 					res.add(new ID((String)obj.get("SpaceGroupName")));
 				} catch (InvalidSpaceGroupIDException e) {
-					// TODO Auto-generated catch block
-					System.out.println("wrong ID");
+					throw new RuntimeException( "error while finding Spacegroup: " + e.getMessage() );
 				}}
 		}
 		return res;
