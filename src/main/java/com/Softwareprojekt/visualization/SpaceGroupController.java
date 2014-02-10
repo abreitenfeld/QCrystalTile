@@ -1,8 +1,6 @@
 package com.Softwareprojekt.visualization;
 
-import java.util.EnumSet;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 import com.Softwareprojekt.InternationalShortSymbol.SpaceGroupFactoryImpl;
 import com.Softwareprojekt.InternationalShortSymbol.ID;
@@ -134,6 +132,7 @@ public class SpaceGroupController implements Controller<ID> {
 		    case VoronoiTesselation:
                 qMesh = QVoronoi.call(p);
                 qMesh = removeVertexFromMesh(qMesh.getVertices().get(0), qMesh);
+                qMesh = filterForMajorityCell(qMesh);
                 for (Polygon poly : qMesh.getFaces()) {
                     PointList cellPoints = new PointList();
                     cellPoints.addAll(poly.getVertices());
@@ -164,4 +163,45 @@ public class SpaceGroupController implements Controller<ID> {
 
 		return new ImmutableMesh(vertices, polys);
 	}
+    private static Mesh filterForMajorityCell(Mesh mesh){
+
+        Map< Integer, LinkedList<Polygon>> vertCount = new HashMap<Integer,LinkedList<Polygon>>();
+        Integer verts = 0;
+        Integer verts_count = 0;
+
+        for(Polygon cell : mesh.getFaces()){
+            verts = cell.getVertices().size();
+            if (vertCount.containsKey(verts)) {
+                vertCount.get(verts).add(cell);
+            }else {
+                LinkedList<Polygon> sameCell= new LinkedList<Polygon>();
+                sameCell.add(cell);
+                vertCount.put(verts,sameCell);
+            }
+        }
+       // Find most common Cell
+        Integer max = 0;
+        Integer  cellCount;
+        LinkedList<Polygon> mayorityGroup = new LinkedList<Polygon>();
+
+        for (Map.Entry<Integer, LinkedList<Polygon>> entry : vertCount.entrySet()){
+            cellCount = entry.getValue().size();
+           if (cellCount.compareTo(max) > 0){
+               max = cellCount;
+               mayorityGroup = entry.getValue();
+           }
+        }
+/* WIP
+        Integer sum = 0;
+        for (Polygon poly : mayorityGroup){
+            for(Vector3D cords1 : poly.getVertices()){
+
+                for (Vector3D cords2 : poly.getVertices()){
+                   sum = cords1.
+                }
+            }
+        }
+        */
+        return new ImmutableMesh(mesh.getVertices() ,mayorityGroup);
+    }
 }

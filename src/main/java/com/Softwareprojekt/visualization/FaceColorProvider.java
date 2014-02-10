@@ -30,7 +30,6 @@ public class FaceColorProvider implements ColorProvider {
             }
         }
         sum_dist = Double.valueOf(Math.round(sum_dist * 100));
-        System.out.println(sum_dist);
 
         if(!_facecolor.containsKey(sum_dist)){
             Color color = Color.random();

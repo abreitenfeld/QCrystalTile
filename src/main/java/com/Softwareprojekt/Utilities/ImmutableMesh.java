@@ -51,7 +51,7 @@ public class ImmutableMesh implements Mesh {
 		this._vertices = Collections.unmodifiableList(vertices);
 		this._polygons = Collections.unmodifiableList(polys);
 	}
-	
+
 	@Override
 	public List<Vector3D> getVertices() {
 		return this._vertices;
