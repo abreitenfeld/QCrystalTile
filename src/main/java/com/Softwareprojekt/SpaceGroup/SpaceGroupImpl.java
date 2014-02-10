@@ -14,7 +14,6 @@ import com.Softwareprojekt.interfaces.Vector3D;
 
 import java.util.HashSet;
 import java.util.List;
-import java.util.ArrayList;
 import java.util.Set;
 
 //import org.la4j.matrix.functor.MatrixFunction;

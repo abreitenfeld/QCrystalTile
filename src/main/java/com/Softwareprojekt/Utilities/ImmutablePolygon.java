@@ -4,7 +4,7 @@ import com.Softwareprojekt.interfaces.Polygon;
 import com.Softwareprojekt.interfaces.Vector3D;
 import java.util.*;
 
-import javax.swing.event.ListSelectionEvent;
+//import javax.swing.event.ListSelectionEvent;
 
 public class ImmutablePolygon implements Polygon {
 

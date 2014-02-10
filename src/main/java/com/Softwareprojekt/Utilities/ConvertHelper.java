@@ -6,7 +6,7 @@ import com.Softwareprojekt.interfaces.Mesh;
 import org.jzy3d.maths.Coord3d;
 import org.jzy3d.plot3d.primitives.Point;
 import org.jzy3d.plot3d.primitives.Polygon;
-import org.jzy3d.plot3d.primitives.pickable.Pickable;
+//import org.jzy3d.plot3d.primitives.pickable.Pickable;
 import org.jzy3d.plot3d.primitives.pickable.PickablePolygon;
 
 public class ConvertHelper {

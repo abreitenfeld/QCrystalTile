@@ -15,7 +15,6 @@ import com.Softwareprojekt.InternationalShortSymbol.ID;
 import com.Softwareprojekt.InternationalShortSymbol.InternationalShortSymbolEnum;
 import com.Softwareprojekt.InternationalShortSymbol.SpaceGroupFactoryImpl;
 import com.Softwareprojekt.interfaces.SpaceGroupEnumeration;
-import com.Softwareprojekt.SpaceGroup.SpaceGroupImpl;
 import com.Softwareprojekt.interfaces.InvalidSpaceGroupIDException;
 import com.Softwareprojekt.interfaces.SpaceGroup;
 import com.Softwareprojekt.interfaces.Transformation;

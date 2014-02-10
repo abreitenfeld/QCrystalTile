@@ -3,6 +3,8 @@ package com.Softwareprojekt.visualization;
 import com.Softwareprojekt.interfaces.Controller;
 import com.Softwareprojekt.interfaces.View;
 
+import com.Softwareprojekt.InternationalShortSymbol.ID;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -11,7 +13,7 @@ import javax.swing.*;
 
 public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener, View {
 
-	private final Controller _controller;
+	private final Controller<ID> _controller;
 	private final JToggleButton _btnVertices;
 	private final JToggleButton _btnWireframe;
 	private final JToggleButton _btnFace;
@@ -21,7 +23,7 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 	private static final Dimension BUTTON_SIZE = new Dimension(40, 40);
 	private static final Color Selected_Color = Color.green;
 	
-	public SpaceGroupViewSettingsPanel(Controller controller) {
+	public SpaceGroupViewSettingsPanel(Controller<ID> controller) {
 		super();
 		this._controller = controller;
 		

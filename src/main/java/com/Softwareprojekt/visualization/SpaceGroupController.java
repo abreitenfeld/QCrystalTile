@@ -1,17 +1,17 @@
 package com.Softwareprojekt.visualization;
 
 import java.util.EnumSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 
 import com.Softwareprojekt.InternationalShortSymbol.SpaceGroupFactoryImpl;
+import com.Softwareprojekt.InternationalShortSymbol.ID;
 import com.Softwareprojekt.Utilities.ImmutableMesh;
 
 import com.Softwareprojekt.Utilities.*;
 import com.Softwareprojekt.interfaces.*;
 
-public class SpaceGroupController implements Controller {
+public class SpaceGroupController implements Controller<ID> {
 
 	private final Model _model;
 	private final View _view;
@@ -23,7 +23,7 @@ public class SpaceGroupController implements Controller {
 	 * Factory method to create controller.
 	 * @return
 	 */
-	public static Controller createController() {
+	public static Controller<ID> createController() {
 		final SpaceGroupModel model = new SpaceGroupModel();
      	return new SpaceGroupController(model);
 	}
@@ -67,9 +67,9 @@ public class SpaceGroupController implements Controller {
     }
 
     @Override
-    public void setSpaceGroup(SpaceGroupID id) {
+    public void setSpaceGroup(ID id) {
         try {
-            final SpaceGroupFactory factory = new SpaceGroupFactoryImpl();
+            final SpaceGroupFactory<ID> factory = new SpaceGroupFactoryImpl();
             this._model.setSpaceGroup(factory.createSpaceGroup(id));
             this._view.invalidateView();
         }
@@ -112,7 +112,7 @@ public class SpaceGroupController implements Controller {
 	 */
 	@Override
 	public List<Mesh> calculateMesh() {
-		List mesh = new LinkedList();
+		List<Mesh> mesh = new LinkedList<Mesh>();
         Mesh qMesh;
 		PointList p = this._model.getCalculatedPoints();
 		// trigger qhull wrapper according current viz step

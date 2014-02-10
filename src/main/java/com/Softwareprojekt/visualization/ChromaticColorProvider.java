@@ -3,8 +3,8 @@ package com.Softwareprojekt.visualization;
 import com.Softwareprojekt.interfaces.ColorProvider;
 import com.Softwareprojekt.interfaces.Mesh;
 import org.jzy3d.colors.Color;
-import org.jzy3d.maths.Coord3d;
-import org.jzy3d.plot3d.primitives.Point;
+//import org.jzy3d.maths.Coord3d;
+//import org.jzy3d.plot3d.primitives.Point;
 import org.jzy3d.plot3d.primitives.Polygon;
 
 import java.util.*;

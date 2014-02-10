@@ -24,7 +24,7 @@ public class SpaceGroupModel implements Model {
 	SpaceGroupModel() {
 		super();
         try {
-            final SpaceGroupFactory factory = new SpaceGroupFactoryImpl();
+            final SpaceGroupFactory<ID> factory = new SpaceGroupFactoryImpl();
             this.setSpaceGroup(factory.createSpaceGroup(new ID(Default_Group_ID)));
         }
         catch(Exception e) {
@@ -70,7 +70,7 @@ public class SpaceGroupModel implements Model {
     protected void computePoints() {
         this._calculatedPoints.clear();
 
-        //this._calculatedPoints.gen_randomPoints(100);
+        //this._calculatedPoints.gen_randomPoints(20);
 
         // iterate over transformation set
         final List<Vector3D> spaceToFill = new ArrayList<Vector3D>();

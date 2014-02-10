@@ -1,6 +1,6 @@
 package com.Softwareprojekt.tests.SpaceGroupTest;
 
-import static org.junit.Assert.*;
+//import static org.junit.Assert.*;
 
 import org.junit.Test;
 
@@ -19,16 +19,7 @@ public class SpaceGroupAllInAllTest {
 
 	@Test
 	public void test() throws FileNotFoundException, IOException, ParseException, InvalidSpaceGroupIDException {
-		spaceToFill = new ArrayList<Vector3D>();
-		spaceToFill.add(
-			new Vector3D( new double[] { 2, 0, 0 }));
-		spaceToFill.add(
-			new Vector3D( new double[] { 0, 2, 0 }));
-		spaceToFill.add(
-			new Vector3D( new double[] { 0, 0, 2 }));
-
-		patternIterations = new Vector3D( new double[] { 1,1,1 } );
-
+		init();
 		SpaceGroupFactory<ID> factory = new SpaceGroupFactoryImpl();
 		SpaceGroupEnumeration<ID> sgEnum = new InternationalShortSymbolEnum();
 		for( int iSGIndex=0; iSGIndex<230; iSGIndex++ ) {
@@ -57,7 +48,8 @@ public class SpaceGroupAllInAllTest {
 
 	@Test
 	public void testCriticalSpaceGroups() throws FileNotFoundException, IOException, ParseException, InvalidSpaceGroupIDException {
-		testOnlyOneSG(5);
+		init();
+		testOnlyOneSG(209);
 	}
 
 	void testOnlyOneSG(int sgIndex) throws FileNotFoundException, IOException, ParseException, InvalidSpaceGroupIDException {
@@ -82,6 +74,18 @@ public class SpaceGroupAllInAllTest {
 			);
 			System.out.println("\tcreators size: " + sg.getGeneratingSet().size());
 			System.out.println("\tsize: " + transformations.size());
+	}
+
+	private void init() {
+		spaceToFill = new ArrayList<Vector3D>();
+		spaceToFill.add(
+			new Vector3D( new double[] { 1, 0, 0 }));
+		spaceToFill.add(
+			new Vector3D( new double[] { 0, 1, 0 }));
+		spaceToFill.add(
+			new Vector3D( new double[] { 0, 0, 1 }));
+
+		patternIterations = new Vector3D( new double[] { 1,1,1 } );
 	}
 
 	List<Vector3D> spaceToFill; 
