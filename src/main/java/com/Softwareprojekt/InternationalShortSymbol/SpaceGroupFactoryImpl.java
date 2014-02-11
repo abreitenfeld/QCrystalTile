@@ -19,7 +19,6 @@ import com.Softwareprojekt.interfaces.LatticeType;
 import com.Softwareprojekt.interfaces.Matrix4D;
 import com.Softwareprojekt.interfaces.SpaceGroup;
 import com.Softwareprojekt.interfaces.SpaceGroupFactory;
-import com.Softwareprojekt.interfaces.SpaceGroupID;
 import com.Softwareprojekt.interfaces.Transformation;
 
 
