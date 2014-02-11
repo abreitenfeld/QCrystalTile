@@ -24,7 +24,7 @@ import com.Softwareprojekt.interfaces.Transformation;
 
 
 
-public class SpaceGroupFactoryImpl implements SpaceGroupFactory<SpaceGroupID> {
+public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
 	JSONParser parser;
 	JSONArray spacegroups;
 	
@@ -36,7 +36,7 @@ public SpaceGroupFactoryImpl() throws FileNotFoundException, IOException, ParseE
 	}
 	
 
-	public SpaceGroup createSpaceGroup(SpaceGroupID key)throws InvalidSpaceGroupIDException{
+	public SpaceGroup createSpaceGroup(ID key)throws InvalidSpaceGroupIDException{
 		Set<Transformation>transformations= new HashSet<Transformation>();
 		int index=-1;
 		
@@ -192,9 +192,9 @@ public SpaceGroupFactoryImpl() throws FileNotFoundException, IOException, ParseE
 		else{return 2;}
 	}
 	
-	public Set<SpaceGroupID> getIDbyCentering(LatticeType.CenteringType c) {
+	public Set<ID> getIDbyCentering(LatticeType.CenteringType c) {
 		String centering = String.valueOf(c);
-		Set<SpaceGroupID> res= new HashSet<SpaceGroupID>();
+		Set<ID> res= new HashSet<ID>();
 		for (int i = 0; i < spacegroups.size(); i++) {
 			JSONObject obj= (JSONObject)spacegroups.get(i);		
 			if(obj.get("LatticeType").equals(centering)){try {
@@ -207,9 +207,9 @@ public SpaceGroupFactoryImpl() throws FileNotFoundException, IOException, ParseE
 		return res;
 	}
 	
-	public Set<SpaceGroupID> getIDbySystem(LatticeType.System s){
+	public Set<ID> getIDbySystem(LatticeType.System s){
 		String system=String.valueOf(s);
-		Set<SpaceGroupID> res= new HashSet<SpaceGroupID>();
+		Set<ID> res= new HashSet<ID>();
 		for (int i = 0; i < spacegroups.size(); i++) {
 			JSONObject obj= (JSONObject)spacegroups.get(i);	
 			if(obj.get("CrystalSystem").equals(system)){
