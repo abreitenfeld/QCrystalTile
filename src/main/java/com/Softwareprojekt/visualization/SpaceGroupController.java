@@ -138,6 +138,7 @@ public class SpaceGroupController implements Controller<ID> {
                     cellPoints.addAll(poly.getVertices());
                         mesh.add(QConvex.call(cellPoints));
                 }
+                mesh = filterByVolume(mesh);
 		    	break;
 	    }
 		return mesh;
@@ -163,11 +164,11 @@ public class SpaceGroupController implements Controller<ID> {
 
 		return new ImmutableMesh(vertices, polys);
 	}
+
     private static Mesh filterForMajorityCell(Mesh mesh){
 
         Map< Integer, LinkedList<Polygon>> vertCount = new HashMap<Integer,LinkedList<Polygon>>();
         Integer verts = 0;
-        Integer verts_count = 0;
 
         for(Polygon cell : mesh.getFaces()){
             verts = cell.getVertices().size();
@@ -191,17 +192,36 @@ public class SpaceGroupController implements Controller<ID> {
                mayorityGroup = entry.getValue();
            }
         }
-/* WIP
-        Integer sum = 0;
-        for (Polygon poly : mayorityGroup){
-            for(Vector3D cords1 : poly.getVertices()){
+        return new ImmutableMesh(mesh.getVertices() ,mayorityGroup);
+    }
 
-                for (Vector3D cords2 : poly.getVertices()){
-                   sum = cords1.
-                }
+    private static List<Mesh> filterByVolume(List<Mesh> mesh_list){
+        Map< Double, LinkedList<Mesh>> volume_sort= new HashMap<Double ,LinkedList<Mesh>>();
+        QMesh  current_mesh = null;
+        Double volume = null;
+
+        for (Mesh x : mesh_list){
+            current_mesh = (QMesh) x;
+            volume = current_mesh.getVolume();
+            if (volume_sort.containsKey(volume)) {
+                volume_sort.get(volume).add(x);
+            }else {
+                LinkedList<Mesh> sameCell = new LinkedList<Mesh>();
+                sameCell.add(x);
+                volume_sort.put(volume,sameCell);
             }
         }
-        */
-        return new ImmutableMesh(mesh.getVertices() ,mayorityGroup);
+        Integer max = 0;
+        Integer  cellCount;
+        LinkedList<Mesh> mayorityGroup = new LinkedList<Mesh>();
+
+        for (Map.Entry<Double , LinkedList<Mesh>> entry : volume_sort.entrySet()){
+            cellCount = entry.getValue().size();
+            if (cellCount.compareTo(max) > 0){
+                max = cellCount;
+                mayorityGroup = entry.getValue();
+            }
+        }
+        return mayorityGroup;
     }
 }

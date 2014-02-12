@@ -6,18 +6,24 @@ import java.util.LinkedList;
 public class QConvex extends CallCProgram {
 
     protected static String execPath = "qconvex";
-    final static boolean verbose = true;
+    final static boolean verbose = false;
+    final static boolean verbose_error = false;
+
 
     public static QMesh call(PointList points,String... args){
 
         LinkedList<Integer[]> indexs=new LinkedList<Integer[]>();
 
-        String[] cmd = new String[args.length+2];
+        String[] cmd = new String[args.length+4];
         cmd[0] = execPath;
         for(int i = 1; i <= args.length; i++){
             cmd[i] = args[i-1];
         }
         cmd[args.length+1] = "-o";
+        cmd[args.length+2] = "s";
+        cmd[args.length+3] = "FA";
+
+        double volume = 0;
 
         try{
             ProcessBuilder b = new ProcessBuilder(cmd);
@@ -32,6 +38,9 @@ public class QConvex extends CallCProgram {
 
             String line;
             int line_counter = 1;
+            boolean gotVolume = false;
+            String[] splitContainer = null;
+
 
             while ((line = input_stream.readLine()) != null) {
                 if( verbose){
@@ -47,15 +56,27 @@ public class QConvex extends CallCProgram {
 
             int error_line_counter = 0;
             while ((line = error_reader.readLine()) != null){
-               if (error_line_counter == 0){
-                   System.out.println("**Errors**");
-                   error_line_counter++;
-               }
-               System.out.println(line);
+                if (error_line_counter == 0 && verbose_error){
+                    System.out.println("**Errors**");
+                    error_line_counter++;
+                }
+                if (!gotVolume){
+                    line = line.replaceAll(" ","");
+                    if (line.contains(":")){
+                        splitContainer =  line.split(":");
+                        if( splitContainer[0].equals("Approximatevolume" ) || splitContainer[0].equals("Totalvolume")){
+                            gotVolume = true;
+                            volume = Double.parseDouble(splitContainer[1]);
+                        }
+                    }
+                }
+                if(verbose_error){
+                    System.out.println(line);
+                }
             }
 
    System.err.println("");
         } catch (IOException e){}
-        return new QMesh(points,indexs);
+        return new QMesh(points, indexs, volume);
     }
 }

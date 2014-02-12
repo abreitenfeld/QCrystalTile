@@ -38,5 +38,13 @@ public class ImmutablePolygon implements Polygon {
 	public List<Vector3D> getVertices() {
 		return this._vertices;
 	}
+    @Override
+    public String toString(){
+        String out ="";
+        for(Vector3D v : _vertices){
+            out = out.concat(v.toString() + "\n");
+        }
+        return out;
+    }
 
 }
