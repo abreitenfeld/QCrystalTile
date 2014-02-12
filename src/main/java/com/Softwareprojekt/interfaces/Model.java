@@ -9,5 +9,8 @@ public interface Model {
 	public Vector3D getPoint();
 	public void setPoint(Vector3D point);
 
+    public Vector3D getSpaceToFill();
+    public void setSpaceToFill(Vector3D space);
+
     public PointList getCalculatedPoints();
 }

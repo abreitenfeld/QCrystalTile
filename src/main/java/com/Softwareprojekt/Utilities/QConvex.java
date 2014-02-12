@@ -6,7 +6,7 @@ import java.util.LinkedList;
 public class QConvex extends CallCProgram {
 
     protected static String execPath = "qconvex";
-    final static boolean verbose = true;
+    final static boolean verbose = false;
 
     public static QMesh call(PointList points,String... args){
 

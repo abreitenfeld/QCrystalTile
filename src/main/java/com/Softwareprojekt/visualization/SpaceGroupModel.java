@@ -7,9 +7,6 @@ import com.Softwareprojekt.interfaces.*;
 
 import com.Softwareprojekt.SpaceGroup.PointSetCreatorImpl;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Set;
 
 public class SpaceGroupModel implements Model {
@@ -19,7 +16,7 @@ public class SpaceGroupModel implements Model {
     private boolean _recalculatePoints = true;
 	private final PointList _calculatedPoints = new PointList();
 
-	private PointSetCreator pointSetCalc = new PointSetCreatorImpl(
+	private final PointSetCreator _pointSetCalc = new PointSetCreatorImpl(
 		new Vector3D( new double[] { 2, 2, 2 } ),
 		new Vector3D( new double[] { 1, 1, 1 } )
 	);
@@ -60,11 +57,19 @@ public class SpaceGroupModel implements Model {
 
 	@Override
 	public void setPoint(Vector3D point) {
-        if (!this._point.equals(point)) {
-		    this._point = point;
-            this._recalculatePoints = true;
-        }
+        this._point = point;
+        this._recalculatePoints = true;
 	}
+
+    @Override
+    public Vector3D getSpaceToFill() {
+        return this._pointSetCalc.getSpaceToFill();
+    }
+
+    @Override
+    public void setSpaceToFill(Vector3D space) {
+        this._pointSetCalc.setSpaceToFill(space);
+    }
 
     @Override
     public PointList getCalculatedPoints() {
@@ -78,7 +83,7 @@ public class SpaceGroupModel implements Model {
     protected void computePoints() {
         this._calculatedPoints.clear();
 
-	Set<Vector3D> points = pointSetCalc.get(
+	Set<Vector3D> points = _pointSetCalc.get(
 		this.getSpaceGroup(),
 		this.getPoint()
 	);
