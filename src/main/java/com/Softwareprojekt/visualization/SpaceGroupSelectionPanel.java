@@ -77,7 +77,7 @@ public class SpaceGroupSelectionPanel extends Panel implements View, ActionListe
         final JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
         rightPanel.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
         rightPanel.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
-        this._informationLabel = new Label("some extra information");
+        this._informationLabel = new Label();
 
         leftPanel.add(new Label(bundle.getString("latticeSystem")));
         leftPanel.add(this._latticeSystemList);

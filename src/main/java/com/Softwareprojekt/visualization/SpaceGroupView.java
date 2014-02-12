@@ -207,8 +207,8 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
         miToggleBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                final boolean showBox = !_controller.getViewOption(Controller.ViewOptions.showAxeBox);
-                _controller.setViewOption(Controller.ViewOptions.showAxeBox, showBox);
+                final boolean showBox = !_controller.getViewOption(Controller.ViewOptions.ShowAxeBox);
+                _controller.setViewOption(Controller.ViewOptions.ShowAxeBox, showBox);
             }
         });
 
@@ -455,7 +455,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 
 		this._showSpacing = this._controller.getViewOption(Controller.ViewOptions.ShowSpacing);
 		this.calculateMeshPosition();
-        this._chart.getView().setAxeBoxDisplayed(this._controller.getViewOption(Controller.ViewOptions.showAxeBox));
+        this._chart.getView().setAxeBoxDisplayed(this._controller.getViewOption(Controller.ViewOptions.ShowAxeBox));
 
         // invalidate view options of sub controls
         for(View view : this._subViewControls) {

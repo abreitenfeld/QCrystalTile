@@ -14,8 +14,8 @@ public class SpaceGroupController implements Controller<ID> {
 	private final Model _model;
 	private final View _view;
 	private final EnumSet<ViewOptions> _options = EnumSet.of(ViewOptions.ShowWireframe, ViewOptions.ShowFaces
-            , ViewOptions.showAxeBox);
-	private VisualizationSteps _step = VisualizationSteps.VoronoiTesselation;
+            , ViewOptions.ShowAxeBox, ViewOptions.ShowUnifiedCells);
+	private VisualizationSteps _step = VisualizationSteps.ScatterPlot;
 
 	/**
 	 * Factory method to create controller.
@@ -90,11 +90,25 @@ public class SpaceGroupController implements Controller<ID> {
 	 * Enables or disables the specified view option.
 	 */
 	public void setViewOption(ViewOptions option, boolean value) {
-		if (value)
+		// update enum set
+        if (value)
 			this._options.add(option);
 		else
 			this._options.remove(option);
-		this._view.invalidateViewOptions();
+
+        final boolean invalidateView;
+        switch (option) {
+            case ShowUnifiedCells: invalidateView = true; break;
+            default: invalidateView = false;
+        }
+
+        // raise invalidation
+        if (invalidateView) {
+            this._view.invalidateView();
+        }
+        else {
+            this._view.invalidateViewOptions();
+        }
 	}
 	
 	@Override
@@ -138,7 +152,10 @@ public class SpaceGroupController implements Controller<ID> {
                     cellPoints.addAll(poly.getVertices());
                         mesh.add(QConvex.call(cellPoints));
                 }
-                mesh = filterByVolume(mesh);
+                // filter for majority mesh
+                if (this.getViewOption(ViewOptions.ShowUnifiedCells)) {
+                    mesh = filterByVolume(mesh);
+                }
 		    	break;
 	    }
 		return mesh;

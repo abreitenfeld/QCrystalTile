@@ -9,7 +9,6 @@ public class QConvex extends CallCProgram {
     final static boolean verbose = false;
     final static boolean verbose_error = false;
 
-
     public static QMesh call(PointList points,String... args){
 
         LinkedList<Integer[]> indexs=new LinkedList<Integer[]>();

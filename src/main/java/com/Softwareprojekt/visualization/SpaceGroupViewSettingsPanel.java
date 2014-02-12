@@ -8,6 +8,8 @@ import com.Softwareprojekt.InternationalShortSymbol.ID;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ResourceBundle;
 import javax.swing.*;
 
@@ -18,11 +20,15 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 	private final JToggleButton _btnWireframe;
 	private final JToggleButton _btnFace;
 	private final JToggleButton _btnSpacing;
+    private final JToggleButton _btnMajority;
     private final JToggleButton _btnLabeling;
+    private final Map<Component, String> _labels = new HashMap<Component, String>();
 	private final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
 	private static final Dimension BUTTON_SIZE = new Dimension(40, 40);
 	private static final Color Selected_Color = Color.green;
-	
+
+    private static final String ToolTip_Format = "%s (%s)";
+
 	public SpaceGroupViewSettingsPanel(Controller<ID> controller) {
 		super();
 		this._controller = controller;
@@ -35,43 +41,56 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 		this.setLayout(layout);
 		
 		_btnVertices = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("poly_vertice.png")));
-		_btnVertices.setToolTipText(bundle.getString("showVertices"));
 		styleButton(_btnVertices);
 		this.add(_btnVertices);
 
         _btnLabeling = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("mesh_labels.png")));
-        _btnLabeling.setToolTipText(bundle.getString("showLabeling"));
         styleButton(_btnLabeling);
         this.add(_btnLabeling);
 
-		_btnWireframe = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("poly_wire.png")));
-		_btnWireframe.setToolTipText(bundle.getString("showWireframe"));
+        _btnMajority = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("mesh_unified.png")));
+        styleButton(_btnMajority);
+        this.add(_btnMajority);
+
+        _btnWireframe = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("poly_wire.png")));
 		styleButton(_btnWireframe);
 		this.add(_btnWireframe);
 		
 		_btnFace = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("poly_face.png")));
-		_btnFace.setToolTipText(bundle.getString("showFaces"));
 		styleButton(_btnFace);
 		this.add(_btnFace);
 		
 		_btnSpacing = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("poly_spacing.png")));
-		_btnSpacing.setToolTipText(bundle.getString("showSpacing"));
 		styleButton(_btnSpacing);
 		this.add(_btnSpacing);
-		
+
+        this._labels.put(this._btnVertices, bundle.getString("showVertices"));
+        this._labels.put(this._btnLabeling, bundle.getString("showLabeling"));
+        this._labels.put(this._btnMajority, bundle.getString("showUnifiedCells"));
+        this._labels.put(this._btnWireframe, bundle.getString("showWireframe"));
+        this._labels.put(this._btnFace, bundle.getString("showFaces"));
+        this._labels.put(this._btnSpacing, bundle.getString("showSpacing"));
+
 		this.invalidateViewOptions();
 		
 		// attach action listener
 		this._btnVertices.addActionListener(this);
         this._btnLabeling.addActionListener(this);
+        this._btnMajority.addActionListener(this);
 		this._btnWireframe.addActionListener(this);
 		this._btnFace.addActionListener(this);
 		this._btnSpacing.addActionListener(this);
 	}
-	
+
+    private void updateToggleButton(JToggleButton btn, boolean selected) {
+        final String toggleStatus = selected ? bundle.getString("on") : bundle.getString("off");
+        btn.setSelected(selected);
+        btn.setToolTipText(String.format(ToolTip_Format, this._labels.get(btn), toggleStatus));
+    }
+
 	private static void styleButton(AbstractButton btn) {
 		btn.setPreferredSize(BUTTON_SIZE);
-		btn.setFocusable(false);	
+		btn.setFocusable(false);
 	}
 
 	@Override
@@ -91,6 +110,9 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 		else if (e.getSource() == _btnSpacing) {
 			this._controller.setViewOption(Controller.ViewOptions.ShowSpacing, _btnSpacing.isSelected());
 		}
+        else if (e.getSource() == _btnMajority) {
+            this._controller.setViewOption(Controller.ViewOptions.ShowUnifiedCells, _btnMajority.isSelected());
+        }
 	}
 
 	@Override
@@ -100,11 +122,12 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 
 	@Override
 	public void invalidateViewOptions() {
-		this._btnVertices.setSelected(this._controller.getViewOption(Controller.ViewOptions.ShowVertices));
-        this._btnLabeling.setSelected(this._controller.getViewOption(Controller.ViewOptions.ShowLabeledMeshes));
-		this._btnWireframe.setSelected(this._controller.getViewOption(Controller.ViewOptions.ShowWireframe));
-		this._btnFace.setSelected(this._controller.getViewOption(Controller.ViewOptions.ShowFaces));
-		this._btnSpacing.setSelected(this._controller.getViewOption(Controller.ViewOptions.ShowSpacing));
+        updateToggleButton(this._btnVertices, this._controller.getViewOption(Controller.ViewOptions.ShowVertices));
+        updateToggleButton(this._btnLabeling, this._controller.getViewOption(Controller.ViewOptions.ShowLabeledMeshes));
+        updateToggleButton(this._btnWireframe, this._controller.getViewOption(Controller.ViewOptions.ShowWireframe));
+        updateToggleButton(this._btnFace, this._controller.getViewOption(Controller.ViewOptions.ShowFaces));
+        updateToggleButton(this._btnSpacing, this._controller.getViewOption(Controller.ViewOptions.ShowSpacing));
+        updateToggleButton(this._btnMajority, this._controller.getViewOption(Controller.ViewOptions.ShowUnifiedCells));
 	}
 	
 }

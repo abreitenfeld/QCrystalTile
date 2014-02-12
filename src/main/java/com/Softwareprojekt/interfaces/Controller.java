@@ -22,6 +22,9 @@ public interface Controller<ID extends SpaceGroupID> {
 
 	List<Mesh> calculateMesh();
 	
-	public enum ViewOptions { ShowVertices, ShowWireframe, ShowFaces, ShowSpacing, showAxeBox, ShowLabeledMeshes };
+	public enum ViewOptions {
+        ShowVertices, ShowWireframe, ShowFaces, ShowSpacing,
+        ShowAxeBox, ShowLabeledMeshes, ShowUnifiedCells
+    };
 	public enum VisualizationSteps { ScatterPlot, ConvexHull, DelaunayTriangulation, VoronoiTesselation };
 }
