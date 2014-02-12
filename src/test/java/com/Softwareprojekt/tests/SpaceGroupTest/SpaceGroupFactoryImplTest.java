@@ -47,6 +47,34 @@ public class SpaceGroupFactoryImplTest {
 		}
 	}
 
+	@Test
+	public void testSpecificProblem() throws InvalidSpaceGroupIDException, ParseException, IOException {
+
+		Map<ID,Integer> checkNumbers = getMapIDToGeneratorSize();
+
+		int groupIndex = 195 - 1;
+		SpaceGroupEnumeration<ID> sgEnum = new InternationalShortSymbolEnum();
+		SpaceGroupFactoryImpl factory = new SpaceGroupFactoryImpl();
+
+		ID id = sgEnum.get(groupIndex);
+		//System.out.println( id.stringRepr() );
+		SpaceGroup sp= factory.createSpaceGroup(id);
+		Set<Transformation> set = sp.getGeneratingSet();
+		for( Transformation t : set ) {
+			System.out.println( t.getAsHomogeneous() );
+		}
+
+		int expectedCreatorSize = (Integer )checkNumbers.get(id);
+
+
+
+		assertEquals(
+			"group " + (groupIndex+1) + " (" + id.stringRepr() + "): checking number of transformations in the generating set",
+			expectedCreatorSize,
+			set.size()
+		);
+	}
+
 	private Map<ID,Integer> getMapIDToGeneratorSize() {
 		Map<ID,Integer> ret = new HashMap<ID,Integer>();
 		/*

@@ -232,7 +232,8 @@ public class TransformationImpl implements Transformation {
 	public boolean equals(Object other_) {
 		if( other_ instanceof Transformation) {
 			Transformation other = (Transformation )other_;
-			return this.getAsHomogeneous().equals(other.getAsHomogeneous());
+			return 
+				this.getAsHomogeneous().equals(other.getAsHomogeneous());
 		}
 		return false;
 	}
