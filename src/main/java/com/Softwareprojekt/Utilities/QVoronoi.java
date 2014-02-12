@@ -25,7 +25,7 @@ public class QVoronoi extends CallCProgram{
         cmd[args.length+1]="-o";
         try{
             ProcessBuilder b = new ProcessBuilder(cmd);
-            Process p=b.start();
+            Process p = b.start();
 
             BufferedReader br = new BufferedReader(new InputStreamReader(p.getInputStream()));
             BufferedReader error_reader= new BufferedReader(new InputStreamReader(p.getErrorStream()));
@@ -36,8 +36,8 @@ public class QVoronoi extends CallCProgram{
 
             String line;
 
-            int line_counter=1;
-            int verts=0;
+            int line_counter = 1;
+            int verts = 0;
 
             // Parse QVoronoi's Output to QMesh Objet
             while ((line = br.readLine()) != null) {
@@ -46,13 +46,16 @@ public class QVoronoi extends CallCProgram{
                 }
                 if(line_counter==2){
                     String[] format=line.split("\\s+");
-                    verts=Integer.parseInt(format[0]);
+                    verts = Integer.parseInt(format[0]);
                 }else if(line_counter>2 && line_counter<=verts+2){
                     double[] str2int=String2Double(line);
                     points_voro.add(new Vector3D(str2int));
                 }else if(line_counter>verts+2){
                     Integer[] index = String2Ints(line);
-                    indexs.add(index);
+                    // Killing random zeros line of qvoronoi
+                    if (index.length > 1){
+                        indexs.add(index);
+                    }
                 }
                 line_counter++;
             }

@@ -42,8 +42,8 @@ public SpaceGroupFactoryImpl() throws FileNotFoundException, IOException, ParseE
 			try {
 				if (( index=find(key.stringRepr()))<0){throw new InvalidSpaceGroupIDException("wrong SpaceGroupID");}
 			} catch (IOException | ParseException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				throw new RuntimeException( "error while finding Spacegroup: " + e.getMessage() );
+
 			}
 	
 		JSONObject spgelem= (JSONObject)spacegroups.get(index);					// gesuchte Spacegroup
@@ -199,8 +199,8 @@ public SpaceGroupFactoryImpl() throws FileNotFoundException, IOException, ParseE
 			if(obj.get("LatticeType").equals(centering)){try {
 				res.add(new ID((String)obj.get("SpaceGroupName")));
 			} catch (InvalidSpaceGroupIDException e) {
-				// TODO Auto-generated catch block
-				System.out.println("wrong ID");;
+				throw new RuntimeException( "error while finding Spacegroup: " + e.getMessage() );
+
 			}}
 		}
 		return res;
@@ -215,8 +215,7 @@ public SpaceGroupFactoryImpl() throws FileNotFoundException, IOException, ParseE
 				try {
 					res.add(new ID((String)obj.get("SpaceGroupName")));
 				} catch (InvalidSpaceGroupIDException e) {
-					// TODO Auto-generated catch block
-					System.out.println("wrong ID");
+					throw new RuntimeException( "error while finding Spacegroup: " + e.getMessage() );
 				}}
 		}
 		return res;
