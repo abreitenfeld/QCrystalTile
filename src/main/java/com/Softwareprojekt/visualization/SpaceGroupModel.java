@@ -5,9 +5,12 @@ import com.Softwareprojekt.InternationalShortSymbol.SpaceGroupFactoryImpl;
 import com.Softwareprojekt.Utilities.PointList;
 import com.Softwareprojekt.interfaces.*;
 
+import com.Softwareprojekt.SpaceGroup.PointSetCreatorImpl;
+
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 public class SpaceGroupModel implements Model {
 
@@ -15,6 +18,11 @@ public class SpaceGroupModel implements Model {
 	private Vector3D _point = new Vector3D(new double[] { 0.5, 0.5, 0.5 });
     private boolean _recalculatePoints = true;
 	private final PointList _calculatedPoints = new PointList();
+
+	private PointSetCreator pointSetCalc = new PointSetCreatorImpl(
+		new Vector3D( new double[] { 2, 2, 2 } ),
+		new Vector3D( new double[] { 1, 1, 1 } )
+	);
 
     private static final String Default_Group_ID = "C222(1)";
 
@@ -70,7 +78,16 @@ public class SpaceGroupModel implements Model {
     protected void computePoints() {
         this._calculatedPoints.clear();
 
-        //this._calculatedPoints.gen_randomPoints(20);
+	Set<Vector3D> points = pointSetCalc.get(
+		this.getSpaceGroup(),
+		this.getPoint()
+	);
+	// has to be copied into "PointList" class:
+	for( Vector3D point : points ) {
+		this._calculatedPoints.add( point );
+	}
+
+        /*//this._calculatedPoints.gen_randomPoints(20);
 
         // iterate over transformation set
         final List<Vector3D> spaceToFill = new ArrayList<Vector3D>();
@@ -89,7 +106,8 @@ public class SpaceGroupModel implements Model {
 		while(iter.hasNext()) {
 			Transformation transform = iter.next();
             this._calculatedPoints.add(transform.apply(this.getPoint()));
-		}
+		}*/
+
     }
 
 }
