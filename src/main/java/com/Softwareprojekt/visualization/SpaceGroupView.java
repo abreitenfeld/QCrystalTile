@@ -51,6 +51,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
     protected final Point _originPoint;
     protected volatile boolean _showSpacing = false;
     protected volatile float _currentSpacing = Min_Spacing_Factor;
+    protected float _currentMaxSpacing = 3f;
     protected final Map<Mesh, MeshInformation> _meshes = new HashMap<Mesh, MeshInformation>();
 
     // color providers
@@ -90,7 +91,6 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
     public static final String Label_Format = "[ V: %s, F: %s ]";
 	public static final float Origin_Point_Size = 15f;	
 	public static final float Min_Spacing_Factor = 1f;
-	public static final float Max_Spacing_Factor = 3f;
 	public static final float Wireframe_Width = 1.5f;
 	public static final float Vertex_Size = 5f;
 	public static final Color Vertex_Color = new Color(255,100,100);
@@ -117,7 +117,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
         this.setMinimumSize(Min_Size);
 		this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(Foreground_Color));
 		this._showSpacing = _controller.getViewOption(Controller.ViewOptions.ShowSpacing);
-		this._currentSpacing = this._showSpacing ? Max_Spacing_Factor : Min_Spacing_Factor;
+		this._currentSpacing = this._showSpacing ? _currentMaxSpacing : Min_Spacing_Factor;
         // window listener
         this.addWindowListener(new WindowAdapter() {
             @Override
@@ -166,19 +166,26 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 		// timer for tweening the current spacing value
 		final Timer timer = new Timer();
 		timer.schedule(new TimerTask() {
-			final float StepWith = 0.3f;
 			final float MinScale = 0.2f;
-			
+            final float StepWith = 0.3f;
+
 			@Override
 			public void run() {
-				if (_showSpacing && _currentSpacing < Max_Spacing_Factor) {
-					// increase spacing if spacing is turned on
-					float spacing = Math.max((float)(Math.log10(_currentSpacing) / Math.log10(Max_Spacing_Factor)), MinScale) * StepWith;
-					setSpacing(Math.min(_currentSpacing + spacing, Max_Spacing_Factor));
+				if (_showSpacing) {
+                    if (_currentSpacing < _currentMaxSpacing) {
+                        // increase spacing if spacing is turned on
+                        float spacing = Math.max((float)(Math.log10(_currentSpacing) / Math.log10(_currentMaxSpacing)), MinScale) * StepWith;
+                        setSpacing(Math.min(_currentSpacing + spacing, _currentMaxSpacing));
+                    }
+                    else if (_currentSpacing > _currentMaxSpacing) {
+                        // decrease  the spacing if spacing is turned off
+                        float spacing = Math.max((float)(Math.log10(_currentMaxSpacing) / Math.log10(_currentSpacing)), MinScale) * StepWith;
+                        setSpacing(Math.max(_currentSpacing - spacing, _currentMaxSpacing));
+                    }
 				}
 				else if (!_showSpacing && _currentSpacing > Min_Spacing_Factor) {
 					// decrease  the spacing if spacing is turned off
-					float spacing = Math.max((float)(Math.log10(_currentSpacing) / Math.log10(Max_Spacing_Factor)), MinScale) * StepWith;
+					float spacing = Math.max((float)(Math.log10(_currentSpacing) / Math.log10(_currentMaxSpacing)), MinScale) * StepWith;
 					setSpacing(Math.max(_currentSpacing - spacing, Min_Spacing_Factor));
 				}
 			}
@@ -240,7 +247,24 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
         mnuFaceTinting.add(miChromaticColors);
         mnuFaceTinting.add(miFaceColors);
 
+        // crate spacing menu items
+        final JMenu mnuCellSpacing = new JMenu(bundle.getString("cellSpacing"));
+        for (int i = 1; i <= 8; i++) {
+            final float spacingValue = 1f + (float)i *0.5f;
+            final JMenuItem miSpacing = new JMenuItem(spacingValue + "x");
+            miSpacing.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    _currentMaxSpacing = spacingValue;
+                    if (!_controller.getViewOption(Controller.ViewOptions.ShowSpacing)) {
+                        _controller.setViewOption(Controller.ViewOptions.ShowSpacing, true);
+                    }
+                }
+            });
+            mnuCellSpacing.add(miSpacing);
+        }
         mnu.add(mnuFaceTinting);
+        mnu.add(mnuCellSpacing);
         mnu.addSeparator();
         mnu.add(miToggleBox);
         mnu.add(miShowAll);

@@ -15,7 +15,7 @@ public class SpaceGroupController implements Controller<ID> {
 	private final View _view;
 	private final EnumSet<ViewOptions> _options = EnumSet.of(ViewOptions.ShowWireframe, ViewOptions.ShowFaces
             , ViewOptions.ShowAxeBox, ViewOptions.ShowUnifiedCells);
-	private VisualizationSteps _step = VisualizationSteps.ScatterPlot;
+	private VisualizationSteps _step = VisualizationSteps.VoronoiTesselation;
 
 	/**
 	 * Factory method to create controller.
@@ -146,7 +146,9 @@ public class SpaceGroupController implements Controller<ID> {
 		    case VoronoiTesselation:
                 qMesh = QVoronoi.call(p);
                 qMesh = removeVertexFromMesh(qMesh.getVertices().get(0), qMesh);
-                qMesh = filterForMajorityCell(qMesh);
+                if (this.getViewOption(ViewOptions.ShowUnifiedCells)) {
+                    qMesh = filterForMajorityCell(qMesh);
+                }
                 for (Polygon poly : qMesh.getFaces()) {
                     PointList cellPoints = new PointList();
                     cellPoints.addAll(poly.getVertices());
