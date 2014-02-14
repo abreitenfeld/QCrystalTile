@@ -14,8 +14,10 @@ public class SpaceGroupController implements Controller<ID> {
 	private final Model _model;
 	private final View _view;
 	private final EnumSet<ViewOptions> _options = EnumSet.of(ViewOptions.ShowWireframe, ViewOptions.ShowFaces
-            , ViewOptions.ShowAxeBox, ViewOptions.ShowUnifiedCells);
+            , ViewOptions.ShowAxeBox);
 	private VisualizationSteps _step = VisualizationSteps.VoronoiTesselation;
+
+    private static final String Default_Group_ID = "F23";
 
 	/**
 	 * Factory method to create controller.
@@ -32,6 +34,13 @@ public class SpaceGroupController implements Controller<ID> {
 	 */
 	private SpaceGroupController(Model model) {
 		this._model = model;
+
+        try {
+            this.setSpaceGroup(new ID(Default_Group_ID));
+        }
+        catch (InvalidSpaceGroupIDException e) {
+            e.printStackTrace();
+        }
 		this._view = new SpaceGroupView(this);
 		this._view.invalidateView();
 	}

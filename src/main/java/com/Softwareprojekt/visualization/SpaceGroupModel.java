@@ -21,20 +21,11 @@ public class SpaceGroupModel implements Model {
 		new Vector3D( new double[] { 1, 1, 1 } )
 	);
 
-    private static final String Default_Group_ID = "C222(1)";
-
 	/**
 	 * Constructor of model.
 	 */
 	SpaceGroupModel() {
 		super();
-        try {
-            final SpaceGroupFactory<ID> factory = new SpaceGroupFactoryImpl();
-            this.setSpaceGroup(factory.createSpaceGroup(new ID(Default_Group_ID)));
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
 	}
 	
 	@Override
