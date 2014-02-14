@@ -19,16 +19,20 @@ public class Demo {
         p.push(new Vector3D(new double[]{2.0d,2.0d,2.0d}));
         p.push(new Vector3D(new double[]{1.0d,2.0d,4.0d}));
         p.push(new Vector3D(new double[]{1.0d,3.0d,5.0d}));
-*/
+        */
         System.out.println(p.toString());
+        try {
+            QMesh m1= QConvex.call(p," ");
+            System.out.println(m1.getFaces());
 
-        QMesh m1= QConvex.call(p," ");
-        System.out.println(m1.getFaces());
+            QMesh m2= QDelaunay.call(p," ");
+            System.out.println(m2.getFaces());
 
-        QMesh m2= QDelaunay.call(p," ");
-        System.out.println(m2.getFaces());
-
-        QMesh m3=QVoronoi.call(p," ");
-        System.out.println(m3.getVertices());
+            QMesh m3=QVoronoi.call(p," ");
+            System.out.println(m3.getVertices());
+        }
+        catch(QHullException e) {
+            e.printStackTrace();
+        }
     }
 }

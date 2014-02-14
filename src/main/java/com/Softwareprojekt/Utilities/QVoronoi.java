@@ -10,7 +10,7 @@ public class QVoronoi extends CallCProgram{
     protected static String execPath = "qvoronoi";
     final static boolean verbose = false;
 
-    public static QMesh call(PointList points,String... args){
+    public static QMesh call(PointList points,String... args) throws QHullException {
 
         LinkedList<Integer[]> indexs=new LinkedList<Integer[]>();
         PointList points_voro=new PointList();
@@ -61,7 +61,7 @@ public class QVoronoi extends CallCProgram{
             }
 
             int error_line_counter = 0;
-            while ((line=error_reader.readLine()) !=null){
+            while ((line=error_reader.readLine()) != null){
                 if (error_line_counter == 0){
                     System.out.println("**Errors**");
                     error_line_counter++;
@@ -69,7 +69,9 @@ public class QVoronoi extends CallCProgram{
                 System.out.println(line);
             }
 
-        } catch (IOException e){}
+        } catch (IOException e){
+            throw new QHullException(execPath);
+        }
         return new QMesh(points_voro,indexs);
     }
 }

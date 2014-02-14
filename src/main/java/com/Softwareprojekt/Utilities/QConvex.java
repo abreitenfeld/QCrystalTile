@@ -9,7 +9,7 @@ public class QConvex extends CallCProgram {
     final static boolean verbose = false;
     final static boolean verbose_error = false;
 
-    public static QMesh call(PointList points,String... args){
+    public static QMesh call(PointList points,String... args)  throws QHullException {
 
         LinkedList<Integer[]> indexs=new LinkedList<Integer[]>();
 
@@ -74,8 +74,10 @@ public class QConvex extends CallCProgram {
                 }
             }
 
-   System.err.println("");
-        } catch (IOException e){}
+            System.err.println("");
+        } catch (IOException e){
+            throw new QHullException(execPath);
+        }
         return new QMesh(points, indexs, volume);
     }
 }

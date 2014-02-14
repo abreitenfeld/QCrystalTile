@@ -9,7 +9,7 @@ public class QDelaunay extends CallCProgram {
     protected static String execPath = "qdelaunay";
     final static boolean verbose = false;
 
-    public static QMesh call(PointList points,String... args){
+    public static QMesh call(PointList points,String... args)  throws QHullException {
 
         LinkedList<Integer[]> indexs=new LinkedList<Integer[]>();
         PointList points_voro=new PointList();
@@ -62,7 +62,9 @@ public class QDelaunay extends CallCProgram {
                 }
                 System.out.println(line);
             }
-        } catch (IOException e){}
+        } catch (IOException e){
+            throw new QHullException(execPath);
+        }
         return new QMesh(points_voro,indexs);
     }
 }
