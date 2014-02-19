@@ -19,7 +19,7 @@ public class LoaderTest {
 	 */
 	public static void main(String[] args) throws FileNotFoundException, IOException, ParseException {
 		JSONParser parser=new JSONParser();
-		JSONArray spacegroups  = (JSONArray) parser.parse(new FileReader("src/main/resources/SpaceGroups.txt"));
+		JSONArray spacegroups  = (JSONArray) parser.parse(new FileReader("src/main/resources/SpaceGroups.json"));
 		for (int i=0;i<spacegroups.size();i++){
 			   JSONObject elem=(JSONObject)spacegroups.get(i);
 			   String name = (String)elem.get("SpaceGroupName");

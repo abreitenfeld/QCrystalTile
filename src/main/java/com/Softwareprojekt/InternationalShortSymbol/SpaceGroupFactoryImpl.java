@@ -30,7 +30,7 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
 
 public SpaceGroupFactoryImpl() throws FileNotFoundException, IOException, ParseException {
 	parser=new JSONParser();
-	spacegroups  = (JSONArray) parser.parse(new FileReader("src/main/resources/SpaceGroups.txt"));
+	spacegroups  = (JSONArray) parser.parse(new FileReader("src/main/resources/SpaceGroups.json"));
 	return;
 	}
 	
