@@ -2,7 +2,7 @@ package com.Softwareprojekt.interfaces;
 
 import java.util.List;
 
-public interface Controller<ID extends SpaceGroupID> {
+public interface Controller<I extends SpaceGroupID> {
 
     Model getModel();
 	View getView();
@@ -11,8 +11,9 @@ public interface Controller<ID extends SpaceGroupID> {
 	void setOriginPoint(Vector3D point);
 
     void setSpaceGroup(SpaceGroup spaceGroup);
-    void setSpaceGroup(ID id);
+    void setSpaceGroup(I id);
     SpaceGroup getSpaceGroup();
+    I getSpaceGroupID();
 
 	void setViewOption(ViewOptions option, boolean value);
 	boolean getViewOption(ViewOptions option);

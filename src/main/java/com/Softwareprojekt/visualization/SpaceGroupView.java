@@ -19,6 +19,7 @@ import org.jzy3d.chart.factories.AWTChartComponentFactory;
 import org.jzy3d.chart.factories.IChartComponentFactory;
 import org.jzy3d.colors.Color;
 //import org.jzy3d.maths.BoundingBox3d;
+import org.jzy3d.maths.Coord2d;
 import org.jzy3d.maths.Coord3d;
 import org.jzy3d.maths.Rectangle;
 import org.jzy3d.picking.IObjectPickedListener;
@@ -35,6 +36,9 @@ import org.jzy3d.plot3d.text.DrawableTextWrapper;
 import org.jzy3d.plot3d.text.align.Halign;
 import org.jzy3d.plot3d.text.align.Valign;
 import org.jzy3d.plot3d.text.drawable.DrawableTextBitmap;
+import org.jzy3d.plot3d.text.drawable.DrawableTextTexture;
+import org.jzy3d.plot3d.text.drawable.cells.DrawableTextCell;
+import org.jzy3d.plot3d.text.drawable.cells.TextCellRenderer;
 
 import javax.swing.*;
 
@@ -53,7 +57,8 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
     protected volatile float _currentSpacing = Min_Spacing_Factor;
     protected float _currentMaxSpacing = 3f;
     protected final Map<Mesh, MeshInformation> _meshes = new HashMap<Mesh, MeshInformation>();
-
+    protected boolean _workerRunning = false;
+    protected volatile  CalculationWorker _currentWorker;
     // color providers
     protected ColorProvider _currentColorProvider;
     protected final ColorProvider _monoChromaticColors;
@@ -104,6 +109,29 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
     public static final Dimension Min_Size = new Dimension(500, 450);
     public static final String Frame_Title = "QCrystalTile";
 
+    protected class CalculationWorker extends  SwingWorker<List<Mesh>, Object> {
+
+        @Override
+        protected List<Mesh> doInBackground() throws Exception {
+            return _controller.calculateMesh();
+        }
+
+        @Override
+        protected void done() {
+            try {
+                if (_currentWorker == this) {
+                    updateView(this.get());
+                    _workerRunning = false;
+                    _currentWorker = null;
+                }
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+    }
+
 	/**
 	 * Constructor of view.
 	 * @param controller
@@ -142,6 +170,9 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 		this._originPoint = new Point(new Coord3d(), Color.BLUE, Origin_Point_Size);
 		this._originPoint.setDisplayed(true);
 		this._chart.addDrawable(this._originPoint);
+        // create info text
+        //TextCellRenderer cellRenderer = new TextCellRenderer(4, "DrawableTextCell(TextCellRenderer)", new Font("Serif", Font.PLAIN, 16));
+        //this._chart.addDrawable(new DrawableTextCell(cellRenderer, new Coord2d(0,14), new Coord2d(7,1)));
 
         // setup color providers
         this._monoChromaticColors = new MonochromaticColorProvider(Faces_Color);
@@ -153,13 +184,10 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
         final SpaceGroupSelectionPanel selectionPanel = new SpaceGroupSelectionPanel(this._controller);
 		this.add(selectionPanel, BorderLayout.PAGE_START);
 
-        final SpaceGroupSettingsPanel settingPanel = new SpaceGroupSettingsPanel(this._controller);
-        this.add(settingPanel, BorderLayout.PAGE_END);
-        
         final SpaceGroupViewSettingsPanel viewSettingsPanel = new SpaceGroupViewSettingsPanel(this._controller);
         this.add(viewSettingsPanel, BorderLayout.LINE_END);
 
-        this._subViewControls = new View[] {selectionPanel, settingPanel, viewSettingsPanel};
+        this._subViewControls = new View[] {selectionPanel, viewSettingsPanel};
 
 		super.initialize(_chart, Default_Size, Frame_Title);
 
@@ -277,6 +305,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
     protected void setColorProvider(ColorProvider colorProvider) {
         if (this._currentColorProvider != colorProvider) {
             this._currentColorProvider = colorProvider;
+            this._currentColorProvider.reset();
             // update face color
             Iterator<Mesh> iter = this._meshes.keySet().iterator();
             while(iter.hasNext()) {
@@ -380,7 +409,6 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
             }
             // calculate center of polygon
             info.Centroid = polyCenter.div(info.Vertices.size());
-            //this._chart.addDrawable(new DrawableTextBitmap("test", info.Centroid.getXY(), Color.RED));
             totalVertexCount += info.Vertices.size();
         }
         // calculate center of box
@@ -389,20 +417,26 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 	
 	@Override
 	public void invalidateView() {
-		final boolean showVertices =  this._controller.getVisualizationStep() == Controller.VisualizationSteps.ScatterPlot
+        if (!this._workerRunning) {
+            this._workerRunning = true;
+            this._currentWorker = new CalculationWorker();
+            this._currentWorker.execute();
+        }
+	}
+
+    private synchronized void updateView(List<Mesh> meshes) {
+        final List<AbstractDrawable> drawables = new LinkedList<AbstractDrawable>();
+        final boolean showVertices =  this._controller.getVisualizationStep() == Controller.VisualizationSteps.ScatterPlot
                 || this._controller.getViewOption(Controller.ViewOptions.ShowVertices);
-		final boolean showFaces = this._controller.getViewOption(Controller.ViewOptions.ShowFaces);
-		final boolean showWireframe = this._controller.getViewOption(Controller.ViewOptions.ShowWireframe);
+        final boolean showFaces = this._controller.getViewOption(Controller.ViewOptions.ShowFaces);
+        final boolean showWireframe = this._controller.getViewOption(Controller.ViewOptions.ShowWireframe);
         final boolean showLabel = this._controller.getVisualizationStep() != Controller.VisualizationSteps.ScatterPlot
                 && this._controller.getViewOption(Controller.ViewOptions.ShowLabeledMeshes);
 
         this.clearScene();
         this.invalidateViewOptions();
 
-        final List<AbstractDrawable> drawables = new LinkedList<AbstractDrawable>();
-	    final List<Mesh> meshes = this._controller.calculateMesh();
-
-	    for (Mesh m : meshes) {
+        for (Mesh m : meshes) {
             List<Polygon> polygons = new LinkedList<Polygon>();
             List<Point> vertices = new LinkedList<Point>();
 
@@ -436,20 +470,20 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
             this._meshes.put(m, new MeshInformation(m, polygons, vertices, label));
         }
 
-		this.calculateMeshCenter();
-		this.calculateMeshPosition();
+        this.calculateMeshCenter();
+        this.calculateMeshPosition();
 
         // update the origin point
         this._originPoint.xyz = ConvertHelper.convertVector3dTojzyCoord3d(this._controller.getOriginPoint());
 
-		this._chart.getScene().getGraph().add(drawables, true);
+        this._chart.getScene().getGraph().add(drawables, true);
 
         // invalidate view of sub controls
         for(View view : this._subViewControls) {
             view.invalidateView();
         }
-	}
-	
+    }
+
 	@Override
 	public void invalidateViewOptions() {
 		final boolean showVertices = this._controller.getVisualizationStep() == Controller.VisualizationSteps.ScatterPlot

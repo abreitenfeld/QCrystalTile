@@ -39,4 +39,9 @@ public class FaceColorProvider implements ColorProvider {
         return _facecolor.get(sum_dist);
     }
 
+    @Override
+    public void reset() {
+        this._facecolor.clear();
+    }
+
 }

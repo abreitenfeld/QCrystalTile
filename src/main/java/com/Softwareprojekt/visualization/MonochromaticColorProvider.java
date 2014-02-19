@@ -17,4 +17,8 @@ public class MonochromaticColorProvider implements ColorProvider {
     public Color getColor(Mesh mesh, Polygon face) {
         return this._monoColor;
     }
+
+    @Override
+    public void reset() { }
+
 }

@@ -1,5 +1,6 @@
 package com.Softwareprojekt.visualization;
 
+import java.io.FileNotFoundException;
 import java.util.*;
 
 import com.Softwareprojekt.InternationalShortSymbol.SpaceGroupFactoryImpl;
@@ -16,6 +17,7 @@ public class SpaceGroupController implements Controller<ID> {
 	private final EnumSet<ViewOptions> _options = EnumSet.of(ViewOptions.ShowWireframe, ViewOptions.ShowFaces
             , ViewOptions.ShowAxeBox);
 	private VisualizationSteps _step = VisualizationSteps.VoronoiTesselation;
+    protected  ID _currentSpaceGroupID;
 
     private static final String Default_Group_ID = "F23";
 
@@ -36,9 +38,11 @@ public class SpaceGroupController implements Controller<ID> {
 		this._model = model;
 
         try {
-            this.setSpaceGroup(new ID(Default_Group_ID));
+            final SpaceGroupFactory<ID> factory = new SpaceGroupFactoryImpl();
+            this._currentSpaceGroupID = new ID(Default_Group_ID);
+            this._model.setSpaceGroup(factory.createSpaceGroup(this._currentSpaceGroupID));
         }
-        catch (InvalidSpaceGroupIDException e) {
+        catch (Exception e) {
             e.printStackTrace();
         }
 		this._view = new SpaceGroupView(this);
@@ -78,6 +82,7 @@ public class SpaceGroupController implements Controller<ID> {
         try {
             final SpaceGroupFactory<ID> factory = new SpaceGroupFactoryImpl();
             this._model.setSpaceGroup(factory.createSpaceGroup(id));
+            this._currentSpaceGroupID = id;
             this._view.invalidateView();
         }
         catch (Exception e) {
@@ -88,6 +93,11 @@ public class SpaceGroupController implements Controller<ID> {
     @Override
     public SpaceGroup getSpaceGroup() {
         return this._model.getSpaceGroup();
+    }
+
+    @Override
+    public ID getSpaceGroupID() {
+        return this._currentSpaceGroupID;
     }
 
     /**
@@ -137,38 +147,43 @@ public class SpaceGroupController implements Controller<ID> {
         Mesh qMesh;
 		PointList p = this._model.getCalculatedPoints();
 		// trigger qhull wrapper according current viz step
-		switch (this.getVisualizationStep()) {
-            case ScatterPlot:
-                mesh.add(ConvertHelper.convertPointListToMesh(p));
-                break;
-		    case ConvexHull:
-                mesh.add(QConvex.call(p));
-		    	break;
-		    case DelaunayTriangulation:
-                qMesh = QDelaunay.call(p);
-                for (Polygon poly : qMesh.getFaces()) {
-                    PointList cellPoints = new PointList();
-                    cellPoints.addAll(poly.getVertices());
-                    mesh.add(QConvex.call(cellPoints));
-                }
-		    	break;
-		    case VoronoiTesselation:
-                qMesh = QVoronoi.call(p);
-                qMesh = removeVertexFromMesh(qMesh.getVertices().get(0), qMesh);
-                if (this.getViewOption(ViewOptions.ShowUnifiedCells)) {
-                    qMesh = filterForMajorityCell(qMesh);
-                }
-                for (Polygon poly : qMesh.getFaces()) {
-                    PointList cellPoints = new PointList();
-                    cellPoints.addAll(poly.getVertices());
+        try {
+            switch (this.getVisualizationStep()) {
+                case ScatterPlot:
+                    mesh.add(ConvertHelper.convertPointListToMesh(p));
+                    break;
+                case ConvexHull:
+                    mesh.add(QConvex.call(p));
+                    break;
+                case DelaunayTriangulation:
+                    qMesh = QDelaunay.call(p);
+                    for (Polygon poly : qMesh.getFaces()) {
+                        PointList cellPoints = new PointList();
+                        cellPoints.addAll(poly.getVertices());
                         mesh.add(QConvex.call(cellPoints));
-                }
-                // filter for majority mesh
-                if (this.getViewOption(ViewOptions.ShowUnifiedCells)) {
-                    mesh = filterByVolume(mesh);
-                }
-		    	break;
-	    }
+                    }
+                    break;
+                case VoronoiTesselation:
+                    qMesh = QVoronoi.call(p);
+                    qMesh = removeVertexFromMesh(qMesh.getVertices().get(0), qMesh);
+                    if (this.getViewOption(ViewOptions.ShowUnifiedCells)) {
+                        qMesh = filterForMajorityCell(qMesh);
+                    }
+                    for (Polygon poly : qMesh.getFaces()) {
+                        PointList cellPoints = new PointList();
+                        cellPoints.addAll(poly.getVertices());
+                            mesh.add(QConvex.call(cellPoints));
+                    }
+                    // filter for majority mesh
+                    if (this.getViewOption(ViewOptions.ShowUnifiedCells)) {
+                        mesh = filterByVolume(mesh);
+                    }
+                    break;
+            }
+        }
+        catch (QHullException e) {
+            e.printStackTrace();
+        }
 		return mesh;
 	}
 	

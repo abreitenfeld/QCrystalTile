@@ -25,4 +25,9 @@ public class ChromaticColorProvider implements ColorProvider {
         }
         return this._meshToColor.get(mesh);
     }
+
+    @Override
+    public void reset() {
+        this._meshToColor.clear();
+    }
 }
