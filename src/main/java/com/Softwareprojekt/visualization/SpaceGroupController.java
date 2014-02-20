@@ -166,9 +166,9 @@ public class SpaceGroupController implements Controller<ID> {
                 case VoronoiTesselation:
                     qMesh = QVoronoi.call(p);
                     qMesh = removeVertexFromMesh(qMesh.getVertices().get(0), qMesh);
-                    if (this.getViewOption(ViewOptions.ShowUnifiedCells)) {
+                    /*if (this.getViewOption(ViewOptions.ShowUnifiedCells)) {
                         qMesh = filterForMajorityCell(qMesh);
-                    }
+                    }*/
                     for (Polygon poly : qMesh.getFaces()) {
                         PointList cellPoints = new PointList();
                         cellPoints.addAll(poly.getVertices());

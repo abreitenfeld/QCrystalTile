@@ -74,35 +74,14 @@ public class SpaceGroupModel implements Model {
     protected void computePoints() {
         this._calculatedPoints.clear();
 
-	Set<Vector3D> points = _pointSetCalc.get(
-		this.getSpaceGroup(),
-		this.getPoint()
-	);
-	// has to be copied into "PointList" class:
-	for( Vector3D point : points ) {
-		this._calculatedPoints.add( point );
-	}
-
-        /*//this._calculatedPoints.gen_randomPoints(20);
-
-        // iterate over transformation set
-        final List<Vector3D> spaceToFill = new ArrayList<Vector3D>();
-        spaceToFill.add(
-                new Vector3D( new double[] { 2, 0, 0 }));
-        spaceToFill.add(
-                new Vector3D( new double[] { 0, 2, 0 }));
-        spaceToFill.add(
-                new Vector3D( new double[] { 0, 0, 2 }));
-
-        Vector3D patternIterations = new Vector3D( new double[] { 1,1,1 } );
-
-		Iterator<Transformation> iter = this.getSpaceGroup().getTransformations(
-                spaceToFill, patternIterations
-        ).iterator();
-		while(iter.hasNext()) {
-			Transformation transform = iter.next();
-            this._calculatedPoints.add(transform.apply(this.getPoint()));
-		}*/
+        Set<Vector3D> points = _pointSetCalc.get(
+            this.getSpaceGroup(),
+            this.getPoint()
+        );
+        // has to be copied into "PointList" class:
+        for( Vector3D point : points ) {
+            this._calculatedPoints.add( point );
+        }
 
     }
 

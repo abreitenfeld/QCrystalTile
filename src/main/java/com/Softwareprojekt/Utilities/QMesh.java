@@ -9,15 +9,15 @@ import java.util.List;
 
 public class QMesh implements Mesh {
 
-    private PointList pointlist=new PointList();
-    private LinkedList<Integer[]> faces_index=new LinkedList<Integer[]>();
-    private LinkedList<Polygon> faces=new LinkedList<Polygon>();
-    private Double volume = 0.0d;
+    private PointList pointlist = new PointList();
+    private LinkedList<Integer[]> faces_index = new LinkedList<Integer[]>();
+    private LinkedList<Polygon> faces = new LinkedList<Polygon>();
+    private final double volume;
 
-    public QMesh(PointList plist, LinkedList<Integer[]> indexs){
+    public QMesh(PointList plist, LinkedList<Integer[]> indices){
         this.pointlist=plist;
-        this.faces_index=indexs;
-
+        this.faces_index=indices;
+        this.volume = 0d;
         for(Integer[] i:faces_index){
             LinkedList<Vector3D> a=new LinkedList<Vector3D>();
             for(int j=0;j<i.length;j++){
@@ -27,9 +27,9 @@ public class QMesh implements Mesh {
         }
     }
 
-    public QMesh(PointList plist, LinkedList<Integer[]> indexs, Double volume){
+    public QMesh(PointList plist, LinkedList<Integer[]> indices, double volume){
         this.pointlist=plist;
-        this.faces_index=indexs;
+        this.faces_index=indices;
         this.volume = volume;
 
         for(Integer[] i:faces_index){

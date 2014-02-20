@@ -13,10 +13,12 @@ import com.Softwareprojekt.InternationalShortSymbol.ID;
 import com.Softwareprojekt.interfaces.*;
 import com.Softwareprojekt.interfaces.View;
 import org.jzy3d.bridge.awt.FrameAWT;
+import org.jzy3d.bridge.swing.FrameSwing;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.factories.AWTChartComponentFactory;
 //import org.jzy3d.chart.factories.ChartComponentFactory;
 import org.jzy3d.chart.factories.IChartComponentFactory;
+import org.jzy3d.chart.factories.SwingChartComponentFactory;
 import org.jzy3d.colors.Color;
 //import org.jzy3d.maths.BoundingBox3d;
 import org.jzy3d.maths.Coord2d;
@@ -42,12 +44,13 @@ import org.jzy3d.plot3d.text.drawable.cells.TextCellRenderer;
 
 import javax.swing.*;
 
-public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListener {
+public class SpaceGroupView extends JFrame implements View, IObjectPickedListener {
 
     // interna
     protected final Controller<ID> _controller;
     protected final Chart _chart;
     protected final View[] _subViewControls;
+    protected  final SpaceGroupViewStatus _status;
     protected final SpaceGroupViewChartController _chartController;
     protected final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
 
@@ -120,6 +123,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
         protected void done() {
             try {
                 if (_currentWorker == this) {
+                    _status.enableLoadingIndicator(false);
                     updateView(this.get());
                     _workerRunning = false;
                     _currentWorker = null;
@@ -140,10 +144,15 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 		super();
 
 		this._controller = controller;
-        this.setExtendedState(this.getExtendedState() | Frame.MAXIMIZED_BOTH);
-		this.setLayout(new BorderLayout());
+
+        this.setTitle(Frame_Title);
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(Foreground_Color));
+        this.setBackground(java.awt.Color.gray);
+        //this.setExtendedState(this.getExtendedState() | Frame.MAXIMIZED_BOTH);
+		this.getContentPane().setLayout(new BorderLayout());
         this.setMinimumSize(Min_Size);
-		this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(Foreground_Color));
+
 		this._showSpacing = _controller.getViewOption(Controller.ViewOptions.ShowSpacing);
 		this._currentSpacing = this._showSpacing ? _currentMaxSpacing : Min_Spacing_Factor;
         // window listener
@@ -170,9 +179,6 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 		this._originPoint = new Point(new Coord3d(), Color.BLUE, Origin_Point_Size);
 		this._originPoint.setDisplayed(true);
 		this._chart.addDrawable(this._originPoint);
-        // create info text
-        //TextCellRenderer cellRenderer = new TextCellRenderer(4, "DrawableTextCell(TextCellRenderer)", new Font("Serif", Font.PLAIN, 16));
-        //this._chart.addDrawable(new DrawableTextCell(cellRenderer, new Coord2d(0,14), new Coord2d(7,1)));
 
         // setup color providers
         this._monoChromaticColors = new MonochromaticColorProvider(Faces_Color);
@@ -182,14 +188,20 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 
 		// add components
         final SpaceGroupSelectionPanel selectionPanel = new SpaceGroupSelectionPanel(this._controller);
-		this.add(selectionPanel, BorderLayout.PAGE_START);
+		this.getContentPane().add(selectionPanel, BorderLayout.PAGE_START);
 
         final SpaceGroupViewSettingsPanel viewSettingsPanel = new SpaceGroupViewSettingsPanel(this._controller);
-        this.add(viewSettingsPanel, BorderLayout.LINE_END);
+        this.getContentPane().add(viewSettingsPanel, BorderLayout.LINE_END);
 
-        this._subViewControls = new View[] {selectionPanel, viewSettingsPanel};
+        this.getContentPane().add((Component)_chart.getCanvas(), BorderLayout.CENTER);
 
-		super.initialize(_chart, Default_Size, Frame_Title);
+        this._status = new SpaceGroupViewStatus(controller);
+        this.getContentPane().add(this._status, BorderLayout.PAGE_END);
+
+        this.setPreferredSize(new Dimension(Default_Size.width, Default_Size.height));
+        this.pack();
+
+        this._subViewControls = new View[] {selectionPanel, viewSettingsPanel, this._status};
 
 		// timer for tweening the current spacing value
 		final Timer timer = new Timer();
@@ -418,6 +430,7 @@ public class SpaceGroupView extends FrameAWT implements View, IObjectPickedListe
 	@Override
 	public void invalidateView() {
         if (!this._workerRunning) {
+            this._status.enableLoadingIndicator(true);
             this._workerRunning = true;
             this._currentWorker = new CalculationWorker();
             this._currentWorker.execute();

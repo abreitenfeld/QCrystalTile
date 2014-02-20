@@ -74,7 +74,6 @@ public class QConvex extends CallCProgram {
                 }
             }
 
-            System.err.println("");
         } catch (IOException e){
             throw new QHullException(execPath);
         }
