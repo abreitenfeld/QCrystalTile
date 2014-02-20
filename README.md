@@ -1,2 +1,2 @@
-QKrystalTile
+QCrystalTile
 ====================
