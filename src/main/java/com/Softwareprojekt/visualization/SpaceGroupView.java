@@ -233,13 +233,16 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
 	}
 
     private void initializeLookAndFeel() {
-        try
-        {
-            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-            //UIManager.setLookAndFeel( "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel" );
+        String os = System.getProperty("os.name");
+        try {
+            if (os.toLowerCase().contains("windows")) {
+                UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+            }
+            else {
+                UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            }
         }
-        catch ( Exception e )
-        {
+        catch ( Exception e ) {
             e.printStackTrace();
         }
     }
