@@ -18,6 +18,11 @@
       <name>Jzy3d Snapshots</name>
       <url>http://www.jzy3d.org/maven/releases</url>
     </repository>
+    <repository>
+        <id>fr.cemagref.lisc.maven2</id>
+        <name>Lisc repository</name>
+        <url>http://trac.clermont.cemagref.fr/maven/repo/</url>
+    </repository>
   </repositories>
   <dependencies>
     <dependency>
@@ -40,6 +45,11 @@
       <groupId>com.googlecode.json-simple</groupId>
       <artifactId>json-simple</artifactId>
       <version>1.1.1</version>
+    </dependency>
+    <dependency>
+        <groupId>ca.ubc.cs</groupId>
+        <artifactId>quickhull3d</artifactId>
+        <version>1.0</version>
     </dependency>
   </dependencies>
   <build>
