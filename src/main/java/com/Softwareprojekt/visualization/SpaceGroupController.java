@@ -1,6 +1,5 @@
 package com.Softwareprojekt.visualization;
 
-import java.io.FileNotFoundException;
 import java.util.*;
 
 import com.Softwareprojekt.InternationalShortSymbol.SpaceGroupFactoryImpl;
@@ -8,18 +7,19 @@ import com.Softwareprojekt.InternationalShortSymbol.ID;
 import com.Softwareprojekt.Utilities.ImmutableMesh;
 
 import com.Softwareprojekt.Utilities.*;
+import com.Softwareprojekt.common.UserPreferences;
 import com.Softwareprojekt.interfaces.*;
+import quickhull3d.Point3d;
+import quickhull3d.QuickHull3D;
 
 public class SpaceGroupController implements Controller<ID> {
 
-	private final Model _model;
-	private final View _view;
-	private final EnumSet<ViewOptions> _options = EnumSet.of(ViewOptions.ShowWireframe, ViewOptions.ShowFaces
-            , ViewOptions.ShowAxeBox);
-	private VisualizationSteps _step = VisualizationSteps.VoronoiTesselation;
+    protected final Model _model;
+    protected final View _view;
     protected  ID _currentSpaceGroupID;
-
-    private static final String Default_Group_ID = "F23";
+    protected final EnumSet<ViewOptions> _options;
+    protected Visualization _visualization = Visualization.VoronoiTesselation;
+    protected final UserPreferences _prefs = new UserPreferences();
 
 	/**
 	 * Factory method to create controller.
@@ -36,10 +36,15 @@ public class SpaceGroupController implements Controller<ID> {
 	 */
 	private SpaceGroupController(Model model) {
 		this._model = model;
-
+        // restore settings from user preferences
+        this._visualization = this._prefs.getVisualization();
+        this._options = this._prefs.getViewOptions();
+        this._model.setPoint(this._prefs.getOriginPoint());
+        this._model.setSpace(this._prefs.getSpace());
+        // instantiate space group
         try {
             final SpaceGroupFactory<ID> factory = new SpaceGroupFactoryImpl();
-            this._currentSpaceGroupID = new ID(Default_Group_ID);
+            this._currentSpaceGroupID = this._prefs.getSpaceGroupID();
             this._model.setSpaceGroup(factory.createSpaceGroup(this._currentSpaceGroupID));
         }
         catch (Exception e) {
@@ -50,50 +55,16 @@ public class SpaceGroupController implements Controller<ID> {
 	}
 	
 	@Override
-	public void setVisualizationStep(VisualizationSteps step) {
-		if (step != this._step) {
-			this._step = step;
+	public void setVisualization(Visualization viz) {
+		if (viz != this._visualization) {
+			this._visualization = viz;
 			this._view.invalidateView();
+            this._prefs.setVisualization(viz);
 		}
 	}
 
 	@Override
-	public VisualizationSteps getVisualizationStep() { return this._step; }
-	
-	@Override
-	public Vector3D getOriginPoint() {
-		return this._model.getPoint();
-	}
-
-	@Override
-	public void setOriginPoint(Vector3D point) {
-		this._model.setPoint(point);
-		this._view.invalidateView();
-	}
-
-    @Override
-    public void setSpaceGroup(SpaceGroup spaceGroup) {
-        this._model.setSpaceGroup(spaceGroup);
-        this._view.invalidateView();
-    }
-
-    @Override
-    public void setSpaceGroup(ID id) {
-        try {
-            final SpaceGroupFactory<ID> factory = new SpaceGroupFactoryImpl();
-            this._model.setSpaceGroup(factory.createSpaceGroup(id));
-            this._currentSpaceGroupID = id;
-            this._view.invalidateView();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    @Override
-    public SpaceGroup getSpaceGroup() {
-        return this._model.getSpaceGroup();
-    }
+	public Visualization getVisualization() { return this._visualization; }
 
     @Override
     public ID getSpaceGroupID() {
@@ -128,6 +99,7 @@ public class SpaceGroupController implements Controller<ID> {
         else {
             this._view.invalidateViewOptions();
         }
+        this._prefs.setViewOption(this._options);
 	}
 	
 	@Override
@@ -135,36 +107,64 @@ public class SpaceGroupController implements Controller<ID> {
 
 	@Override
 	public View getView() { return this._view; }
-	
-	/**
+
+    @Override
+    public void configure(Vector3D origin, Vector3D space) {
+        configure(this._currentSpaceGroupID, origin, space);
+    }
+
+    @Override
+    public void configure(ID id, Vector3D origin, Vector3D space) {
+        this._model.setPoint(origin);
+        this._prefs.setOriginPoint(origin);
+
+        this._model.setSpace(space);
+        this._prefs.setSpace(space);
+
+        if (!id.stringRepr().equals(this._currentSpaceGroupID.stringRepr())) {
+            try {
+                final SpaceGroupFactory<ID> factory = new SpaceGroupFactoryImpl();
+                this._model.setSpaceGroup(factory.createSpaceGroup(id));
+                this._currentSpaceGroupID = id;
+                this._prefs.setSpaceGroupID(id);
+            }
+            catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+        this._view.invalidateView();
+    }
+
+    /**
 	 * Calculates the mesh according visualization step.
 	 * @param
 	 * @return
 	 */
 	@Override
-	public List<Mesh> calculateMesh() {
+	public List<Mesh> calculateMesh() throws QHullException {
 		List<Mesh> mesh = new LinkedList<Mesh>();
         Mesh qMesh;
 		PointList p = this._model.getCalculatedPoints();
+
 		// trigger qhull wrapper according current viz step
-        try {
-            switch (this.getVisualizationStep()) {
-                case ScatterPlot:
-                    mesh.add(ConvertHelper.convertPointListToMesh(p));
-                    break;
-                case ConvexHull:
-                    mesh.add(QConvex.call(p));
-                    break;
-                case DelaunayTriangulation:
-                    qMesh = QDelaunay.call(p);
-                    for (Polygon poly : qMesh.getFaces()) {
-                        PointList cellPoints = new PointList();
-                        cellPoints.addAll(poly.getVertices());
-                        mesh.add(QConvex.call(cellPoints));
-                    }
-                    break;
-                case VoronoiTesselation:
-                    qMesh = QVoronoi.call(p);
+        switch (this.getVisualization()) {
+            case ScatterPlot:
+                mesh.add(ConvertHelper.convertPointListToMesh(p));
+                break;
+            case ConvexHull:
+                mesh.add(QConvex.call(p));
+                break;
+            case DelaunayTriangulation:
+                qMesh = QDelaunay.call(p);
+                for (Polygon poly : qMesh.getFaces()) {
+                    PointList cellPoints = new PointList();
+                    cellPoints.addAll(poly.getVertices());
+                    mesh.add(QConvex.call(cellPoints));
+                }
+                break;
+            case VoronoiTesselation:
+                qMesh = QVoronoi.call(p);
+                if (qMesh.getVertices().size() > 0) {
                     qMesh = removeVertexFromMesh(qMesh.getVertices().get(0), qMesh);
                     /*if (this.getViewOption(ViewOptions.ShowUnifiedCells)) {
                         qMesh = filterForMajorityCell(qMesh);
@@ -172,21 +172,36 @@ public class SpaceGroupController implements Controller<ID> {
                     for (Polygon poly : qMesh.getFaces()) {
                         PointList cellPoints = new PointList();
                         cellPoints.addAll(poly.getVertices());
-                            mesh.add(QConvex.call(cellPoints));
+                        //mesh.add(QConvex.call(cellPoints));
+                        mesh.add(createConvexHull(cellPoints));
                     }
                     // filter for majority mesh
-                    if (this.getViewOption(ViewOptions.ShowUnifiedCells)) {
+                    /*if (this.getViewOption(ViewOptions.ShowUnifiedCells)) {
                         mesh = filterByVolume(mesh);
-                    }
-                    break;
-            }
+                    }*/
+                }
+                break;
         }
-        catch (QHullException e) {
-            e.printStackTrace();
-        }
+
 		return mesh;
 	}
-	
+
+    private static Mesh createConvexHull(List<Vector3D> vertices) {
+        final QuickHull3D hull = new QuickHull3D();
+        Point3d[] points = new Point3d[vertices.size()];
+
+        for (int i = 0; i < points.length; i++) {
+            points[i] = ConvertHelper.convertVector3DToQPoint3d(vertices.get(i));
+        }
+
+        try {
+            hull.build(points);
+        }
+        catch (IllegalArgumentException e) { }
+
+        return ConvertHelper.convertQuickHullToMesh(hull);
+    }
+
 	/**
 	 * Removes the specified vertex from mesh.
 	 * @param point

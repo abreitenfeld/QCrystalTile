@@ -12,16 +12,12 @@ import com.Softwareprojekt.InternationalShortSymbol.ID;
 
 import com.Softwareprojekt.interfaces.*;
 import com.Softwareprojekt.interfaces.View;
-import org.jzy3d.bridge.awt.FrameAWT;
-import org.jzy3d.bridge.swing.FrameSwing;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.factories.AWTChartComponentFactory;
 //import org.jzy3d.chart.factories.ChartComponentFactory;
 import org.jzy3d.chart.factories.IChartComponentFactory;
-import org.jzy3d.chart.factories.SwingChartComponentFactory;
 import org.jzy3d.colors.Color;
 //import org.jzy3d.maths.BoundingBox3d;
-import org.jzy3d.maths.Coord2d;
 import org.jzy3d.maths.Coord3d;
 import org.jzy3d.maths.Rectangle;
 import org.jzy3d.picking.IObjectPickedListener;
@@ -38,9 +34,6 @@ import org.jzy3d.plot3d.text.DrawableTextWrapper;
 import org.jzy3d.plot3d.text.align.Halign;
 import org.jzy3d.plot3d.text.align.Valign;
 import org.jzy3d.plot3d.text.drawable.DrawableTextBitmap;
-import org.jzy3d.plot3d.text.drawable.DrawableTextTexture;
-import org.jzy3d.plot3d.text.drawable.cells.DrawableTextCell;
-import org.jzy3d.plot3d.text.drawable.cells.TextCellRenderer;
 
 import javax.swing.*;
 
@@ -52,7 +45,7 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
     protected final View[] _subViewControls;
     protected  final SpaceGroupViewStatus _status;
     protected final SpaceGroupViewChartController _chartController;
-    protected final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
+    protected static final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
 
     protected Coord3d _globalCenter;
     protected final Point _originPoint;
@@ -78,6 +71,10 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
         public final List<Polygon> Polygons;
         public final List<Point> Vertices;
 
+        public MeshInformation(Mesh mesh, List<Polygon> polygons, List<Point> vertices) {
+            this(mesh, polygons, vertices, null);
+        }
+
         public MeshInformation(Mesh mesh, List<Polygon> polygons, List<Point> vertices, DrawableTextWrapper label) {
             this(mesh, Coord3d.ORIGIN, true, polygons, vertices, label);
         }
@@ -89,9 +86,10 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
             this.Label = label;
             this.Polygons = polygons;
             this.Vertices = vertices;
-
-            this.Label.setHalign(Halign.CENTER);
-            this.Label.setValign(Valign.TOP);
+            if (this.Label != null) {
+                this.Label.setHalign(Halign.CENTER);
+                this.Label.setValign(Valign.TOP);
+            }
         }
 
     }
@@ -108,9 +106,11 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
     public static final Color Label_Color = Color.BLACK;
 	public static final Color Viewport_Background = new Color(105, 105, 105);
     public static final Color Grid_Color = new Color(192, 192, 192);
-	public static final Rectangle Default_Size = new Rectangle(1024, 768);
-    public static final Dimension Min_Size = new Dimension(500, 450);
+	public static final Rectangle Default_Size = new Rectangle(1280, 1000);
+    public static final Dimension Min_Size = new Dimension(800, 600);
     public static final String Frame_Title = "QCrystalTile";
+    private final static  String ID_RegExpPattern = "\\((.+?)\\)";
+    private final static String ID_ReplacePattern = "<sub>$1</sub>";
 
     protected class CalculationWorker extends  SwingWorker<List<Mesh>, Object> {
 
@@ -133,7 +133,6 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
                 e.printStackTrace();
             }
         }
-
     }
 
 	/**
@@ -144,6 +143,7 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
 		super();
 
 		this._controller = controller;
+        this.initializeLookAndFeel();
 
         this.setTitle(Frame_Title);
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -231,6 +231,18 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
 			}
 		}, 0, 30);
 	}
+
+    private void initializeLookAndFeel() {
+        try
+        {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+            //UIManager.setLookAndFeel( "com.sun.java.swing.plaf.nimbus.NimbusLookAndFeel" );
+        }
+        catch ( Exception e )
+        {
+            e.printStackTrace();
+        }
+    }
 
     private void createControllerMenuItems() {
         final JPopupMenu mnu = this._chartController.getPopupMenu();
@@ -330,28 +342,16 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
         }
     }
 
+    private static String formatSpaceGroupID(ID id) {
+        return id.stringRepr().replaceAll(ID_RegExpPattern, ID_ReplacePattern);
+    }
+
 	/**
 	 * Clears the entire scene.
 	 */
 	protected void clearScene() {
-        Iterator<Mesh> iter = this._meshes.keySet().iterator();
-        while (iter.hasNext()) {
-            Mesh m = iter.next();
-            MeshInformation info = this._meshes.get(m);
-
-            // remove label
-            this._chart.removeDrawable(info.Label, false);
-
-            // remove polygons
-            for (Polygon poly : info.Polygons) {
-                this._chart.removeDrawable(poly, false);
-            }
-
-            // remove vertices
-            for(Point vertex : info.Vertices) {
-                this._chart.removeDrawable(vertex, false);
-            }
-        }
+        this._chart.getScene().getGraph().getAll().clear();
+        this._chart.addDrawable(this._originPoint);
 	    this._meshes.clear();
         this._chartController.getPickingSupport().clear();
 	}
@@ -396,7 +396,9 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
                 // update vertex position from polygon
                 vertices.get(i).xyz = point.xyz.sub(centroid).add(originVertex);
             }
-            info.Label.setPosition(originVertex);
+            if (info.Label != null) {
+                info.Label.setPosition(originVertex);
+            }
 		}
 	}
 	
@@ -439,15 +441,18 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
 
     private synchronized void updateView(List<Mesh> meshes) {
         final List<AbstractDrawable> drawables = new LinkedList<AbstractDrawable>();
-        final boolean showVertices =  this._controller.getVisualizationStep() == Controller.VisualizationSteps.ScatterPlot
+        final boolean showVertices =  this._controller.getVisualization() == Controller.Visualization.ScatterPlot
                 || this._controller.getViewOption(Controller.ViewOptions.ShowVertices);
         final boolean showFaces = this._controller.getViewOption(Controller.ViewOptions.ShowFaces);
         final boolean showWireframe = this._controller.getViewOption(Controller.ViewOptions.ShowWireframe);
-        final boolean showLabel = this._controller.getVisualizationStep() != Controller.VisualizationSteps.ScatterPlot
+        final boolean showLabel = this._controller.getVisualization() != Controller.Visualization.ScatterPlot
                 && this._controller.getViewOption(Controller.ViewOptions.ShowLabeledMeshes);
 
         this.clearScene();
         this.invalidateViewOptions();
+
+        this._status.setStatusCaption(String.format(bundle.getString("statusFormat")
+                , formatSpaceGroupID(this._controller.getSpaceGroupID()), meshes.size(), 0));
 
         for (Mesh m : meshes) {
             List<Polygon> polygons = new LinkedList<Polygon>();
@@ -487,7 +492,7 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
         this.calculateMeshPosition();
 
         // update the origin point
-        this._originPoint.xyz = ConvertHelper.convertVector3dTojzyCoord3d(this._controller.getOriginPoint());
+        this._originPoint.xyz = ConvertHelper.convertVector3dTojzyCoord3d(this._controller.getModel().getPoint());
 
         this._chart.getScene().getGraph().add(drawables, true);
 
@@ -499,18 +504,21 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
 
 	@Override
 	public void invalidateViewOptions() {
-		final boolean showVertices = this._controller.getVisualizationStep() == Controller.VisualizationSteps.ScatterPlot
+		final boolean showVertices = this._controller.getVisualization() == Controller.Visualization.ScatterPlot
                 || this._controller.getViewOption(Controller.ViewOptions.ShowVertices);
 		final boolean showFaces = this._controller.getViewOption(Controller.ViewOptions.ShowFaces);
 		final boolean showWireframe = this._controller.getViewOption(Controller.ViewOptions.ShowWireframe);
-        final boolean showLabel = this._controller.getVisualizationStep() != Controller.VisualizationSteps.ScatterPlot
+        final boolean showLabel = this._controller.getVisualization() != Controller.Visualization.ScatterPlot
                 && this._controller.getViewOption(Controller.ViewOptions.ShowLabeledMeshes);
 
         Iterator<Mesh> iter = this._meshes.keySet().iterator();
         while(iter.hasNext()) {
             Mesh m = iter.next();
             MeshInformation info = this._meshes.get(m);
-            info.Label.setDisplayed(showLabel && info.Visible);
+
+            if (info.Label != null) {
+                info.Label.setDisplayed(showLabel && info.Visible);
+            }
             // update polygon visibility
             for(Polygon poly : info.Polygons) {
                 poly.setWireframeDisplayed(showWireframe && info.Visible);

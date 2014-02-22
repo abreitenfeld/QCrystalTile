@@ -54,6 +54,12 @@ public class QMesh implements Mesh {
     public List<Polygon> getFaces() {
         return faces;
     }
+
+    @Override
+    public double getArea() {
+        return 0;
+    }
+
     @Override
     public String toString(){
         String out = "";

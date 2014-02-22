@@ -11,9 +11,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
- * Created by jakob on 1/30/14.
- */
 public class FaceColorProvider implements ColorProvider {
 
     private final Map<Double, Color> _facecolor = new HashMap<Double, Color>();

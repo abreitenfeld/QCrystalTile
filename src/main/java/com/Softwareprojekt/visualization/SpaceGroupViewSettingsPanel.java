@@ -20,7 +20,6 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 	private final JToggleButton _btnWireframe;
 	private final JToggleButton _btnFace;
 	private final JToggleButton _btnSpacing;
-    private final JToggleButton _btnMajority;
     private final JToggleButton _btnLabeling;
     private final Map<Component, String> _labels = new HashMap<Component, String>();
 	private final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
@@ -48,10 +47,6 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
         styleButton(_btnLabeling);
         this.add(_btnLabeling);
 
-        _btnMajority = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("mesh_unified.png")));
-        styleButton(_btnMajority);
-        this.add(_btnMajority);
-
         _btnWireframe = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("poly_wire.png")));
 		styleButton(_btnWireframe);
 		this.add(_btnWireframe);
@@ -66,7 +61,6 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 
         this._labels.put(this._btnVertices, bundle.getString("showVertices"));
         this._labels.put(this._btnLabeling, bundle.getString("showLabeling"));
-        this._labels.put(this._btnMajority, bundle.getString("showUnifiedCells"));
         this._labels.put(this._btnWireframe, bundle.getString("showWireframe"));
         this._labels.put(this._btnFace, bundle.getString("showFaces"));
         this._labels.put(this._btnSpacing, bundle.getString("showSpacing"));
@@ -76,7 +70,6 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 		// attach action listener
 		this._btnVertices.addActionListener(this);
         this._btnLabeling.addActionListener(this);
-        this._btnMajority.addActionListener(this);
 		this._btnWireframe.addActionListener(this);
 		this._btnFace.addActionListener(this);
 		this._btnSpacing.addActionListener(this);
@@ -110,9 +103,6 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 		else if (e.getSource() == _btnSpacing) {
 			this._controller.setViewOption(Controller.ViewOptions.ShowSpacing, _btnSpacing.isSelected());
 		}
-        else if (e.getSource() == _btnMajority) {
-            this._controller.setViewOption(Controller.ViewOptions.ShowUnifiedCells, _btnMajority.isSelected());
-        }
 	}
 
 	@Override
@@ -127,7 +117,6 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
         updateToggleButton(this._btnWireframe, this._controller.getViewOption(Controller.ViewOptions.ShowWireframe));
         updateToggleButton(this._btnFace, this._controller.getViewOption(Controller.ViewOptions.ShowFaces));
         updateToggleButton(this._btnSpacing, this._controller.getViewOption(Controller.ViewOptions.ShowSpacing));
-        updateToggleButton(this._btnMajority, this._controller.getViewOption(Controller.ViewOptions.ShowUnifiedCells));
 	}
 	
 }

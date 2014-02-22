@@ -7,12 +7,32 @@ import com.Softwareprojekt.interfaces.LatticeType;
 public class CenteringTypeListItem implements Comparable<CenteringTypeListItem> {
 
 	private final LatticeType.CenteringType _type;
+    private final String _caption;
 	private static final ResourceBundle bundle = ResourceBundle.getBundle("Messages");
 	private static final String String_Pattern = "%s (%s)";
-	
+
+
+    public CenteringTypeListItem(LatticeType.CenteringType type, String caption) {
+        this._type = type;
+        this._caption = caption;
+    }
+
 	public CenteringTypeListItem(LatticeType.CenteringType type) {
-		this._type = type;
+        this(type, formatType(type));
 	}
+
+    private static String formatType(LatticeType.CenteringType type) {
+        if (type != null) {
+            switch(type) {
+                case C: return String.format(String_Pattern, bundle.getString("singleFaceCentred"), type.toString());
+                case F: return String.format(String_Pattern, bundle.getString("allFaceCentred"), type.toString());
+                case I: return String.format(String_Pattern, bundle.getString("bodyCentred"), type.toString());
+                case P: return String.format(String_Pattern, bundle.getString("primitive"), type.toString());
+                default: return type.toString();
+            }
+        }
+        return "";
+    }
 
     public LatticeType.CenteringType getType() {
         return this._type;
@@ -20,18 +40,7 @@ public class CenteringTypeListItem implements Comparable<CenteringTypeListItem> 
 
 	@Override
 	public String toString() {
-        if (this._type != null) {
-            switch(this._type) {
-                case C: return String.format(String_Pattern, bundle.getString("singleFaceCentred"), this._type.toString());
-                case F: return String.format(String_Pattern, bundle.getString("allFaceCentred"), this._type.toString());
-                case I: return String.format(String_Pattern, bundle.getString("bodyCentred"), this._type.toString());
-                case P: return String.format(String_Pattern, bundle.getString("primitive"), this._type.toString());
-                default: return this._type.toString();
-            }
-        }
-        else {
-            return "";
-        }
+        return this._caption;
 	}
 
     @Override

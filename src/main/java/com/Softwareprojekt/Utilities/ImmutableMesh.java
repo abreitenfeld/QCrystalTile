@@ -62,4 +62,9 @@ public class ImmutableMesh implements Mesh {
 		return this._polygons;
 	}
 
+    @Override
+    public double getArea() {
+        return 0;
+    }
+
 }

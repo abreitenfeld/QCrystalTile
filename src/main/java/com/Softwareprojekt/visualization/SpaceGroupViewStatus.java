@@ -25,7 +25,7 @@ public class SpaceGroupViewStatus extends JPanel implements View {
         this.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         this.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
 
-        this._leftLabel = new JLabel("Info");
+        this._leftLabel = new JLabel();
         this._leftLabel.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
         this._rightLabel = new JLabel(bundle.getString("calculating"), JLabel.RIGHT);
         ImageIcon icon = new ImageIcon(ClassLoader.getSystemResource("loading.gif"));

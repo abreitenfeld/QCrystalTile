@@ -53,12 +53,12 @@ public class SpaceGroupModel implements Model {
 	}
 
     @Override
-    public Vector3D getSpaceToFill() {
+    public Vector3D getSpace() {
         return this._pointSetCalc.getSpaceToFill();
     }
 
     @Override
-    public void setSpaceToFill(Vector3D space) {
+    public void setSpace(Vector3D space) {
         this._pointSetCalc.setSpaceToFill(space);
     }
 

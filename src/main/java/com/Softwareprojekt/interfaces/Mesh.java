@@ -15,5 +15,11 @@ public interface Mesh {
 	 * @return
 	 */
 	public List<Polygon> getFaces();
-	
+
+    /**
+     * Returns the area of the mesh.
+     * @return
+     */
+    public double getArea();
+
 }
