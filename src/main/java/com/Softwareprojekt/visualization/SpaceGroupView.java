@@ -103,7 +103,7 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
 	public static final Color Wireframe_Color = Color.WHITE;
 	public static final Color Faces_Color = new Color(135, 206, 235, 170);
 	public static final Color Foreground_Color = Color.WHITE;
-    public static final Color Label_Color = Color.BLACK;
+    public static final Color Label_Color = Color.WHITE;
 	public static final Color Viewport_Background = new Color(105, 105, 105);
     public static final Color Grid_Color = new Color(192, 192, 192);
 	public static final Rectangle Default_Size = new Rectangle(1280, 1000);

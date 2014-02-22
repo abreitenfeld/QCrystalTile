@@ -284,10 +284,6 @@ public class SpaceGroupSelectionPanel extends JPanel implements View, ActionList
         // set space to input fields
         Vector3D spacePt = this._controller.getModel().getSpace();
         this._inputSpace.setText(Integer.toString((int)spacePt.get(0)));
-
-        if (this._idToListItem.containsKey(this._controller.getSpaceGroupID())) {
-            this._spaceGroupList.setSelectedItem(this._idToListItem.get(this._controller.getSpaceGroupID()));
-        }
     }
 
     @Override

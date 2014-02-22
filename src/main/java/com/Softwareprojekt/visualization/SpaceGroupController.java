@@ -173,7 +173,7 @@ public class SpaceGroupController implements Controller<ID> {
                         }
                     }
                 }
-                //meshes = filterAbnormalMeshes(meshes);
+                meshes = filterAbnormalMeshes(meshes);
                 break;
         }
 
@@ -225,16 +225,18 @@ public class SpaceGroupController implements Controller<ID> {
             globalCentroid = globalCentroid.add(m.getCentroid());
         }
         globalCentroid = globalCentroid.divide(meshes.size());
+
         // find the cell with the closest distance to center
         Mesh unitCell = null;
-        int minDistance = Integer.MAX_VALUE;
+        double minDistance = Integer.MAX_VALUE;
         for (Mesh m : meshes) {
-            int distance = m.getCentroid().subtract(globalCentroid).length();
+            double distance = MeshHelper.magnitude(m.getCentroid(), globalCentroid);
             if (distance < minDistance) {
                 unitCell = m;
                 minDistance = distance;
             }
         }
+
         // filter for cells equal to unit cell
         if (unitCell != null) {
             for (Mesh m : meshes) {

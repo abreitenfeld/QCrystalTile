@@ -17,22 +17,27 @@ public final class MeshHelper {
     private MeshHelper() {}
 
     public static boolean approximateEquality(Mesh m1, Mesh m2) {
-        if (m1.getVertices().size() == m2.getVertices().size()) {
+        if (m1.getVertices().size() == m2.getVertices().size() && m1.getFaces().size() == m2.getFaces().size()) {
             final Vector centroid1 = m1.getCentroid();
             final Vector centroid2 = m2.getCentroid();
 
             int sum1 = 0;
             int sum2 = 0;
             for(Vector3D v : m1.getVertices()) {
-                sum1 += v.subtract(centroid1).length();
+                sum1 += magnitude(v, centroid1);
             }
 
             for(Vector3D v : m2.getVertices()) {
-                sum2 += v.subtract(centroid2).length();
+                sum2 += magnitude(v, centroid2);
             }
             return sum1 == sum2;
         }
         return false;
+    }
+
+    public static double magnitude(Vector a, Vector b) {
+        a = a.subtract(b);
+        return Math.sqrt(a.get(0) * a.get(0) + a.get(1) * a.get(1) + a.get(2) * a.get(2));
     }
 
 	/**

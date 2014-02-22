@@ -25,7 +25,7 @@ public final class UserPreferences {
             Controller.ViewOptions.ShowWireframe
             , Controller.ViewOptions.ShowFaces, Controller.ViewOptions.ShowAxeBox
     );
-    private static final String Default_Group_ID = "F23";
+    private static final String Default_Group_ID = "I4(1)32";
 
     public UserPreferences() {
         this._prefs = Preferences.userNodeForPackage(this.getClass());
@@ -107,9 +107,9 @@ public final class UserPreferences {
     }
 
     public Vector3D getOriginPoint() {
-        double x = this._prefs.getDouble(Origin_X_Key, 0.5f);
-        double y = this._prefs.getDouble(Origin_Y_Key, 0.5f);
-        double z = this._prefs.getDouble(Origin_Z_Key, 0.5f);
+        double x = this._prefs.getDouble(Origin_X_Key, 0.2f);
+        double y = this._prefs.getDouble(Origin_Y_Key, 0.2f);
+        double z = this._prefs.getDouble(Origin_Z_Key, 0.2f);
         return new Vector3D(new double[] {x, y, z});
     }
 
