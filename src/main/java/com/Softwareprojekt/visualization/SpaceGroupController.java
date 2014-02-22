@@ -1,16 +1,14 @@
 package com.Softwareprojekt.visualization;
 
-import java.util.*;
-
-import com.Softwareprojekt.InternationalShortSymbol.SpaceGroupFactoryImpl;
 import com.Softwareprojekt.InternationalShortSymbol.ID;
-import com.Softwareprojekt.Utilities.ImmutableMesh;
-
+import com.Softwareprojekt.InternationalShortSymbol.SpaceGroupFactoryImpl;
 import com.Softwareprojekt.Utilities.*;
 import com.Softwareprojekt.common.UserPreferences;
 import com.Softwareprojekt.interfaces.*;
 import quickhull3d.Point3d;
 import quickhull3d.QuickHull3D;
+
+import java.util.*;
 
 public class SpaceGroupController implements Controller<ID> {
 
@@ -142,48 +140,44 @@ public class SpaceGroupController implements Controller<ID> {
 	 */
 	@Override
 	public List<Mesh> calculateMesh() throws QHullException {
-		List<Mesh> mesh = new LinkedList<Mesh>();
-        Mesh qMesh;
+		List<Mesh> meshes = new LinkedList<Mesh>();
+        Mesh mesh;
 		PointList p = this._model.getCalculatedPoints();
 
 		// trigger qhull wrapper according current viz step
         switch (this.getVisualization()) {
             case ScatterPlot:
-                mesh.add(ConvertHelper.convertPointListToMesh(p));
+                meshes.add(MeshHelper.convertPointListToMesh(p));
                 break;
             case ConvexHull:
-                mesh.add(QConvex.call(p));
+                meshes.add(QConvex.call(p));
                 break;
             case DelaunayTriangulation:
-                qMesh = QDelaunay.call(p);
-                for (Polygon poly : qMesh.getFaces()) {
+                mesh = QDelaunay.call(p);
+                for (Polygon poly : mesh.getFaces()) {
                     PointList cellPoints = new PointList();
                     cellPoints.addAll(poly.getVertices());
-                    mesh.add(QConvex.call(cellPoints));
+                    meshes.add(QConvex.call(cellPoints));
                 }
                 break;
             case VoronoiTesselation:
-                qMesh = QVoronoi.call(p);
-                if (qMesh.getVertices().size() > 0) {
-                    qMesh = removeVertexFromMesh(qMesh.getVertices().get(0), qMesh);
-                    /*if (this.getViewOption(ViewOptions.ShowUnifiedCells)) {
-                        qMesh = filterForMajorityCell(qMesh);
-                    }*/
-                    for (Polygon poly : qMesh.getFaces()) {
+                mesh = QVoronoi.call(p);
+                if (!mesh.getVertices().isEmpty()) {
+                    mesh = removeVertexFromMesh(mesh.getVertices().get(0), mesh);
+                    for (Polygon poly : mesh.getFaces()) {
                         PointList cellPoints = new PointList();
                         cellPoints.addAll(poly.getVertices());
-                        //mesh.add(QConvex.call(cellPoints));
-                        mesh.add(createConvexHull(cellPoints));
+                        Mesh convexHull = createConvexHull(cellPoints);
+                        if (!convexHull.getVertices().isEmpty()) {
+                            meshes.add(convexHull);
+                        }
                     }
-                    // filter for majority mesh
-                    /*if (this.getViewOption(ViewOptions.ShowUnifiedCells)) {
-                        mesh = filterByVolume(mesh);
-                    }*/
                 }
+                //meshes = filterAbnormalMeshes(meshes);
                 break;
         }
 
-		return mesh;
+		return meshes;
 	}
 
     private static Mesh createConvexHull(List<Vector3D> vertices) {
@@ -191,7 +185,7 @@ public class SpaceGroupController implements Controller<ID> {
         Point3d[] points = new Point3d[vertices.size()];
 
         for (int i = 0; i < points.length; i++) {
-            points[i] = ConvertHelper.convertVector3DToQPoint3d(vertices.get(i));
+            points[i] = MeshHelper.convertVector3DToQPoint3d(vertices.get(i));
         }
 
         try {
@@ -199,7 +193,7 @@ public class SpaceGroupController implements Controller<ID> {
         }
         catch (IllegalArgumentException e) { }
 
-        return ConvertHelper.convertQuickHullToMesh(hull);
+        return MeshHelper.convertQuickHullToMesh(hull);
     }
 
 	/**
@@ -222,6 +216,35 @@ public class SpaceGroupController implements Controller<ID> {
 
 		return new ImmutableMesh(vertices, polys);
 	}
+
+    private static List<Mesh> filterAbnormalMeshes(List<Mesh> meshes) {
+        final List<Mesh> whiteList = new LinkedList<Mesh>();
+        // calculate the center over all meshes
+        org.la4j.vector.Vector globalCentroid = new Vector3D(new double[] {0, 0, 0});
+        for (Mesh m : meshes) {
+            globalCentroid = globalCentroid.add(m.getCentroid());
+        }
+        globalCentroid = globalCentroid.divide(meshes.size());
+        // find the cell with the closest distance to center
+        Mesh unitCell = null;
+        int minDistance = Integer.MAX_VALUE;
+        for (Mesh m : meshes) {
+            int distance = m.getCentroid().subtract(globalCentroid).length();
+            if (distance < minDistance) {
+                unitCell = m;
+                minDistance = distance;
+            }
+        }
+        // filter for cells equal to unit cell
+        if (unitCell != null) {
+            for (Mesh m : meshes) {
+                if (MeshHelper.approximateEquality(m, unitCell)) {
+                    whiteList.add(m);
+                }
+            }
+        }
+        return whiteList;
+    }
 
     private static Mesh filterForMajorityCell(Mesh mesh){
 

@@ -1,41 +1,41 @@
 package com.Softwareprojekt.visualization;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.*;
-import java.util.List;
-import java.util.Timer;
-
-import com.Softwareprojekt.Utilities.ConvertHelper;
-
 import com.Softwareprojekt.InternationalShortSymbol.ID;
-
+import com.Softwareprojekt.Utilities.MeshHelper;
 import com.Softwareprojekt.interfaces.*;
-import com.Softwareprojekt.interfaces.View;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.factories.AWTChartComponentFactory;
-//import org.jzy3d.chart.factories.ChartComponentFactory;
 import org.jzy3d.chart.factories.IChartComponentFactory;
 import org.jzy3d.colors.Color;
-//import org.jzy3d.maths.BoundingBox3d;
 import org.jzy3d.maths.Coord3d;
 import org.jzy3d.maths.Rectangle;
 import org.jzy3d.picking.IObjectPickedListener;
 import org.jzy3d.picking.PickingSupport;
-import org.jzy3d.plot3d.primitives.*;
+import org.jzy3d.plot3d.primitives.AbstractDrawable;
 import org.jzy3d.plot3d.primitives.Point;
 import org.jzy3d.plot3d.primitives.Polygon;
 import org.jzy3d.plot3d.primitives.pickable.PickablePolygon;
 import org.jzy3d.plot3d.rendering.canvas.Quality;
 import org.jzy3d.plot3d.rendering.ordering.AbstractOrderingStrategy;
-//import org.jzy3d.plot3d.rendering.view.modes.CameraMode;
-//import org.jzy3d.plot3d.rendering.view.modes.ViewBoundMode;
 import org.jzy3d.plot3d.text.DrawableTextWrapper;
 import org.jzy3d.plot3d.text.align.Halign;
 import org.jzy3d.plot3d.text.align.Valign;
 import org.jzy3d.plot3d.text.drawable.DrawableTextBitmap;
 
 import javax.swing.*;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.util.*;
+import java.util.List;
+import java.util.Timer;
+
+//import org.jzy3d.chart.factories.ChartComponentFactory;
+//import org.jzy3d.maths.BoundingBox3d;
+//import org.jzy3d.plot3d.rendering.view.modes.CameraMode;
+//import org.jzy3d.plot3d.rendering.view.modes.ViewBoundMode;
 
 public class SpaceGroupView extends JFrame implements View, IObjectPickedListener {
 
@@ -76,12 +76,12 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
         }
 
         public MeshInformation(Mesh mesh, List<Polygon> polygons, List<Point> vertices, DrawableTextWrapper label) {
-            this(mesh, Coord3d.ORIGIN, true, polygons, vertices, label);
+            this(mesh, true, polygons, vertices, label);
         }
 
-        public MeshInformation(Mesh mesh, Coord3d centroid, boolean visible, List<Polygon> polygons, List<Point> vertices, DrawableTextWrapper label) {
+        public MeshInformation(Mesh mesh, boolean visible, List<Polygon> polygons, List<Point> vertices, DrawableTextWrapper label) {
             this.Mesh = mesh;
-            this.Centroid = centroid;
+            this.Centroid = MeshHelper.convertVector3dTojzyCoord3d(mesh.getCentroid());
             this.Visible = visible;
             this.Label = label;
             this.Polygons = polygons;
@@ -386,7 +386,7 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
                 // update position of each vertex
                 for(int i = 0; i < m.getFaces().get(c).getVertices().size(); i++) {
                     Vector3D vertex = m.getFaces().get(c).getVertices().get(i);
-                    Point point = ConvertHelper.convertVector3dTojzyPoint(vertex);
+                    Point point = MeshHelper.convertVector3dTojzyPoint(vertex);
                     // update vertex position from polygon
                     polygons.get(c).get(i).xyz = point.xyz.sub(centroid).add(originVertex);
                     vertices.get(i).xyz = point.xyz;
@@ -395,7 +395,7 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
             // update position of vertex points
             for(int i = 0; i < m.getVertices().size(); i++) {
                 Vector3D vertex = m.getVertices().get(i);
-                Point point = ConvertHelper.convertVector3dTojzyPoint(vertex);
+                Point point = MeshHelper.convertVector3dTojzyPoint(vertex);
                 // update vertex position from polygon
                 vertices.get(i).xyz = point.xyz.sub(centroid).add(originVertex);
             }
@@ -408,28 +408,17 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
 	/**
 	 * Calculates the centroid for every mesh inside the scene.
 	 */
-	private void calculateMeshCenter() {
-        int totalVertexCount = 0;
-        Coord3d totalVect = Coord3d.ORIGIN;
+	private void calculateCentroids() {
+        this._globalCenter = Coord3d.ORIGIN;
 
         Iterator<Mesh> iter = this._meshes.keySet().iterator();
         while(iter.hasNext()) {
             Mesh m = iter.next();
             MeshInformation info = this._meshes.get(m);
-            Coord3d polyCenter = Coord3d.ORIGIN;
-
-            for(Point vertex : info.Vertices) {
-                Coord3d coord = vertex.xyz;
-                // count total number of vertices
-                totalVect = totalVect.add(coord);
-                polyCenter = polyCenter.add(coord);
-            }
-            // calculate center of polygon
-            info.Centroid = polyCenter.div(info.Vertices.size());
-            totalVertexCount += info.Vertices.size();
+            this._globalCenter  = this._globalCenter .add(info.Centroid);
         }
         // calculate center of box
-        this._globalCenter = totalVect.div(totalVertexCount);
+        this._globalCenter = this._globalCenter .div(this._meshes.size());
 	}
 	
 	@Override
@@ -454,8 +443,9 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
         this.clearScene();
         this.invalidateViewOptions();
 
+        int neighbourCount = !meshes.isEmpty() ? meshes.get(0).getFaces().size() : 0;
         this._status.setStatusCaption(String.format(bundle.getString("statusFormat")
-                , formatSpaceGroupID(this._controller.getSpaceGroupID()), meshes.size(), 0));
+                , formatSpaceGroupID(this._controller.getSpaceGroupID()), meshes.size(), neighbourCount));
 
         for (Mesh m : meshes) {
             List<Polygon> polygons = new LinkedList<Polygon>();
@@ -463,7 +453,7 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
 
             // create polygons
             for (com.Softwareprojekt.interfaces.Polygon poly : m.getFaces()) {
-                PickablePolygon nPoly = ConvertHelper.convertPolygonToPickablePolygon(poly);
+                PickablePolygon nPoly = MeshHelper.convertPolygonToPickablePolygon(poly);
                 nPoly.setWireframeColor(Wireframe_Color);
                 nPoly.setWireframeWidth(Wireframe_Width);
                 nPoly.setWireframeDisplayed(showWireframe);
@@ -476,7 +466,7 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
 
             // create vertices
             for (com.Softwareprojekt.interfaces.Vector3D vertex : m.getVertices()) {
-                Point point = new Point(ConvertHelper.convertVector3dTojzyCoord3d(vertex), Vertex_Color, Vertex_Size);
+                Point point = new Point(MeshHelper.convertVector3dTojzyCoord3d(vertex), Vertex_Color, Vertex_Size);
                 point.setDisplayed(showVertices);
                 drawables.add(point);
                 vertices.add(point);
@@ -491,11 +481,11 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
             this._meshes.put(m, new MeshInformation(m, polygons, vertices, label));
         }
 
-        this.calculateMeshCenter();
+        this.calculateCentroids();
         this.calculateMeshPosition();
 
         // update the origin point
-        this._originPoint.xyz = ConvertHelper.convertVector3dTojzyCoord3d(this._controller.getModel().getPoint());
+        this._originPoint.xyz = MeshHelper.convertVector3dTojzyCoord3d(this._controller.getModel().getPoint());
 
         this._chart.getScene().getGraph().add(drawables, true);
 

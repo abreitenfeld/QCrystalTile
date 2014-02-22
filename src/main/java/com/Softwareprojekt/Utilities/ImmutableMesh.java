@@ -3,19 +3,16 @@ package com.Softwareprojekt.Utilities;
 import com.Softwareprojekt.interfaces.Mesh;
 import com.Softwareprojekt.interfaces.Polygon;
 import com.Softwareprojekt.interfaces.Vector3D;
+import org.la4j.vector.Vector;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class ImmutableMesh implements Mesh {
 
 	private final List<Vector3D> _vertices;
 	private final List<Polygon> _polygons;
 
-	/**
+    /**
 	 * Constructor of a mesh.
 	 * @param vertices
 	 * @param polys
@@ -52,6 +49,18 @@ public class ImmutableMesh implements Mesh {
 		this._polygons = Collections.unmodifiableList(polys);
 	}
 
+    @Override
+    public Vector3D getCentroid() {
+        Vector centroid = new Vector3D(new double[] {0, 0, 0});
+        if (!this.getVertices().isEmpty()) {
+            for(Vector3D p : this.getVertices()) {
+                centroid = centroid.add(p);
+            }
+            centroid = centroid.divide(this.getVertices().size());
+        }
+        return new Vector3D(new double[] {centroid.get(0), centroid.get(1), centroid.get(2)});
+    }
+
 	@Override
 	public List<Vector3D> getVertices() {
 		return this._vertices;
@@ -62,9 +71,5 @@ public class ImmutableMesh implements Mesh {
 		return this._polygons;
 	}
 
-    @Override
-    public double getArea() {
-        return 0;
-    }
 
 }

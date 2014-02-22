@@ -1,18 +1,16 @@
 package com.Softwareprojekt.visualization;
 
+import com.Softwareprojekt.InternationalShortSymbol.ID;
+import com.Softwareprojekt.InternationalShortSymbol.InternationalShortSymbolEnum;
 import com.Softwareprojekt.InternationalShortSymbol.SpaceGroupFactoryImpl;
 import com.Softwareprojekt.interfaces.*;
-import com.Softwareprojekt.InternationalShortSymbol.InternationalShortSymbolEnum;
-import com.Softwareprojekt.InternationalShortSymbol.ID;
 
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 import java.util.List;
-import java.util.ResourceBundle;
-
-import javax.swing.*;
 
 public class SpaceGroupSelectionPanel extends JPanel implements View, ActionListener {
 
@@ -52,18 +50,11 @@ public class SpaceGroupSelectionPanel extends JPanel implements View, ActionList
 		this._controller = controller;
 
 		this.setPreferredSize(new Dimension(600, 70));
-		this.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
-		this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
+        styleComponent(this);
 
         final JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        topPanel.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
-        topPanel.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
         final JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        bottomPanel.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
-        bottomPanel.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
         final JPanel rightPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
-        rightPanel.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
-        rightPanel.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
 
         // add components
         this._latticeSystemList = new JComboBox<LatticeSystemListItem>(new LatticeSystemListItem[] {
@@ -102,55 +93,53 @@ public class SpaceGroupSelectionPanel extends JPanel implements View, ActionList
         this._inputSpace.setPreferredSize(Space_Field_Size);
 
         this._btnCalculate = new JButton(bundle.getString("calculate"));
-
+        this._btnCalculate.setFocusable(false);
         // create the step slider
         this._radioScatterPlot = new JRadioButton(bundle.getString("spaceGroup"));
-        this._radioScatterPlot.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
         this._radioVoronoi = new JRadioButton(bundle.getString("tiling"));
-        this._radioVoronoi.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
         final ButtonGroup group = new ButtonGroup();
         group.add(this._radioScatterPlot);
         group.add(this._radioVoronoi);
 
         this.prepareListControls();
 
-        topPanel.add(new Label(bundle.getString("latticeSystem")));
+        topPanel.add(styleComponent(new JLabel(bundle.getString("latticeSystem"), JLabel.LEFT)));
         topPanel.add(this._latticeSystemList);
-        topPanel.add(new Label(bundle.getString("centeringType")));
+        topPanel.add(styleComponent(new JLabel(bundle.getString("centeringType"))));
         topPanel.add(this._centeringTypeList);
-        topPanel.add(new Label(bundle.getString("spaceGroup")));
+        topPanel.add(styleComponent(new JLabel(bundle.getString("spaceGroup"))));
         topPanel.add(this._spaceGroupList);
 
-        bottomPanel.add(new Label(bundle.getString("origin") + " (XYZ)"));
+        bottomPanel.add(styleComponent(new JLabel(bundle.getString("origin") + " (XYZ)")));
         bottomPanel.add(this._inputXCoord);
         bottomPanel.add(this._inputYCoord);
         bottomPanel.add(this._inputZCoord);
 
-        bottomPanel.add(new Label(bundle.getString("grid")));
+        bottomPanel.add(styleComponent(new JLabel(bundle.getString("grid"))));
         bottomPanel.add(this._inputSpace);
 
         bottomPanel.add(this._btnCalculate);
 
-        rightPanel.add(new Label(bundle.getString("view")));
-        rightPanel.add(this._radioScatterPlot);
-        rightPanel.add(this._radioVoronoi);
+        rightPanel.add(styleComponent(new JLabel(bundle.getString("view"))));
+        rightPanel.add(styleComponent(this._radioScatterPlot));
+        rightPanel.add(styleComponent(this._radioVoronoi));
 
         final GridBagConstraints c = new GridBagConstraints();
         c.fill = GridBagConstraints.HORIZONTAL;
         c.weightx = 0.7f;
         c.gridx = 0;
         c.gridy = 0;
-        this.add(topPanel, c);
+        this.add(styleComponent(topPanel), c);
 
         c.gridx = 0;
         c.gridy = 1;
-        this.add(bottomPanel, c);
+        this.add(styleComponent(bottomPanel), c);
 
         c.weightx = 0.3f;
         c.gridy = 0;
         c.gridx = 1;
         c.gridheight = 2;
-        this.add(rightPanel, c);
+        this.add(styleComponent(rightPanel), c);
 
         this.invalidateViewOptions();
 
@@ -161,6 +150,24 @@ public class SpaceGroupSelectionPanel extends JPanel implements View, ActionList
         this._radioVoronoi.addActionListener(this);
         this._btnCalculate.addActionListener(this);
 	}
+
+    private static <T extends JComponent> T styleComponent(T component) {
+        component.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
+        component.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
+        component.setFocusable(false);
+        return component;
+    }
+
+    protected static <T> List<T> intersection(List<T> listA, List<T> listB) {
+        List<T> intersect = new LinkedList<T>();
+
+        for (T item : listA) {
+            if (listB.contains(item)) {
+                intersect.add(item);
+            }
+        }
+        return intersect;
+    }
 
     private void prepareListControls() {
         int selectedLatticeIndex = 0;
@@ -205,17 +212,6 @@ public class SpaceGroupSelectionPanel extends JPanel implements View, ActionList
         if (this._idToListItem.containsKey(this._controller.getSpaceGroupID())) {
             this._spaceGroupList.setSelectedItem(this._idToListItem.get(this._controller.getSpaceGroupID()));
         }
-    }
-
-    protected static <T> List<T> intersection(List<T> listA, List<T> listB) {
-        List<T> intersect = new LinkedList<T>();
-
-        for (T item : listA) {
-            if (listB.contains(item)) {
-                intersect.add(item);
-            }
-        }
-        return intersect;
     }
 
     protected  void setSpaceGroupListItems(List<ID> ids) {

@@ -1,23 +1,39 @@
 package com.Softwareprojekt.Utilities;
 
-import java.util.LinkedList;
-import java.util.List;
-
-import com.Softwareprojekt.interfaces.LatticeType;
-import com.Softwareprojekt.interfaces.Vector3D;
 import com.Softwareprojekt.interfaces.Mesh;
-import com.sun.xml.internal.bind.v2.model.annotation.Quick;
+import com.Softwareprojekt.interfaces.Vector3D;
 import org.jzy3d.maths.Coord3d;
 import org.jzy3d.plot3d.primitives.Point;
 import org.jzy3d.plot3d.primitives.Polygon;
-//import org.jzy3d.plot3d.primitives.pickable.Pickable;
 import org.jzy3d.plot3d.primitives.pickable.PickablePolygon;
+import org.la4j.vector.Vector;
 import quickhull3d.Point3d;
 import quickhull3d.QuickHull3D;
 
-public final class ConvertHelper {
+import java.util.*;
 
-    private ConvertHelper() {}
+public final class MeshHelper {
+
+    private MeshHelper() {}
+
+    public static boolean approximateEquality(Mesh m1, Mesh m2) {
+        if (m1.getVertices().size() == m2.getVertices().size()) {
+            final Vector centroid1 = m1.getCentroid();
+            final Vector centroid2 = m2.getCentroid();
+
+            int sum1 = 0;
+            int sum2 = 0;
+            for(Vector3D v : m1.getVertices()) {
+                sum1 += v.subtract(centroid1).length();
+            }
+
+            for(Vector3D v : m2.getVertices()) {
+                sum2 += v.subtract(centroid2).length();
+            }
+            return sum1 == sum2;
+        }
+        return false;
+    }
 
 	/**
 	 * Converts a polygon to a jzy3d polygon.

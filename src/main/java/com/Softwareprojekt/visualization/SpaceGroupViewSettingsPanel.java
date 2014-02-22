@@ -1,17 +1,16 @@
 package com.Softwareprojekt.visualization;
 
+import com.Softwareprojekt.InternationalShortSymbol.ID;
 import com.Softwareprojekt.interfaces.Controller;
 import com.Softwareprojekt.interfaces.View;
 
-import com.Softwareprojekt.InternationalShortSymbol.ID;
-
+import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
-import javax.swing.*;
 
 public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener, View {
 
@@ -40,24 +39,19 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 		this.setLayout(layout);
 		
 		_btnVertices = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("poly_vertice.png")));
-		styleButton(_btnVertices);
-		this.add(_btnVertices);
+		this.add(styleButton(_btnVertices));
 
         _btnLabeling = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("mesh_labels.png")));
-        styleButton(_btnLabeling);
-        this.add(_btnLabeling);
+        this.add(styleButton(_btnLabeling));
 
         _btnWireframe = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("poly_wire.png")));
-		styleButton(_btnWireframe);
-		this.add(_btnWireframe);
+		this.add(styleButton(_btnWireframe));
 		
 		_btnFace = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("poly_face.png")));
-		styleButton(_btnFace);
-		this.add(_btnFace);
+		this.add(styleButton(_btnFace));
 		
 		_btnSpacing = new JToggleButton(new ImageIcon(ClassLoader.getSystemResource("poly_spacing.png")));
-		styleButton(_btnSpacing);
-		this.add(_btnSpacing);
+		this.add(styleButton(_btnSpacing));
 
         this._labels.put(this._btnVertices, bundle.getString("showVertices"));
         this._labels.put(this._btnLabeling, bundle.getString("showLabeling"));
@@ -81,9 +75,10 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
         btn.setToolTipText(String.format(ToolTip_Format, this._labels.get(btn), toggleStatus));
     }
 
-	private static void styleButton(AbstractButton btn) {
+	private static <T extends AbstractButton> T styleButton(T btn) {
 		btn.setPreferredSize(BUTTON_SIZE);
 		btn.setFocusable(false);
+        return btn;
 	}
 
 	@Override

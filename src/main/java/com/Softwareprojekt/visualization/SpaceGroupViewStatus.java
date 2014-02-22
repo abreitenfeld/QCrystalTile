@@ -5,9 +5,8 @@ import com.Softwareprojekt.interfaces.Controller;
 import com.Softwareprojekt.interfaces.View;
 
 import javax.swing.*;
-import javax.swing.Timer;
 import java.awt.*;
-import java.util.*;
+import java.util.ResourceBundle;
 
 public class SpaceGroupViewStatus extends JPanel implements View {
 
@@ -27,9 +26,8 @@ public class SpaceGroupViewStatus extends JPanel implements View {
 
         this._leftLabel = new JLabel();
         this._leftLabel.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
-        this._rightLabel = new JLabel(bundle.getString("calculating"), JLabel.RIGHT);
-        ImageIcon icon = new ImageIcon(ClassLoader.getSystemResource("loading.gif"));
-        this._rightLabel.setIcon(icon);
+        this._rightLabel = new JLabel(bundle.getString("calculating")
+                , new ImageIcon(ClassLoader.getSystemResource("loading.gif")), JLabel.RIGHT);
         this._rightLabel.setFont(this._rightLabel.getFont().deriveFont(Font.BOLD));
         this._rightLabel.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
 

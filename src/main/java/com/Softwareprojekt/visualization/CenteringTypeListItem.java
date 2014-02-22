@@ -1,8 +1,8 @@
 package com.Softwareprojekt.visualization;
 
-import java.util.ResourceBundle;
-
 import com.Softwareprojekt.interfaces.LatticeType;
+
+import java.util.ResourceBundle;
 
 public class CenteringTypeListItem implements Comparable<CenteringTypeListItem> {
 

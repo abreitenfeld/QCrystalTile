@@ -1,11 +1,11 @@
 package com.Softwareprojekt.visualization;
 
-import com.Softwareprojekt.InternationalShortSymbol.ID;
-import com.Softwareprojekt.InternationalShortSymbol.SpaceGroupFactoryImpl;
-import com.Softwareprojekt.Utilities.PointList;
-import com.Softwareprojekt.interfaces.*;
-
 import com.Softwareprojekt.SpaceGroup.PointSetCreatorImpl;
+import com.Softwareprojekt.Utilities.PointList;
+import com.Softwareprojekt.interfaces.Model;
+import com.Softwareprojekt.interfaces.PointSetCreator;
+import com.Softwareprojekt.interfaces.SpaceGroup;
+import com.Softwareprojekt.interfaces.Vector3D;
 
 import java.util.Set;
 

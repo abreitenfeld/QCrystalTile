@@ -1,7 +1,11 @@
 package com.Softwareprojekt.Utilities;
 
 import com.Softwareprojekt.interfaces.Vector3D;
-import java.io.*;
+
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.LinkedList;
 
 public class QDelaunay extends CallCProgram {

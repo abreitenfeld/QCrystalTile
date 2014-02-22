@@ -16,10 +16,6 @@ public interface Mesh {
 	 */
 	public List<Polygon> getFaces();
 
-    /**
-     * Returns the area of the mesh.
-     * @return
-     */
-    public double getArea();
+    public Vector3D getCentroid();
 
 }

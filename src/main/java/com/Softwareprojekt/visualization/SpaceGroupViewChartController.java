@@ -4,7 +4,6 @@ import com.Softwareprojekt.Utilities.ExtendedPickingSupport;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.controllers.mouse.camera.AWTCameraMouseController;
 import org.jzy3d.maths.BoundingBox3d;
-//import org.jzy3d.maths.Coord3d;
 import org.jzy3d.maths.IntegerCoord2d;
 import org.jzy3d.plot3d.rendering.scene.Graph;
 import org.jzy3d.plot3d.rendering.view.modes.ViewPositionMode;
@@ -16,7 +15,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseWheelEvent;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.ResourceBundle;
+
+//import org.jzy3d.maths.Coord3d;
 
 public class SpaceGroupViewChartController extends AWTCameraMouseController implements ActionListener {
 

@@ -1,6 +1,6 @@
 package com.Softwareprojekt.visualization;
 
-import com.Softwareprojekt.InternationalShortSymbol.*;
+import com.Softwareprojekt.InternationalShortSymbol.ID;
 
 public class SpaceGroupIDListItem implements Comparable<SpaceGroupIDListItem>  {
 

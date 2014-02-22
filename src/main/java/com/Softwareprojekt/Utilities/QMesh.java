@@ -3,6 +3,8 @@ package com.Softwareprojekt.Utilities;
 import com.Softwareprojekt.interfaces.Mesh;
 import com.Softwareprojekt.interfaces.Polygon;
 import com.Softwareprojekt.interfaces.Vector3D;
+import org.la4j.vector.Vector;
+
 import java.util.LinkedList;
 import java.util.List;
 
@@ -56,8 +58,15 @@ public class QMesh implements Mesh {
     }
 
     @Override
-    public double getArea() {
-        return 0;
+    public Vector3D getCentroid() {
+        Vector centroid = new Vector3D(new double[] {0, 0, 0});
+        if (!this.getVertices().isEmpty()) {
+            for(Vector3D p : this.getVertices()) {
+                centroid = centroid.add(p);
+            }
+            centroid = centroid.divide(this.getVertices().size());
+        }
+        return new Vector3D(new double[] {centroid.get(0), centroid.get(1), centroid.get(2)});
     }
 
     @Override
