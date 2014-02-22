@@ -443,9 +443,11 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
         this.clearScene();
         this.invalidateViewOptions();
 
+        int verticeCount = !meshes.isEmpty() ? meshes.get(0).getVertices().size() : 0;
         int neighbourCount = !meshes.isEmpty() ? meshes.get(0).getFaces().size() : 0;
         this._status.setStatusCaption(String.format(bundle.getString("statusFormat")
-                , formatSpaceGroupID(this._controller.getSpaceGroupID()), meshes.size(), neighbourCount));
+                , formatSpaceGroupID(this._controller.getSpaceGroupID())
+                , meshes.size(), verticeCount, neighbourCount));
 
         for (Mesh m : meshes) {
             List<Polygon> polygons = new LinkedList<Polygon>();

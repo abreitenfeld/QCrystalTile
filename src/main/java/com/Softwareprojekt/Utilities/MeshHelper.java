@@ -11,6 +11,7 @@ import quickhull3d.Point3d;
 import quickhull3d.QuickHull3D;
 
 import java.util.*;
+import java.util.regex.Matcher;
 
 public final class MeshHelper {
 
@@ -21,8 +22,9 @@ public final class MeshHelper {
             final Vector centroid1 = m1.getCentroid();
             final Vector centroid2 = m2.getCentroid();
 
-            int sum1 = 0;
-            int sum2 = 0;
+            double sum1 = 0;
+            double sum2 = 0;
+
             for(Vector3D v : m1.getVertices()) {
                 sum1 += magnitude(v, centroid1);
             }
@@ -30,7 +32,7 @@ public final class MeshHelper {
             for(Vector3D v : m2.getVertices()) {
                 sum2 += magnitude(v, centroid2);
             }
-            return sum1 == sum2;
+            return Math.floor(sum1) == Math.floor(sum2);
         }
         return false;
     }

@@ -30,6 +30,8 @@ public class SpaceGroupViewStatus extends JPanel implements View {
                 , new ImageIcon(ClassLoader.getSystemResource("loading.gif")), JLabel.RIGHT);
         this._rightLabel.setFont(this._rightLabel.getFont().deriveFont(Font.BOLD));
         this._rightLabel.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
+        this._rightLabel.setHorizontalAlignment(JLabel.RIGHT);
+        this._rightLabel.setVerticalAlignment(JLabel.BOTTOM);
 
         this.add(this._leftLabel);
         this.add(this._rightLabel);

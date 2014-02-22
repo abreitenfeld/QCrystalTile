@@ -42,8 +42,8 @@ public class SpaceGroupSelectionPanel extends JPanel implements View, ActionList
     private static final float Max_Coord_Value = 1f;
     private static final int Min_Space_Value = 1;
     private static final int Max_Space_Value = 10;
-    private static Dimension Field_Size = new Dimension(50, 25);
-    private static Dimension Space_Field_Size = new Dimension(30, 25);
+    private static Dimension Box_Size = new Dimension(150, 25);
+    private static Dimension Field_Size = new Dimension(80, 25);
 
 	public SpaceGroupSelectionPanel(Controller<ID> controller) {
 		super(new GridBagLayout());
@@ -66,6 +66,7 @@ public class SpaceGroupSelectionPanel extends JPanel implements View, ActionList
             new LatticeSystemListItem(LatticeType.System.TETRAGONAL),
             new LatticeSystemListItem(LatticeType.System.TRICLINIC)
         });
+        this._latticeSystemList.setPreferredSize(Box_Size);
         this._latticeSystemList.setFocusable(false);
 
 		this._centeringTypeList = new JComboBox<CenteringTypeListItem>(new CenteringTypeListItem[] {
@@ -75,22 +76,28 @@ public class SpaceGroupSelectionPanel extends JPanel implements View, ActionList
 			new CenteringTypeListItem(LatticeType.CenteringType.C),
 			new CenteringTypeListItem(LatticeType.CenteringType.F)
 		});
+        this._centeringTypeList.setPreferredSize(Box_Size);
         this._centeringTypeList.setFocusable(false);
 
 		this._spaceGroupList = new JComboBox<SpaceGroupIDListItem>();
+        this._spaceGroupList.setPreferredSize(Box_Size);
         this._spaceGroupList.setFocusable(false);
 
         // create coord inputs
         this._inputXCoord = new JTextField();
         this._inputXCoord.setPreferredSize(Field_Size);
+        this._inputXCoord.setHorizontalAlignment(JTextField.RIGHT);
         this._inputYCoord = new JTextField();
         this._inputYCoord.setPreferredSize(Field_Size);
+        this._inputYCoord.setHorizontalAlignment(JTextField.RIGHT);
         this._inputZCoord = new JTextField();
         this._inputZCoord.setPreferredSize(Field_Size);
+        this._inputZCoord.setHorizontalAlignment(JTextField.RIGHT);
 
         // create space inputs
         this._inputSpace = new JTextField();
-        this._inputSpace.setPreferredSize(Space_Field_Size);
+        this._inputSpace.setPreferredSize(Field_Size);
+        this._inputSpace.setHorizontalAlignment(JTextField.RIGHT);
 
         this._btnCalculate = new JButton(bundle.getString("calculate"));
         this._btnCalculate.setFocusable(false);
