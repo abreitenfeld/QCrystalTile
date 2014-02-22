@@ -21,7 +21,7 @@
     <repository>
         <id>fr.cemagref.lisc.maven2</id>
         <name>Lisc repository</name>
-        <url>http://trac.clermont.cemagref.fr/maven/repo/</url>
+        <url>http://trac.clermont.cemagref.fr/maven/</url>
     </repository>
   </repositories>
   <dependencies>
