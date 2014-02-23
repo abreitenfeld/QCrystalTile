@@ -8,11 +8,11 @@ import org.jzy3d.plot3d.primitives.Polygon;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ChromaticColorProvider implements ColorProvider {
+public class ChromaticCellsColorProvider implements ColorProvider {
 
     private final Map<Mesh, Color> _meshToColor = new HashMap<Mesh, Color>();
 
-    public ChromaticColorProvider() {
+    public ChromaticCellsColorProvider() {
     }
 
     @Override

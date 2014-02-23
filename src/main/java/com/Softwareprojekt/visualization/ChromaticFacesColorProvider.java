@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class FaceColorProvider implements ColorProvider {
+public class ChromaticFacesColorProvider implements ColorProvider {
 
     private final Map<Double, Color> _facecolor = new HashMap<Double, Color>();
 

@@ -16,7 +16,8 @@ public class SpaceGroupController implements Controller<ID> {
     protected final View _view;
     protected  ID _currentSpaceGroupID;
     protected final EnumSet<ViewOptions> _options;
-    protected Visualization _visualization = Visualization.VoronoiTesselation;
+    protected ColorScheme _colorScheme;
+    protected Visualization _visualization;
     protected final UserPreferences _prefs = new UserPreferences();
 
 	/**
@@ -37,6 +38,7 @@ public class SpaceGroupController implements Controller<ID> {
         // restore settings from user preferences
         this._visualization = this._prefs.getVisualization();
         this._options = this._prefs.getViewOptions();
+        this._colorScheme = this._prefs.getColorProvider();
         this._model.setPoint(this._prefs.getOriginPoint());
         this._model.setSpace(this._prefs.getSpace());
         // instantiate space group
@@ -73,8 +75,22 @@ public class SpaceGroupController implements Controller<ID> {
 	 * Returns true if the specified view option is turned on otherwise false..
 	 */
 	public boolean getViewOption(ViewOptions option) { return this._options.contains(option); }
-	
-	/**
+
+    @Override
+    public void setColorScheme(ColorScheme provider) {
+        if (this._colorScheme != provider) {
+            this._colorScheme = provider;
+            this._view.invalidateViewOptions();
+            this._prefs.setColorScheme(provider);
+        }
+    }
+
+    @Override
+    public ColorScheme getColorScheme() {
+        return this._colorScheme;
+    }
+
+    /**
 	 * Enables or disables the specified view option.
 	 */
 	public void setViewOption(ViewOptions option, boolean value) {

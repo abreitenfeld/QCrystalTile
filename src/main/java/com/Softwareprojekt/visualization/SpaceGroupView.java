@@ -59,9 +59,7 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
     protected volatile  CalculationWorker _currentWorker;
     // color providers
     protected ColorProvider _currentColorProvider;
-    protected final ColorProvider _monoChromaticColors;
-    protected final ColorProvider _chromaticColors;
-    protected final ColorProvider _faceColors;
+    protected final HashMap<Controller.ColorScheme, ColorProvider> _colorProviders = new HashMap<Controller.ColorScheme, ColorProvider>();
 
     // internal structure to store meta data of mesh
     protected class MeshInformation {
@@ -155,7 +153,6 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(Foreground_Color));
         this.setBackground(java.awt.Color.gray);
-        //this.setExtendedState(this.getExtendedState() | Frame.MAXIMIZED_BOTH);
 		this.getContentPane().setLayout(new BorderLayout());
         this.setMinimumSize(Min_Size);
 
@@ -187,10 +184,10 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
 		this._chart.addDrawable(this._originPoint);
 
         // setup color providers
-        this._monoChromaticColors = new MonochromaticColorProvider(Faces_Color);
-        this._chromaticColors = new ChromaticColorProvider();
-        this._faceColors =new FaceColorProvider();
-        this._currentColorProvider = this._monoChromaticColors;
+        this._colorProviders.put(Controller.ColorScheme.Monochromatic, new MonochromaticColorProvider(Faces_Color));
+        this._colorProviders.put(Controller.ColorScheme.ChromaticCells, new ChromaticCellsColorProvider());
+        this._colorProviders.put(Controller.ColorScheme.ChromaticFaces, new ChromaticFacesColorProvider());
+        this._currentColorProvider = this._colorProviders.get(_controller.getColorScheme());
 
 		// add components
         final SpaceGroupSelectionPanel selectionPanel = new SpaceGroupSelectionPanel(this._controller);
@@ -291,31 +288,31 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
 
         // crate face tinting menu items
         final JMenu mnuFaceTinting = new JMenu(bundle.getString("colors"));
-        final JMenuItem miMonochromColors = new JMenuItem(bundle.getString("monochromaticColors"));
-        miMonochromColors.addActionListener(new ActionListener() {
+        final JMenuItem miMonochromaticColors = new JMenuItem(bundle.getString("monochromaticColors"));
+        miMonochromaticColors.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setColorProvider(_monoChromaticColors);
+                _controller.setColorScheme(Controller.ColorScheme.Monochromatic);
             }
         });
 
-        final JMenuItem miChromaticColors = new JMenuItem(bundle.getString("chromaticCellColors"));
-        miChromaticColors.addActionListener(new ActionListener() {
+        final JMenuItem miChromaticCellsColors = new JMenuItem(bundle.getString("chromaticCellColors"));
+        miChromaticCellsColors.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setColorProvider(_chromaticColors);
+                _controller.setColorScheme(Controller.ColorScheme.ChromaticCells);
             }
         });
-        final JMenuItem miFaceColors = new JMenuItem(bundle.getString("chromaticFaceColors"));
-        miFaceColors.addActionListener(new ActionListener() {
+        final JMenuItem miChromaticFacesColors = new JMenuItem(bundle.getString("chromaticFaceColors"));
+        miChromaticFacesColors.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                setColorProvider(_faceColors);
+                _controller.setColorScheme(Controller.ColorScheme.ChromaticFaces);
             }
         });
-        mnuFaceTinting.add(miMonochromColors);
-        mnuFaceTinting.add(miChromaticColors);
-        mnuFaceTinting.add(miFaceColors);
+        mnuFaceTinting.add(miMonochromaticColors);
+        mnuFaceTinting.add(miChromaticCellsColors);
+        mnuFaceTinting.add(miChromaticFacesColors);
 
         // crate spacing menu items
         final JMenu mnuCellSpacing = new JMenu(bundle.getString("cellSpacing"));
@@ -348,15 +345,6 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
         if (this._currentColorProvider != colorProvider) {
             this._currentColorProvider = colorProvider;
             this._currentColorProvider.reset();
-            // update face color
-            Iterator<Mesh> iter = this._meshes.keySet().iterator();
-            while(iter.hasNext()) {
-                Mesh m = iter.next();
-                MeshInformation info = this._meshes.get(m);
-                for(Polygon poly : info.Polygons) {
-                    poly.setColor(this._currentColorProvider.getColor(m, poly));
-                }
-            }
         }
     }
 
@@ -520,6 +508,11 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
 		final boolean showWireframe = this._controller.getViewOption(Controller.ViewOptions.ShowWireframe);
         final boolean showLabel = this._controller.getVisualization() != Controller.Visualization.ScatterPlot
                 && this._controller.getViewOption(Controller.ViewOptions.ShowLabeledMeshes);
+
+        // set color provider
+        if (this._colorProviders.containsKey(this._controller.getColorScheme())) {
+            this.setColorProvider(this._colorProviders.get(this._controller.getColorScheme()));
+        }
 
         Iterator<Mesh> iter = this._meshes.keySet().iterator();
         while(iter.hasNext()) {

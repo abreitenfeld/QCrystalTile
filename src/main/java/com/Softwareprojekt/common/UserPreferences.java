@@ -14,6 +14,7 @@ public final class UserPreferences {
     private static final String Exec_Path_Key = "qhull_exec_path";
     private static final String Visualization_Key = "visualization";
     private static final String Space_Group_ID_Key = "space_group_id";
+    private static final String Color_Provider_Key = "color_provider";
     private static final String Origin_X_Key = "origin_x";
     private static final String Origin_Y_Key = "origin_y";
     private static final String Origin_Z_Key = "origin_z";
@@ -52,13 +53,14 @@ public final class UserPreferences {
     }
 
     public Controller.Visualization getVisualization() {
-        String sViz = this._prefs.get(Visualization_Key, Controller.Visualization.VoronoiTesselation.toString());
-        try {
-            return Controller.Visualization.valueOf(sViz);
+        String sViz = this._prefs.get(Visualization_Key, "");
+        if (!sViz.isEmpty()) {
+            try {
+                return Controller.Visualization.valueOf(sViz);
+            }
+            catch(Exception e) { }
         }
-        catch(Exception e) {
-            return Controller.Visualization.VoronoiTesselation;
-        }
+        return Controller.Visualization.VoronoiTesselation;
     }
 
     /**
@@ -85,6 +87,21 @@ public final class UserPreferences {
         }
 
         return options;
+    }
+
+    public void setColorScheme(Controller.ColorScheme scheme) {
+        this._prefs.put(Color_Provider_Key, scheme.toString());
+    }
+
+    public Controller.ColorScheme getColorProvider() {
+        String scheme = this._prefs.get(Color_Provider_Key, "");
+        if (!scheme.isEmpty()) {
+            try {
+                return Controller.ColorScheme.valueOf(scheme);
+            }
+            catch(Exception e) { }
+        }
+        return Controller.ColorScheme.Monochromatic;
     }
 
     public void setSpaceGroupID(ID id) {

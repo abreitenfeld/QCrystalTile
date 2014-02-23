@@ -17,11 +17,18 @@ public interface Controller<I extends SpaceGroupID> {
 	void setViewOption(ViewOptions option, boolean value);
 	boolean getViewOption(ViewOptions option);
 
+    void setColorScheme(ColorScheme provider);
+    ColorScheme getColorScheme();
+
 	void setVisualization(Visualization step);
 	Visualization getVisualization();
 
 	List<Mesh> calculateMesh() throws QHullException;
-	
+
+    public enum ColorScheme {
+        Monochromatic, ChromaticFaces, ChromaticCells
+    }
+
 	public enum ViewOptions {
         ShowVertices, ShowWireframe, ShowFaces, ShowSpacing,
         ShowAxeBox, ShowLabeledMeshes, ShowUnifiedCells
