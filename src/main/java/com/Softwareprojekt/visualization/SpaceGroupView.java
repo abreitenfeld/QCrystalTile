@@ -2,6 +2,7 @@ package com.Softwareprojekt.visualization;
 
 import com.Softwareprojekt.InternationalShortSymbol.ID;
 import com.Softwareprojekt.Utilities.MeshHelper;
+import com.Softwareprojekt.Utilities.QHullException;
 import com.Softwareprojekt.interfaces.*;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.factories.AWTChartComponentFactory;
@@ -31,6 +32,7 @@ import java.awt.event.WindowEvent;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
+import java.util.concurrent.ExecutionException;
 
 //import org.jzy3d.chart.factories.ChartComponentFactory;
 //import org.jzy3d.maths.BoundingBox3d;
@@ -121,16 +123,20 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
 
         @Override
         protected void done() {
-            try {
-                if (_currentWorker == this) {
-                    _status.enableLoadingIndicator(false);
+            if (_currentWorker == this) {
+                _status.enableLoadingIndicator(false);
+                try {
                     updateView(this.get());
-                    _workerRunning = false;
-                    _currentWorker = null;
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                } catch (ExecutionException e) {
+                    if (e.getCause() instanceof QHullException) {
+                        handleQHullNotFound();
+                    }
                 }
-            }
-            catch (Exception e) {
-                e.printStackTrace();
+                // free worker
+                _workerRunning = false;
+                _currentWorker = null;
             }
         }
     }
@@ -242,8 +248,17 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
                 UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
             }
         }
-        catch ( Exception e ) {
-            e.printStackTrace();
+        catch (Exception e) { }
+    }
+
+    private void handleQHullNotFound() {
+        final String os = System.getProperty("os.name");
+        if (os.toLowerCase().contains("windows")) {
+            // TODO: implement error handling for Windows
+        }
+        else {
+            JOptionPane.showMessageDialog(null, bundle.getString("qhullNotFound"),
+                bundle.getString("qhullError"), JOptionPane.WARNING_MESSAGE);
         }
     }
 
