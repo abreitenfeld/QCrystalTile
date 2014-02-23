@@ -237,7 +237,7 @@ public class SpaceGroupController implements Controller<ID> {
             }
         }
         double unitCellInnerSum = unitCell.sumDistancesToCentroid();
-        double precision = 0.01;
+        double precision = 0.005;
 
         // filter for cells equal to unit cell
         System.out.println(unitCellInnerSum);
