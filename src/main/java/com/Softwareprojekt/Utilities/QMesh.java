@@ -70,6 +70,11 @@ public class QMesh implements Mesh {
     }
 
     @Override
+    public double sumDistancesToCentroid() {
+        return 0;
+    }
+
+    @Override
     public String toString(){
         String out = "";
         for (Polygon p: this.getFaces()){

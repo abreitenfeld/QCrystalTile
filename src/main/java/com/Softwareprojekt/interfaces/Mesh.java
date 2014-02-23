@@ -18,4 +18,6 @@ public interface Mesh {
 
     public Vector3D getCentroid();
 
+    public double sumDistancesToCentroid();
+
 }

@@ -71,5 +71,14 @@ public class ImmutableMesh implements Mesh {
 		return this._polygons;
 	}
 
+    @Override
+    public double sumDistancesToCentroid(){
+        Vector3D centroid = this.getCentroid();
+        double sum = 0;
 
+        for(Vector3D vert : this.getVertices()){
+            sum += vert.subtract(centroid).norm();
+        }
+        return sum/this.getVertices().size();
+    }
 }

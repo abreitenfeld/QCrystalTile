@@ -9,6 +9,7 @@ import org.jzy3d.plot3d.primitives.pickable.PickablePolygon;
 import org.la4j.vector.Vector;
 import quickhull3d.Point3d;
 import quickhull3d.QuickHull3D;
+import quickhull3d.Vector3d;
 
 import java.util.*;
 import java.util.regex.Matcher;
@@ -124,5 +125,4 @@ public final class MeshHelper {
 
         return new ImmutableMesh(vertexList, faceList);
     }
-	
 }

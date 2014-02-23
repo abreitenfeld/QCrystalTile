@@ -236,75 +236,19 @@ public class SpaceGroupController implements Controller<ID> {
                 minDistance = distance;
             }
         }
+        double unitCellInnerSum = unitCell.sumDistancesToCentroid();
+        double precision = 0.01;
 
         // filter for cells equal to unit cell
+        System.out.println(unitCellInnerSum);
         if (unitCell != null) {
             for (Mesh m : meshes) {
-                if (MeshHelper.approximateEquality(m, unitCell)) {
-                    whiteList.add(m);
+                if (   unitCellInnerSum - precision < m.sumDistancesToCentroid()
+                    && unitCellInnerSum + precision > m.sumDistancesToCentroid() ) {
+                        whiteList.add(m);
                 }
             }
         }
         return whiteList;
-    }
-
-    private static Mesh filterForMajorityCell(Mesh mesh){
-
-        Map< Integer, LinkedList<Polygon>> vertCount = new HashMap<Integer,LinkedList<Polygon>>();
-        Integer verts = 0;
-
-        for(Polygon cell : mesh.getFaces()){
-            verts = cell.getVertices().size();
-            if (vertCount.containsKey(verts)) {
-                vertCount.get(verts).add(cell);
-            }else {
-                LinkedList<Polygon> sameCell= new LinkedList<Polygon>();
-                sameCell.add(cell);
-                vertCount.put(verts,sameCell);
-            }
-        }
-       // Find most common Cell
-        Integer max = 0;
-        Integer  cellCount;
-        LinkedList<Polygon> mayorityGroup = new LinkedList<Polygon>();
-
-        for (Map.Entry<Integer, LinkedList<Polygon>> entry : vertCount.entrySet()){
-            cellCount = entry.getValue().size();
-           if (cellCount.compareTo(max) > 0){
-               max = cellCount;
-               mayorityGroup = entry.getValue();
-           }
-        }
-        return new ImmutableMesh(mesh.getVertices() ,mayorityGroup);
-    }
-
-    private static List<Mesh> filterByVolume(List<Mesh> mesh_list){
-        Map< Double, LinkedList<Mesh>> volume_sort= new HashMap<Double ,LinkedList<Mesh>>();
-        QMesh  current_mesh = null;
-        Double volume = null;
-
-        for (Mesh x : mesh_list){
-            current_mesh = (QMesh) x;
-            volume = current_mesh.getVolume();
-            if (volume_sort.containsKey(volume)) {
-                volume_sort.get(volume).add(x);
-            }else {
-                LinkedList<Mesh> sameCell = new LinkedList<Mesh>();
-                sameCell.add(x);
-                volume_sort.put(volume,sameCell);
-            }
-        }
-        Integer max = 0;
-        Integer  cellCount;
-        LinkedList<Mesh> mayorityGroup = new LinkedList<Mesh>();
-
-        for (Map.Entry<Double , LinkedList<Mesh>> entry : volume_sort.entrySet()){
-            cellCount = entry.getValue().size();
-            if (cellCount.compareTo(max) > 0){
-                max = cellCount;
-                mayorityGroup = entry.getValue();
-            }
-        }
-        return mayorityGroup;
     }
 }
