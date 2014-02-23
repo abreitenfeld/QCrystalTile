@@ -1,5 +1,6 @@
 package com.Softwareprojekt.Utilities;
 
+import com.Softwareprojekt.interfaces.LatticeType;
 import com.Softwareprojekt.interfaces.Mesh;
 import com.Softwareprojekt.interfaces.Vector3D;
 import org.jzy3d.maths.Coord3d;
@@ -20,22 +21,80 @@ public final class MeshHelper {
 
     public static boolean approximateEquality(Mesh m1, Mesh m2) {
         if (m1.getVertices().size() == m2.getVertices().size() && m1.getFaces().size() == m2.getFaces().size()) {
-            final Vector centroid1 = m1.getCentroid();
-            final Vector centroid2 = m2.getCentroid();
+            double v1 = calculateVolumeOfConvexHull(m1);
+            double v2 = calculateVolumeOfConvexHull(m2);
+            return Math.ceil(v1) == Math.ceil(v2);
+            /*if (Math.ceil(v1) == Math.ceil(v2)) {
+                // compare area of faces
+                Set<Double> set1 = new HashSet<Double>();
+                Set<Double> set2 = new HashSet<Double>();
 
-            double sum1 = 0;
-            double sum2 = 0;
+                for (com.Softwareprojekt.interfaces.Polygon p : m1.getFaces()) {
+                    double area = Math.floor(area(p));
+                    if (!set1.contains(p)) {
+                        set1.add(area);
+                    }
+                }
 
-            for(Vector3D v : m1.getVertices()) {
-                sum1 += magnitude(v, centroid1);
-            }
+                for (com.Softwareprojekt.interfaces.Polygon p : m2.getFaces()) {
+                    double area = Math.floor(area(p));
+                    if (!set2.contains(p)) {
+                        set2.add(area);
+                    }
+                }
 
-            for(Vector3D v : m2.getVertices()) {
-                sum2 += magnitude(v, centroid2);
-            }
-            return Math.floor(sum1) == Math.floor(sum2);
+                return set1.equals(set2);
+            }*/
         }
         return false;
+    }
+
+    public static double calculateVolumeOfConvexHull(Mesh mesh) {
+        double volume = 0;
+        if (!mesh.getFaces().isEmpty()) {
+            final Vector3D centroid = mesh.getCentroid();
+            for (com.Softwareprojekt.interfaces.Polygon p : mesh.getFaces()) {
+                if (p.getVertices().size() > 2) {
+                    for (int i = 2; i < p.getVertices().size(); i++) {
+                        volume += volume(p.getVertices().get(0), p.getVertices().get(1), p.getVertices().get(i), centroid);
+                    }
+                }
+            }
+        }
+        return volume;
+    }
+
+    /**
+     * Calculates the area of the given polygon (http://en.wikipedia.org/wiki/Polygon#Area_and_centroid).
+     * @return
+     */
+    public static double area(com.Softwareprojekt.interfaces.Polygon poly) {
+        double area = 0;
+        Vector total = new Vector3D(new double[] {0, 0, 0});
+        for (int i = 0; i < poly.getVertices().size(); i++) {
+            Vector3D v1 = poly.getVertices().get(i);
+            Vector3D v2 = poly.getVertices().get((i + 1) % poly.getVertices().size());
+            total = total.add(v1.outerProduct(v2).getColumn(0));
+        }
+        //area = Math.sqrt(total.get(0) * total.get(0) + total.get(1) * total.get(1) * total.get(2) * total.get(2));
+        area = new Vector3D(new double[] {1, 1, 1}).innerProduct(total);
+        return Math.abs(area) / 2f;
+    }
+
+    /**
+     * Calculates the volume of a tetrahedron (http://en.wikipedia.org/wiki/Tetrahedron#General_properties).
+     * @param a
+     * @param b
+     * @param c
+     * @param d
+     * @return
+     */
+    public static double volume(Vector a, Vector b, Vector c, Vector d) {
+        a = a.subtract(d);
+        b = b.subtract(d);
+        c = c.subtract(d);
+        double v =  Math.abs(a.innerProduct(b.outerProduct(c).getColumn(0)));
+        return v / 6f;
     }
 
     public static double magnitude(Vector a, Vector b) {
