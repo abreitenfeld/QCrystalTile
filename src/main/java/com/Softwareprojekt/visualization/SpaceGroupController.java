@@ -38,7 +38,7 @@ public class SpaceGroupController implements Controller<ID> {
         // restore settings from user preferences
         this._visualization = this._prefs.getVisualization();
         this._options = this._prefs.getViewOptions();
-        this._colorScheme = this._prefs.getColorProvider();
+        this._colorScheme = this._prefs.getColorScheme();
         this._model.setPoint(this._prefs.getOriginPoint());
         this._model.setSpace(this._prefs.getSpace());
         // instantiate space group

@@ -93,7 +93,7 @@ public final class UserPreferences {
         this._prefs.put(Color_Provider_Key, scheme.toString());
     }
 
-    public Controller.ColorScheme getColorProvider() {
+    public Controller.ColorScheme getColorScheme() {
         String scheme = this._prefs.get(Color_Provider_Key, "");
         if (!scheme.isEmpty()) {
             try {

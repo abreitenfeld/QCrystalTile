@@ -34,14 +34,13 @@ public class SpaceGroupViewChartController extends AbstractCameraController impl
     private static final float Max_Bounding_Box_Value = 1f;
 
     public SpaceGroupViewChartController(Chart chart) {
-        super(chart);
+        register(chart);
+        addSlaveThreadController(new CameraThreadController(chart));
+
         this._chart = chart;
         this._chart.addKeyController();
         this._chart.addScreenshotKeyController();
         this._pickingSupport = new ExtendedPickingSupport();
-
-        register(chart);
-        addSlaveThreadController(new CameraThreadController(chart));
 
         this._contextMenu = new JPopupMenu();
         this._contextMenu.setLightWeightPopupEnabled(false);
