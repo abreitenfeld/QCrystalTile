@@ -60,12 +60,11 @@ public class SpaceGroupSelectionPanel extends JPanel implements View, ActionList
         // add components
         this._latticeSystemList = new JComboBox<LatticeSystemListItem>(new LatticeSystemListItem[] {
             new LatticeSystemListItem(LatticeType.System.CUBIC),
-            //new LatticeSystemListItem(LatticeType.System.HEXAGONAL),
             new LatticeSystemListItem(LatticeType.System.MONOCLINIC),
             new LatticeSystemListItem(LatticeType.System.ORTHORHOMBIC),
-            //new LatticeSystemListItem(LatticeType.System.RHOMBOHEDRAL),
             new LatticeSystemListItem(LatticeType.System.TETRAGONAL),
-            new LatticeSystemListItem(LatticeType.System.TRICLINIC)
+            new LatticeSystemListItem(LatticeType.System.TRICLINIC),
+                new LatticeSystemListItem(LatticeType.System.HEXAGONAL)
         });
         this._latticeSystemList.setLightWeightPopupEnabled(true);
         this._latticeSystemList.setPreferredSize(Box_Size);
@@ -121,9 +120,12 @@ public class SpaceGroupSelectionPanel extends JPanel implements View, ActionList
         topPanel.add(styleComponent(new JLabel(bundle.getString("spaceGroup"))));
         topPanel.add(this._spaceGroupList);
 
-        bottomPanel.add(styleComponent(new JLabel(bundle.getString("origin") + " (XYZ)")));
+        bottomPanel.add(styleComponent(new JLabel(bundle.getString("origin"))));
+        bottomPanel.add(styleComponent(new JLabel("X")));
         bottomPanel.add(this._inputXCoord);
+        bottomPanel.add(styleComponent(new JLabel("Y")));
         bottomPanel.add(this._inputYCoord);
+        bottomPanel.add(styleComponent(new JLabel("Z")));
         bottomPanel.add(this._inputZCoord);
 
         bottomPanel.add(styleComponent(new JLabel(bundle.getString("grid"))));

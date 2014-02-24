@@ -184,8 +184,6 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
 
 		// create moveable point
 		this._originPoint = new Point(new Coord3d(), Color.BLUE, Origin_Point_Size);
-		this._originPoint.setDisplayed(true);
-		this._chart.addDrawable(this._originPoint);
 
         // setup color providers
         this._colorProviders.put(Controller.ColorScheme.Monochromatic, new MonochromaticColorProvider(Faces_Color));
@@ -382,7 +380,6 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
 	 */
 	protected void clearScene() {
         this._chart.getScene().getGraph().getAll().clear();
-        this._chart.addDrawable(this._originPoint);
 	    this._meshes.clear();
         this._chartController.getPickingSupport().clear();
 	}
@@ -505,13 +502,19 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
             this._meshes.put(m, new MeshInformation(m, polygons, vertices, label));
         }
 
+        // show origin point drawable in scatter plot only
+        if (this._controller.getVisualization() == Controller.Visualization.ScatterPlot) {
+            this._chart.addDrawable(this._originPoint);
+        }
+
         this.calculateCentroids();
         this.calculateMeshPosition();
 
         // update the origin point
         this._originPoint.xyz = MeshHelper.convertVector3dTojzyCoord3d(this._controller.getModel().getPoint());
 
-        this._chart.getScene().getGraph().add(drawables, true);
+        this._chart.getScene().getGraph().add(drawables, false);
+        this._chart.getView().updateBoundsForceUpdate(true);
 
         // find unit cell
         Mesh unitCell = null;
