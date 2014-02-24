@@ -2,8 +2,11 @@ package com.Softwareprojekt.visualization;
 
 import com.Softwareprojekt.Utilities.ExtendedPickingSupport;
 import org.jzy3d.chart.Chart;
-import org.jzy3d.chart.controllers.mouse.camera.AWTCameraMouseController;
+import org.jzy3d.chart.controllers.camera.AbstractCameraController;
+import org.jzy3d.chart.controllers.mouse.AWTMouseUtilities;
+import org.jzy3d.chart.controllers.thread.camera.CameraThreadController;
 import org.jzy3d.maths.BoundingBox3d;
+import org.jzy3d.maths.Coord2d;
 import org.jzy3d.maths.IntegerCoord2d;
 import org.jzy3d.plot3d.rendering.scene.Graph;
 import org.jzy3d.plot3d.rendering.view.modes.ViewPositionMode;
@@ -11,17 +14,13 @@ import org.jzy3d.plot3d.rendering.view.modes.ViewPositionMode;
 import javax.media.opengl.GL;
 import javax.media.opengl.glu.GLU;
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseWheelEvent;
+import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-//import org.jzy3d.maths.Coord3d;
-
-public class SpaceGroupViewChartController extends AWTCameraMouseController implements ActionListener {
+public class SpaceGroupViewChartController extends AbstractCameraController implements
+        ActionListener, MouseListener, MouseWheelListener, MouseMotionListener {
 
     protected final ExtendedPickingSupport _pickingSupport;
     protected final Chart _chart;
@@ -41,8 +40,11 @@ public class SpaceGroupViewChartController extends AWTCameraMouseController impl
         this._chart.addScreenshotKeyController();
         this._pickingSupport = new ExtendedPickingSupport();
 
-        this._contextMenu = new JPopupMenu();
+        register(chart);
+        addSlaveThreadController(new CameraThreadController(chart));
 
+        this._contextMenu = new JPopupMenu();
+        this._contextMenu.setLightWeightPopupEnabled(false);
         // create view menu items
         final JMenu mnuView = new JMenu(bundle.getString("camera"));
         final JMenuItem miViewFree = new JMenuItem(bundle.getString("cameraFree"));
@@ -60,6 +62,30 @@ public class SpaceGroupViewChartController extends AWTCameraMouseController impl
         mnuView.add(miViewTop);
         mnuView.add(miViewProfile);
         this._contextMenu.add(mnuView);
+    }
+
+    public void register(Chart chart) {
+        super.register(chart);
+        chart.getCanvas().addMouseController(this);
+    }
+
+    public void dispose() {
+        for (Chart chart : targets) {
+            chart.getCanvas().removeMouseController(this);
+        }
+        super.dispose();
+    }
+
+    public boolean handleSlaveThread(MouseEvent e) {
+        if (AWTMouseUtilities.isDoubleClick(e)) {
+            if (threadController != null) {
+                threadController.start();
+                return true;
+            }
+        }
+        if (threadController != null)
+            threadController.stop();
+        return false;
     }
 
     public JPopupMenu getPopupMenu() {
@@ -98,6 +124,25 @@ public class SpaceGroupViewChartController extends AWTCameraMouseController impl
     }
 
     @Override
+    public void mousePressed(MouseEvent e) {
+        //
+        if (handleSlaveThread(e))
+            return;
+
+        prevMouse.x = e.getX();
+        prevMouse.y = e.getY();
+    }
+
+    @Override
+    public void mouseReleased(MouseEvent e) { }
+
+    @Override
+    public void mouseEntered(MouseEvent e) { }
+
+    @Override
+    public void mouseExited(MouseEvent e) { }
+
+    @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() instanceof JMenuItem) {
             final JMenuItem item = (JMenuItem)e.getSource();
@@ -106,4 +151,19 @@ public class SpaceGroupViewChartController extends AWTCameraMouseController impl
             }
         }
     }
+
+    @Override
+    public void mouseDragged(MouseEvent e) {
+        Coord2d mouse = new Coord2d(e.getX(), e.getY());
+
+        // Rotate
+        if (AWTMouseUtilities.isLeftDown(e)) {
+            Coord2d move = mouse.sub(prevMouse).div(100);
+            rotate(move);
+        }
+        this.prevMouse = mouse;
+    }
+
+    @Override
+    public void mouseMoved(MouseEvent e) { }
 }

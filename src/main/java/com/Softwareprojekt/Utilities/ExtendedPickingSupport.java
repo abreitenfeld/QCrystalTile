@@ -1,6 +1,5 @@
 package com.Softwareprojekt.Utilities;
 
-//import com.Softwareprojekt.interfaces.LatticeType;
 import org.jzy3d.maths.IntegerCoord2d;
 import org.jzy3d.picking.PickingSupport;
 import org.jzy3d.plot3d.rendering.scene.Graph;

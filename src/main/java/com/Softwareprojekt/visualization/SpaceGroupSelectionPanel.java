@@ -49,6 +49,7 @@ public class SpaceGroupSelectionPanel extends JPanel implements View, ActionList
 		super(new GridBagLayout());
 		this._controller = controller;
 
+        this.setDoubleBuffered(true);
 		this.setPreferredSize(new Dimension(600, 70));
         styleComponent(this);
 
@@ -66,6 +67,7 @@ public class SpaceGroupSelectionPanel extends JPanel implements View, ActionList
             new LatticeSystemListItem(LatticeType.System.TETRAGONAL),
             new LatticeSystemListItem(LatticeType.System.TRICLINIC)
         });
+        this._latticeSystemList.setLightWeightPopupEnabled(true);
         this._latticeSystemList.setPreferredSize(Box_Size);
         this._latticeSystemList.setFocusable(false);
 
@@ -76,10 +78,12 @@ public class SpaceGroupSelectionPanel extends JPanel implements View, ActionList
 			new CenteringTypeListItem(LatticeType.CenteringType.C),
 			new CenteringTypeListItem(LatticeType.CenteringType.F)
 		});
+        this._centeringTypeList.setLightWeightPopupEnabled(true);
         this._centeringTypeList.setPreferredSize(Box_Size);
         this._centeringTypeList.setFocusable(false);
 
 		this._spaceGroupList = new JComboBox<SpaceGroupIDListItem>();
+        this._spaceGroupList.setLightWeightPopupEnabled(true);
         this._spaceGroupList.setPreferredSize(Box_Size);
         this._spaceGroupList.setFocusable(false);
 

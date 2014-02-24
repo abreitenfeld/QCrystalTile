@@ -21,6 +21,7 @@ public class SpaceGroupViewStatus extends JPanel implements View {
         super(new GridLayout(0, 2));
         this._controller = controller;
 
+        this.setDoubleBuffered(true);
         this.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         this.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
 

@@ -12,7 +12,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
-public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener, View {
+public class SpaceGroupViewSettingsPanel extends JPanel implements ActionListener, View {
 
 	private final Controller<ID> _controller;
 	private final JToggleButton _btnVertices;
@@ -30,7 +30,8 @@ public class SpaceGroupViewSettingsPanel extends Panel implements ActionListener
 	public SpaceGroupViewSettingsPanel(Controller<ID> controller) {
 		super();
 		this._controller = controller;
-		
+
+        this.setDoubleBuffered(true);
 		this.setPreferredSize(new Dimension(50, 600));
 		this.setBackground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Viewport_Background));
 		this.setForeground(org.jzy3d.colors.ColorAWT.toAWT(SpaceGroupView.Foreground_Color));
