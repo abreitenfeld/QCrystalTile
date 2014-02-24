@@ -125,18 +125,20 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
         protected void done() {
             if (_currentWorker == this) {
                 _status.enableLoadingIndicator(false);
+                // free worker
+                _workerRunning = false;
+                _currentWorker = null;
                 try {
                     updateView(this.get());
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 } catch (ExecutionException e) {
                     if (e.getCause() instanceof QHullException) {
-                        handleQHullNotFound();
+                        if (handleQHullNotFound()) {
+                            invalidateView();
+                        }
                     }
                 }
-                // free worker
-                _workerRunning = false;
-                _currentWorker = null;
             }
         }
     }
@@ -250,7 +252,11 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
         catch (Exception e) { }
     }
 
-    private void handleQHullNotFound() {
+    /**
+     * Guides the user to solve missing qhull binaries exception. Returns true if the problem should be solved.
+     * @return
+     */
+    private boolean handleQHullNotFound() {
         final String os = System.getProperty("os.name");
         if (os.toLowerCase().contains("windows")) {
             // inform user
@@ -265,9 +271,8 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
                 if (dir.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                     final UserPreferences prefs = new UserPreferences();
                     // store path in user prefs
-                    prefs.setQHullRootPath(dir.getSelectedFile().getPath());
-                    // re-invalidate
-                    this.invalidateView();
+                    prefs.setQHullRootPath(dir.getSelectedFile().getPath() + File.separator);
+                    return true; // problem solved
                 }
             }
         }
@@ -275,6 +280,7 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
             JOptionPane.showMessageDialog(null, bundle.getString("qhullNotFound"),
                 bundle.getString("qhullNotFound") + " " + bundle.getString("qhullInstall"), JOptionPane.WARNING_MESSAGE);
         }
+        return false; // problem not solved
     }
 
     private void createControllerMenuItems() {
