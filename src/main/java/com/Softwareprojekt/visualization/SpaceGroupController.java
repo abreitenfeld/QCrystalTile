@@ -160,39 +160,40 @@ public class SpaceGroupController implements Controller<ID> {
         Mesh mesh;
 		PointList p = this._model.getCalculatedPoints();
 
-		// trigger qhull wrapper according current viz step
-        switch (this.getVisualization()) {
-            case ScatterPlot:
-                meshes.add(MeshHelper.convertPointListToMesh(p));
-                break;
-            case ConvexHull:
-                meshes.add(QConvex.call(p));
-                break;
-            case DelaunayTriangulation:
-                mesh = QDelaunay.call(p);
-                for (Polygon poly : mesh.getFaces()) {
-                    PointList cellPoints = new PointList();
-                    cellPoints.addAll(poly.getVertices());
-                    meshes.add(QConvex.call(cellPoints));
-                }
-                break;
-            case VoronoiTesselation:
-                mesh = QVoronoi.call(p);
-                if (!mesh.getVertices().isEmpty()) {
-                    mesh = removeVertexFromMesh(mesh.getVertices().get(0), mesh);
+        if (!p.isEmpty()) {
+            // trigger qhull wrapper according current viz step
+            switch (this.getVisualization()) {
+                case ScatterPlot:
+                    meshes.add(MeshHelper.convertPointListToMesh(p));
+                    break;
+                case ConvexHull:
+                    meshes.add(QConvex.call(this._prefs.getQHullRootPath(), p));
+                    break;
+                case DelaunayTriangulation:
+                    mesh = QDelaunay.call(this._prefs.getQHullRootPath(), p);
                     for (Polygon poly : mesh.getFaces()) {
                         PointList cellPoints = new PointList();
                         cellPoints.addAll(poly.getVertices());
-                        Mesh convexHull = createConvexHull(cellPoints);
-                        if (!convexHull.getVertices().isEmpty()) {
-                            meshes.add(convexHull);
+                        meshes.add(QConvex.call(cellPoints));
+                    }
+                    break;
+                case VoronoiTesselation:
+                    mesh = QVoronoi.call(this._prefs.getQHullRootPath(), p, "C0.0001");
+                    if (!mesh.getVertices().isEmpty()) {
+                        mesh = removeVertexFromMesh(mesh.getVertices().get(0), mesh);
+                        for (Polygon poly : mesh.getFaces()) {
+                            PointList cellPoints = new PointList();
+                            cellPoints.addAll(poly.getVertices());
+                            Mesh convexHull = createConvexHull(cellPoints);
+                            if (!convexHull.getVertices().isEmpty()) {
+                                meshes.add(convexHull);
+                            }
                         }
                     }
-                }
-                meshes = filterAbnormalMeshes(meshes);
-                break;
+                    meshes = filterAbnormalMeshes(meshes);
+                    break;
+            }
         }
-
 		return meshes;
 	}
 

@@ -152,6 +152,10 @@ public final class MeshHelper {
 		return new Point(convertVector3dTojzyCoord3d(vector));
 	}
 
+    public static Vector3D convertCoord3DToVector3D(Coord3d point) {
+        return new Vector3D(new double[] { point.x, point.y, point.z });
+    }
+
     public static Mesh convertPointListToMesh(List<Vector3D> points) {
         return new ImmutableMesh(points);
     }

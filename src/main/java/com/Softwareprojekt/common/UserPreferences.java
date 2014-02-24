@@ -11,7 +11,7 @@ public final class UserPreferences {
 
     private final Preferences _prefs;
 
-    private static final String Exec_Path_Key = "qhull_exec_path";
+    private static final String Root_Path_Key = "qhull_root_path";
     private static final String Visualization_Key = "visualization";
     private static final String Space_Group_ID_Key = "space_group_id";
     private static final String Color_Provider_Key = "color_provider";
@@ -36,16 +36,16 @@ public final class UserPreferences {
      * The path of where the qhull binaries are located (used in Windows only).
      * @return
      */
-    public String getQHullExecPath() {
-        return _prefs.get(Exec_Path_Key, "");
+    public String getQHullRootPath() {
+        return _prefs.get(Root_Path_Key, "");
     }
 
     /**
      * Sets the path where the qhull binaries are located.
      * @param path
      */
-    public void setQHullExecPath(String path) {
-        this._prefs.put(Exec_Path_Key, path);
+    public void setQHullRootPath(String path) {
+        this._prefs.put(Root_Path_Key, path);
     }
 
     public void setVisualization(Controller.Visualization visualization) {

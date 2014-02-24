@@ -13,11 +13,15 @@ public class QConvex extends CallCProgram {
     final static boolean verbose_error = false;
 
     public static QMesh call(PointList points,String... args)  throws QHullException {
+        return call("", points, args);
+    }
+
+    public static QMesh call(String rootDir, PointList points, String... args)  throws QHullException {
 
         LinkedList<Integer[]> indexs=new LinkedList<Integer[]>();
 
         String[] cmd = new String[args.length+4];
-        cmd[0] = execPath;
+        cmd[0] = rootDir + execPath;
         for(int i = 1; i <= args.length; i++){
             cmd[i] = args[i-1];
         }

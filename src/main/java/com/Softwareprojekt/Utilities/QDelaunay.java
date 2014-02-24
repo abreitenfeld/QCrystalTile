@@ -14,13 +14,17 @@ public class QDelaunay extends CallCProgram {
     final static boolean verbose = false;
 
     public static QMesh call(PointList points,String... args)  throws QHullException {
+        return call("", points, args);
+    }
+
+    public static QMesh call(String rootDir, PointList points, String... args)  throws QHullException {
 
         LinkedList<Integer[]> indexs=new LinkedList<Integer[]>();
         PointList points_voro=new PointList();
 
         String[] cmd=new String[args.length+2];
 
-        cmd[0]=execPath;
+        cmd[0]= rootDir + execPath;
         for(int i=1;i<args.length+1;i++){
             cmd[i]=args[i-1];
         }

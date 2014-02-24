@@ -3,6 +3,7 @@ package com.Softwareprojekt.visualization;
 import com.Softwareprojekt.InternationalShortSymbol.ID;
 import com.Softwareprojekt.Utilities.MeshHelper;
 import com.Softwareprojekt.Utilities.QHullException;
+import com.Softwareprojekt.common.UserPreferences;
 import com.Softwareprojekt.interfaces.*;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.factories.AWTChartComponentFactory;
@@ -29,6 +30,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.*;
 import java.util.List;
 import java.util.Timer;
@@ -251,11 +253,27 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
     private void handleQHullNotFound() {
         final String os = System.getProperty("os.name");
         if (os.toLowerCase().contains("windows")) {
-            // TODO: implement error handling for Windows
+            // inform user
+            if (JOptionPane.showConfirmDialog(null,
+                    bundle.getString("qhullNotFound") + "\n" + bundle.getString("qhullLocateBinaries"), bundle.getString("qhullNotFound"),
+                    JOptionPane.YES_NO_OPTION) == JOptionPane.YES_OPTION) {
+                // open dialog to specify root folder
+                final JFileChooser dir = new JFileChooser();
+                dir.setCurrentDirectory(new File(this.getClass().getProtectionDomain().getCodeSource().getLocation().getPath()));
+                dir.setDialogTitle(bundle.getString("qhullSpecifyRootFolder"));
+                dir.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+                if (dir.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
+                    final UserPreferences prefs = new UserPreferences();
+                    // store path in user prefs
+                    prefs.setQHullRootPath(dir.getSelectedFile().getPath());
+                    // re-invalidate
+                    this.invalidateView();
+                }
+            }
         }
         else {
             JOptionPane.showMessageDialog(null, bundle.getString("qhullNotFound"),
-                bundle.getString("qhullError"), JOptionPane.WARNING_MESSAGE);
+                bundle.getString("qhullNotFound") + " " + bundle.getString("qhullInstall"), JOptionPane.WARNING_MESSAGE);
         }
     }
 
@@ -446,12 +464,6 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
         this.clearScene();
         this.invalidateViewOptions();
 
-        int verticeCount = !meshes.isEmpty() ? meshes.get(0).getVertices().size() : 0;
-        int neighbourCount = !meshes.isEmpty() ? meshes.get(0).getFaces().size() : 0;
-        this._status.setStatusCaption(String.format(bundle.getString("statusFormat")
-                , formatSpaceGroupID(this._controller.getSpaceGroupID())
-                , meshes.size(), verticeCount, neighbourCount));
-
         for (Mesh m : meshes) {
             List<Polygon> polygons = new LinkedList<Polygon>();
             List<Point> vertices = new LinkedList<Point>();
@@ -493,6 +505,24 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
         this._originPoint.xyz = MeshHelper.convertVector3dTojzyCoord3d(this._controller.getModel().getPoint());
 
         this._chart.getScene().getGraph().add(drawables, true);
+
+        // find unit cell
+        Mesh unitCell = null;
+        double minDistance = Integer.MAX_VALUE;
+        final Vector3D globalCentroid = MeshHelper.convertCoord3DToVector3D(this._globalCenter);
+        for (Mesh m : meshes) {
+            double distance = MeshHelper.magnitude(m.getCentroid(), globalCentroid);
+            if (distance < minDistance) {
+                unitCell = m;
+                minDistance = distance;
+            }
+        }
+        // update status panel
+        int verticesCount = unitCell != null ? unitCell.getVertices().size() : 0;
+        int neighbourCount = unitCell != null ? unitCell.getFaces().size() : 0;
+        this._status.setStatusCaption(String.format(bundle.getString("statusFormat")
+                , formatSpaceGroupID(this._controller.getSpaceGroupID())
+                , meshes.size(), verticesCount, neighbourCount));
 
         // invalidate view of sub controls
         for(View view : this._subViewControls) {

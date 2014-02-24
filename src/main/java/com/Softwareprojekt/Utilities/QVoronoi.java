@@ -13,7 +13,11 @@ public class QVoronoi extends CallCProgram{
     protected static String execPath = "qvoronoi";
     final static boolean verbose = false;
 
-    public static QMesh call(PointList points,String... args) throws QHullException {
+    public static QMesh call(PointList points, String... args) throws QHullException {
+        return call("", points, args);
+    }
+
+    public static QMesh call(String rootDir, PointList points, String... args) throws QHullException {
 
         LinkedList<Integer[]> indexs=new LinkedList<Integer[]>();
         PointList points_voro=new PointList();
@@ -21,7 +25,7 @@ public class QVoronoi extends CallCProgram{
 
         String[] cmd=new String[args.length+2];
 
-        cmd[0]=execPath;
+        cmd[0]=rootDir + execPath;
         for(int i=1;i<args.length+1;i++){
             cmd[i]=args[i-1];
         }
