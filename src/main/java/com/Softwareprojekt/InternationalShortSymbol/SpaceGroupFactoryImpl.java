@@ -3,6 +3,7 @@ package com.Softwareprojekt.InternationalShortSymbol;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -28,12 +29,13 @@ public class SpaceGroupFactoryImpl implements SpaceGroupFactory<ID> {
 	JSONArray spacegroups;
 	
 
-public SpaceGroupFactoryImpl() throws FileNotFoundException, IOException, ParseException {
-	parser=new JSONParser();
-	spacegroups  = (JSONArray) parser.parse(new FileReader("src/main/resources/SpaceGroups.json"));
-	return;
-	}
-	
+    public SpaceGroupFactoryImpl() throws FileNotFoundException, IOException, ParseException {
+        parser=new JSONParser();
+        final InputStreamReader reader = new InputStreamReader(ClassLoader.getSystemResource("SpaceGroups.json").openStream());
+        spacegroups  = (JSONArray) parser.parse(reader);
+        reader.close();
+        return;
+    }
 
 	public SpaceGroup createSpaceGroup(ID key)throws InvalidSpaceGroupIDException{
 		Set<Transformation>transformations= new HashSet<Transformation>();
