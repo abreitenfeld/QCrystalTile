@@ -505,13 +505,12 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
         // show origin point drawable in scatter plot only
         if (this._controller.getVisualization() == Controller.Visualization.ScatterPlot) {
             this._chart.addDrawable(this._originPoint);
+            // update the origin point
+            this._originPoint.xyz = MeshHelper.convertVector3dTojzyCoord3d(this._controller.getModel().getPoint());
         }
 
         this.calculateCentroids();
         this.calculateMeshPosition();
-
-        // update the origin point
-        this._originPoint.xyz = MeshHelper.convertVector3dTojzyCoord3d(this._controller.getModel().getPoint());
 
         this._chart.getScene().getGraph().add(drawables, false);
         this._chart.getView().updateBoundsForceUpdate(true);

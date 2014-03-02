@@ -1,8 +1,8 @@
 package com.Softwareprojekt.loader;
 
 import java.io.FileNotFoundException;
-import java.io.FileReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -19,7 +19,9 @@ public class LoaderTest {
 	 */
 	public static void main(String[] args) throws FileNotFoundException, IOException, ParseException {
 		JSONParser parser=new JSONParser();
-		JSONArray spacegroups  = (JSONArray) parser.parse(new FileReader("src/main/resources/SpaceGroups.json"));
+        final InputStreamReader reader = new InputStreamReader(ClassLoader.getSystemResource("SpaceGroups.json").openStream());
+		JSONArray spacegroups  = (JSONArray) parser.parse(reader);
+        reader.close();
 		for (int i=0;i<spacegroups.size();i++){
 			   JSONObject elem=(JSONObject)spacegroups.get(i);
 			   String name = (String)elem.get("SpaceGroupName");

@@ -48,13 +48,14 @@ public class TransformationImpl implements Transformation {
 		isPureRot = true;
 		// 1. check if inproper rotation:
 		double det = linearPart.determinant();
-		if( det + 1 < 0.01 ) { // det == -1
+		if( det < -0.98 && det > -1.02) { // det == -1
 			isPureRot = false;
 			linearPart = new Matrix3D( linearPart.multiply(
 					pointReflMatr
 				));
 		}
-		else if( det - 1 < 0.01 || det < 0.01 ) {}
+		else if( det < 1.02 && det > 0.98) {}
+		//else if( det > -0.02 && det < 0.02 ) {}
 		else throw new RuntimeException("det error: " + linearPart_.determinant());
 
 		// 2. set fields:
@@ -69,7 +70,9 @@ public class TransformationImpl implements Transformation {
 		// code from "Computing Euler angles from a rotation matrix" by Gregory G. Slabaugh:
 		double rotX = 0, rotY = 0, rotZ = 0;
 		double r31 = linearPart.get(2,0);
-		if( r31 != 1 ) {
+		if( r31 != 1 && r31 != -1 ) { // R31 != +-1
+		//if( r31 < 0.98 || r31 > 1.02 ) { // != 1
+			
 			rotY = -Math.asin( r31 ); // rotY2 =  (pi - rotY)
 			double cosRotY = Math.cos( rotY ); // cosRotY2 = cos( rotY2 )
 			double r32 = linearPart.get(2,1),
@@ -86,7 +89,8 @@ public class TransformationImpl implements Transformation {
 			rotZ = 0; // anything, in fact!
 			double r12 = linearPart.get(0,1),
 				r13 = linearPart.get(0,2);
-			if( r31 == -1 ) {
+			if( r31 == -1 ) { 
+			//if( r31 > -1.02 || r31 < -0.98 ) { // == -1
 				rotY = Math.PI / 2;
 				rotX = rotZ + Math.atan2( r12, r13 );
 			}
@@ -212,6 +216,13 @@ public class TransformationImpl implements Transformation {
 	@Override
 	public TransformationFactory getFactory() {
 		return factory;
+	}
+	
+	// for debugging:
+	public String getInternalRepr() {
+		return "pure=" + isPureRot +
+				", rotVec=" + rotVec +
+				", translationPart= " + translationPart;
 	}
 	
 	public static TransformationFactory factory = new TransformationFactoryImpl();

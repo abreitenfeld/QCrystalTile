@@ -3,7 +3,10 @@ package com.Softwareprojekt.tests.SpaceGroupTest;
 import static org.junit.Assert.*;
 import org.junit.Test;
 
-//import interfaces.SpaceGroupFactory;
+import com.Softwareprojekt.interfaces.TransformationFactory;
+import com.Softwareprojekt.SpaceGroup.TransformationFactoryImpl;
+import com.Softwareprojekt.interfaces.Matrix3D;
+import com.Softwareprojekt.SpaceGroup.TransformationImpl;
 //import interfaces.SpaceGroupID;
 
 import java.io.IOException;
@@ -18,20 +21,27 @@ import com.Softwareprojekt.interfaces.SpaceGroupEnumeration;
 import com.Softwareprojekt.interfaces.InvalidSpaceGroupIDException;
 import com.Softwareprojekt.interfaces.SpaceGroup;
 import com.Softwareprojekt.interfaces.Transformation;
+//import com.sun.xml.internal.bind.v2.schemagen.xmlschema.List;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.HashSet;
 
 
 public class SpaceGroupFactoryImplTest {
-
-	@Test
+	/*
+	 * load all spacegroups and check, if they contain the right numbers of creator transformations
+	 */ 
+	@Test(timeout=30000)
 	public void test() throws InvalidSpaceGroupIDException, ParseException, IOException {
 		Map<ID,Integer> checkNumbers = getMapIDToGeneratorSize();
 
 		SpaceGroupEnumeration<ID> sgEnum = new InternationalShortSymbolEnum();
 		SpaceGroupFactoryImpl factory = new SpaceGroupFactoryImpl();
 		for (int groupIndex=0; groupIndex<230; groupIndex++ ) {
+			System.out.println( "testing group " + (groupIndex+1) );
 			ID id = sgEnum.get(groupIndex);
 			//System.out.println( id.stringRepr() );
 			SpaceGroup sp= factory.createSpaceGroup(id);
@@ -47,7 +57,7 @@ public class SpaceGroupFactoryImplTest {
 		}
 	}
 
-	@Test
+	/*@Test
 	public void testSpecificProblem() throws InvalidSpaceGroupIDException, ParseException, IOException {
 
 		Map<ID,Integer> checkNumbers = getMapIDToGeneratorSize();
@@ -65,14 +75,157 @@ public class SpaceGroupFactoryImplTest {
 		}
 
 		int expectedCreatorSize = (Integer )checkNumbers.get(id);
-
-
-
 		assertEquals(
 			"group " + (groupIndex+1) + " (" + id.stringRepr() + "): checking number of transformations in the generating set",
 			expectedCreatorSize,
 			set.size()
 		);
+	}
+	
+	@Test
+	public void debugGroup195() {
+		List<Transformation> expectedGroup195 = expectedGroup195();
+		Set<Transformation> set = new HashSet<Transformation>();
+		for( int i=0; i<expectedGroup195.size(); i++ ) {
+			Transformation t = expectedGroup195.get(i);
+			if( verbose ) {
+				System.out.println( i );
+				System.out.println( t.getAsHomogeneous() );
+				System.out.println( ((TransformationImpl )t).getInternalRepr() );
+			}
+			if( set.contains(t) ) {
+				// find out which of the transformations that are already in the set are considered equal to the current one:
+				for( Transformation alreadyAdded : set ) {
+					assertFalse( "check if not equal: " + t.getAsHomogeneous() + " and " + alreadyAdded.getAsHomogeneous(),
+						t.equals(alreadyAdded)
+					);
+				}
+				assertEquals( "transformation has been added to the set",
+					i+1,
+					set.size()
+				);
+			}
+			set.add( t );
+		}
+	}*/
+
+	private static boolean verbose = true;
+	
+	public List<Transformation> expectedGroup195() {
+		List<Transformation> expectedSet = new ArrayList<Transformation>();
+		TransformationFactory fact = new TransformationFactoryImpl();
+		// x,y,z
+		expectedSet.add(fact.fromLinearPart(
+			new Matrix3D( new double[][] {
+				{ 1, 0, 0},
+				{ 0, 1, 0},
+				{ 0, 0, 1}
+			})
+		));
+		assertEquals( 1, expectedSet.size());
+		// -x,-y,z
+		expectedSet.add(fact.fromLinearPart(
+			new Matrix3D( new double[][] {
+				{ -1, 0, 0},
+				{ 0, -1, 0},
+				{ 0, 0, 1}
+			})
+		));
+		assertEquals( 2, expectedSet.size());
+		// -x,y,-z
+		expectedSet.add(fact.fromLinearPart(
+			new Matrix3D( new double[][] {
+				{ -1, 0, 0},
+				{ 0, 1, 0},
+				{ 0, 0, -1}
+			})
+		));
+		assertEquals( 3, expectedSet.size());
+		// x,-y,-z
+		expectedSet.add(fact.fromLinearPart(
+			new Matrix3D( new double[][] {
+				{ 1, 0, 0},
+				{ 0, -1, 0},
+				{ 0, 0, -1}
+			})
+		));
+		assertEquals( 4, expectedSet.size());
+
+		// z,x,y
+		expectedSet.add(fact.fromLinearPart(
+			new Matrix3D( new double[][] {
+				{ 0, 1, 0 },
+				{ 0, 0, 1 },
+				{ 1, 0, 0 }
+			})
+		));
+		assertEquals( 5, expectedSet.size());
+		// z,-x,-y
+		expectedSet.add(fact.fromLinearPart(
+			new Matrix3D( new double[][] {
+				{ 0, -1, 0 },
+				{ 0, 0, -1 },
+				{ 1, 0, 0 }
+			})
+		));
+		assertEquals( 6, expectedSet.size());
+		// -z,-x,y
+		expectedSet.add(fact.fromLinearPart(
+			new Matrix3D( new double[][] {
+				{ 0, -1, 0 },
+				{ 0, 0, 1 },
+				{ -1, 0, 0 }
+			})
+		));
+		assertEquals( 7, expectedSet.size());
+		// -z,x,-y
+		expectedSet.add(fact.fromLinearPart(
+			new Matrix3D( new double[][] {
+				{ 0, 1, 0 },
+				{ 0, 0, -1 },
+				{ -1, 0, 0 }
+			})
+		));
+		assertEquals( 8, expectedSet.size());
+
+		// y,z,x
+		expectedSet.add(fact.fromLinearPart(
+			new Matrix3D( new double[][] {
+				{ 0, 0, 1 },
+				{ 1, 0, 0 },
+				{ 0, 1, 0 }
+			})
+		));
+		assertEquals( 9, expectedSet.size());
+		// -y,z,-x
+		expectedSet.add(fact.fromLinearPart(
+			new Matrix3D( new double[][] {
+				{ 0, 0, -1 },
+				{ -1, 0, 0 },
+				{ 0, 1, 0 }
+			})
+		));
+		assertEquals( 10, expectedSet.size());
+		// y,-z,-x
+		expectedSet.add(fact.fromLinearPart(
+			new Matrix3D( new double[][] {
+				{ 0, 0, -1 },
+				{ 1, 0, 0 },
+				{ 0, -1, 0 }
+			})
+		));
+		assertEquals( 11, expectedSet.size());
+		// -y,-z,x
+		expectedSet.add(fact.fromLinearPart(
+			new Matrix3D( new double[][] {
+				{ 0, 0, 1 },
+				{ -1, 0, 0 },
+				{ 0, -1, 0 }
+			})
+		));
+		assertEquals( 12, expectedSet.size());
+		return expectedSet;
+
 	}
 
 	private Map<ID,Integer> getMapIDToGeneratorSize() {
