@@ -5387,7 +5387,7 @@
 <li> symmetry= 3/4+Y,1/4+X,3/4-Z </li>
 <li> symmetry= 1/4-Y,1/4-X,1/4-Z </li>
 <li> symmetry= 1/4+Y,3/4-X,3/4+Z </li>
-<li> symmetry= 3/4-Y,3/4+X,1/4+Z </li>  {* &lt;&lt; *}
+<li> symmetry= 3/4-Y,3/4+X,1/4+Z </li>
 <li> symmetry= 3/4+X,1/4+Z,3/4-Y </li>
 <li> symmetry= 3/4-X,3/4+Z,1/4+Y </li>
 <li> symmetry= 1/4-X,1/4-Z,1/4-Y </li>
@@ -5411,7 +5411,7 @@
 <li> symmetry= 3/4+Y,3/4+X,1/4-Z </li>
 <li> symmetry= 1/4-Y,3/4-X,3/4-Z </li>
 <li> symmetry= 1/4+Y,1/4-X,1/4+Z </li>
-<li> symmetry= 3/4-Y,1/4+X,3/4+Z </li>  {* &lt;&lt; *}
+<li> symmetry= 3/4-Y,1/4+X,3/4+Z </li>
 <li> symmetry= 3/4+X,3/4+Z,1/4-Y </li>
 <li> symmetry= 3/4-X,1/4+Z,3/4+Y </li>
 <li> symmetry= 1/4-X,3/4-Z,3/4-Y </li>
@@ -5435,7 +5435,7 @@
 <li> symmetry= 1/4+Y,1/4+X,1/4-Z </li>
 <li> symmetry= 3/4-Y,1/4-X,3/4-Z </li>
 <li> symmetry= 3/4+Y,3/4-X,1/4+Z </li>
-<li> symmetry= 1/4-Y,3/4+X,3/4+Z </li>  {* &lt;&lt; *}
+<li> symmetry= 1/4-Y,3/4+X,3/4+Z </li>
 <li> symmetry= 1/4+X,1/4+Z,1/4-Y </li>
 <li> symmetry= 1/4-X,3/4+Z,3/4+Y </li>
 <li> symmetry= 3/4-X,1/4-Z,3/4-Y </li>
@@ -5459,7 +5459,7 @@
 <li> symmetry= 1/4+Y,3/4+X,3/4-Z </li>
 <li> symmetry= 3/4-Y,3/4-X,1/4-Z </li>
 <li> symmetry= 3/4+Y,1/4-X,3/4+Z </li>
-<li> symmetry= 1/4-Y,1/4+X,1/4+Z </li>  {* &lt;&lt; *}
+<li> symmetry= 1/4-Y,1/4+X,1/4+Z </li>
 <li> symmetry= 1/4+X,3/4+Z,3/4-Y </li>
 <li> symmetry= 1/4-X,1/4+Z,1/4+Y </li>
 <li> symmetry= 3/4-X,3/4-Z,1/4-Y </li>
