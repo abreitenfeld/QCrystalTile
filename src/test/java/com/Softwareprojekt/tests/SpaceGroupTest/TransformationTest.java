@@ -3,6 +3,7 @@ package com.Softwareprojekt.tests.SpaceGroupTest;
 import static org.junit.Assert.*;
 
 import org.la4j.factory.CRSFactory;
+import org.la4j.vector.functor.VectorFunction;
 
 import org.junit.Test;
 
@@ -16,50 +17,79 @@ import java.util.Random;
 
 public class TransformationTest {
 
+	/*@Test
+	public void testRotations4() throws Exception {
+		rotationsNewTest(4);
+	}*/
+
 	@Test
-	public void specialCase() {
-		Matrix4D matr = new Matrix4D( new double[][] {
-			{1, 0, 0, 0 },
-			{0, -1, 0, 0 },
-			{0, 0, 1, 0 },
-			{0, 0, 0, 1 }
-		} );
-		Transformation t = new TransformationImpl( matr );
-		System.out.println( "test: " + t.getAsHomogeneous() );
-	}
-	
-	@Test
-	public void testConstructorRotationX() throws Exception {
-		testConstructorsWithSingleRot(0);
-	}
-	@Test
-	public void testConstructorRotationY() throws Exception {
-		testConstructorsWithSingleRot(1);
-	}
-	@Test
-	public void testConstructorRotationZ() throws Exception {
-		testConstructorsWithSingleRot(2);
+	public void testRotations12() throws Exception {
+		rotationsNewTest(12);
 	}
 
-	public void testConstructorsWithSingleRot(int axis) throws Exception {
-		for( int angle=0; angle<12; angle++) {
-			double rotDeg = angle*360/12;
-			double rot = Math.toRadians(rotDeg);
-			//System.out.println("rotZ: " + rotZ);
-			Matrix4D matr = getRotationMatrix4D(axis, rot);
-			Matrix3D linear = getRotationMatrix3D(axis, rot);
-				
-			Vector3D translation = new Vector3D(
-					new double[] { 0, 0, 0 }
-				);
-			
-			TransformationImpl transformationFromLinearMatr = new TransformationImpl(linear,translation);
-			double[] aAngle = new double[] { 0, 0, 0 };
-			aAngle[axis] = rotDeg;
-			TransformationImpl transformationFromAngles = new TransformationImpl(new Vector3D(aAngle),translation);
-			assertEquals("axis:" + axis + " check TransformationImpl(Matrix3D, Vector3D) for angle 360/" + angle, matr, transformationFromLinearMatr.getAsHomogeneous());
-			assertEquals("axis:" + axis + " check TransformationImpl(Vector3D, Vector3D) for angle 360/" + angle, matr, transformationFromAngles.getAsHomogeneous());
+	/*
+	 * for many angles 'angle' and for all constructors ) :
+	 * check if a transformation created using constructor x returns the right matrix
+	 * 	new TransformationImpl( constrParams( angle ) ) ) .getAsHomogeneous() .equals( expectedRotMatr(angle) )
+	 */
+	public void rotationsNewTest(int division) throws Exception {
+		for( int angleX=0; angleX<division; angleX++) {
+			for( int angleY=0; angleY<division; angleY++) {
+				for( int angleZ=0; angleZ<division; angleZ++) {
+					double angleXDeg = angleX * 360 / division;
+					double angleYDeg = angleY * 360 / division;
+					double angleZDeg = angleZ * 360 / division;
+					testRotations( new Vector3D( new double[] { angleXDeg, angleYDeg, angleZDeg } ) );
+				}
+			}
 		}
+	}
+
+
+	public void testRotations( Vector3D rot ) throws Exception {
+		if( verbose ) { System.out.println("test rotation Matrix " + rot.get(0) + " " + rot.get(1) + " " + rot.get(2) ); }
+		Vector3D rotRadians = new Vector3D( rot.transform( new VectorFunction() {
+			public double evaluate(int i, double val) {
+				return Math.toRadians(val);
+			}
+
+		}));
+		// 
+		Matrix4D matr4D = new Matrix4D(
+			getRotationMatrix4D( 2, rotRadians.get(2)).multiply(
+				getRotationMatrix4D( 1, rotRadians.get(1) ).multiply(
+					getRotationMatrix4D( 0, rotRadians.get(0) )
+				)
+			)
+		);
+		Matrix3D matr3D = new Matrix3D(
+			getRotationMatrix3D( 2, rotRadians.get(2)).multiply(
+				getRotationMatrix3D( 1, rotRadians.get(1) ).multiply(
+					getRotationMatrix3D( 0, rotRadians.get(0) )
+				)
+			)
+		);
+		if( verbose ) { System.out.println("Matrix:\n" + matr3D ); }
+
+		Vector3D translation = new Vector3D(
+			new double[] { 0, 0, 0 }
+		);
+
+		TransformationImpl fromRotAndTransl = new TransformationImpl(rot, translation);
+		assertEquals( "check with rot " + rot,
+			matr4D,
+			fromRotAndTransl.getAsHomogeneous()
+		);
+		TransformationImpl fromLinearAndTransl = new TransformationImpl(matr3D, translation);
+		assertEquals( "check with rot " + rot,
+			matr4D,
+			fromLinearAndTransl.getAsHomogeneous()
+		);
+		TransformationImpl fromMatr4D = new TransformationImpl( matr4D );
+		assertEquals( "check with rot " + rot,
+			matr4D,
+			fromMatr4D.getAsHomogeneous()
+		);
 
 	}
 
@@ -103,59 +133,8 @@ public class TransformationTest {
 		throw new Exception( "axis not found" );
 	}
 
-	@Test
-	public void testGetAsHomogeneous() {
-		Vector3D point = new Vector3D( new double[] {1d,1d,1d} );
-		Transformation justMove = new TransformationImpl(
-				 new Matrix3D(new Matrix3D().factory().createIdentityMatrix(3)),
-				 new Vector3D(new double[] {0.5,0.5,0})
-			);
-		assertEquals("check moved point", 
-				new Vector3D( new double[] {1.5,1.5,1.0}).getAsHomogeneous(),
-				justMove.getAsHomogeneous().multiply(point.getAsHomogeneous())
-			);
-		Transformation rotate = new TransformationImpl(
-				 new Vector3D( new double[]{ 0, 0, 90 }),
-				 new Vector3D( new double[]{ 0, 0, 0 })
-			);
-		Vector3D pointToRotate = new Vector3D( new double[] { 0.5, 1, 0 } );
-		assertEquals("check rotated point", 
-				new Vector3D( new double[] { -1, 0.5, 0}).getAsHomogeneous(),
-				rotate.getAsHomogeneous().multiply(pointToRotate.getAsHomogeneous())
-			);
-		/*Transformation justScale = new TransformationImpl(
-				 new Matrix3D(new double[][] {
-						 { 0.5, 0, 0 },
-						 { 0, 0.5, 0 },
-						 { 0, 0, 0.5 }
-				 }),
-				 new Vector3D(new double[] { 0d, 0d, 0d})
-			);
-		assertEquals("check scaled point", 
-				new Vector3D( new double[] {0.5,0.5,0.5}).getAsHomogeneous(),
-				justScale.getAsHomogeneous().multiply(point.getAsHomogeneous())
-			);*/
-	}
 
-	@Test
-	public void testEqualsAndGetHashCode() {
-		for( int i=0; i<1000; i++) {
-			Transformation t1 = new TransformationImpl( getRndMatrix() );
-			Transformation t2 = new TransformationImpl( getRndMatrix() );
-			assertTrue(
-				"t1.hash != t2.hash => !t1.equals(t2)",
-				t1.hashCode() == t2.hashCode() ||
-					!(t1.equals(t2))
-			);
-			assertTrue(
-				"t1.equals(t2) <=> t2.equals(t1)",
-				(t1.equals(t2) && t2.equals(t1))
-				||( !t1.equals(t2) && !t2.equals(t1))
-			);
-		}
-	}
-
-	private Matrix4D getRndMatrix() {
+	/*private Matrix4D getRndMatrix() {
 		Random rand = new Random();
 		//MatrixFactory factory = new MatrixFactory();
 		CRSFactory factory = new CRSFactory();
@@ -164,15 +143,8 @@ public class TransformationTest {
 			for( int j=0; j<4; j++)
 				matr.set(i,j,rand.nextDouble());
 		return matr;
-	}
+	}*/
 
-	@Test
-	public void testComposition() {
-		Transformation t1 = new TransformationImpl( new Vector3D( new double[] { 0, 0, 0 } ), new Vector3D(new double[] { 0,0,0 }) );
-		Transformation t2 = new TransformationImpl( new Vector3D( new double[] { 0, 90, 0 } ), new Vector3D(new double[] { 0,0,0 }) );
-		Transformation res = new TransformationImpl( new Vector3D( new double[] { 0, 90, 0 } ), new Vector3D(new double[] { 0,0,0 }) );
-		//System.out.println(res.getAsHomogeneous());
-		assertEquals( "check composition of rotations", res, t1.composition(t2));
+	private static boolean verbose = false;
 
-	}
 }
