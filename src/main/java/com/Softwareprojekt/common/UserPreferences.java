@@ -3,13 +3,17 @@ package com.Softwareprojekt.common;
 import com.Softwareprojekt.InternationalShortSymbol.ID;
 import com.Softwareprojekt.interfaces.Controller;
 import com.Softwareprojekt.interfaces.InvalidSpaceGroupIDException;
+import com.Softwareprojekt.interfaces.LatticeType;
 import com.Softwareprojekt.interfaces.Vector3D;
+
+import java.io.File;
 import java.util.EnumSet;
 import java.util.prefs.Preferences;
 
 public final class UserPreferences {
 
     private final Preferences _prefs;
+    private final String _qhullDefaultPath;
 
     private static final String Root_Path_Key = "qhull_root_path";
     private static final String Visualization_Key = "visualization";
@@ -30,6 +34,8 @@ public final class UserPreferences {
 
     public UserPreferences() {
         this._prefs = Preferences.userNodeForPackage(this.getClass());
+        this._qhullDefaultPath = getDefaultRootPath();
+        //System.out.println(this._qhullDefaultPath);
     }
 
     /**
@@ -37,7 +43,43 @@ public final class UserPreferences {
      * @return
      */
     public String getQHullRootPath() {
-        return _prefs.get(Root_Path_Key, "");
+        if (this._qhullDefaultPath.isEmpty()) {
+            return _prefs.get(Root_Path_Key, "");
+        }
+        return this._qhullDefaultPath;
+    }
+
+    private static String getDefaultRootPath() {
+        final String binPath = "qhull" + File.separator + "bin" + File.separator;
+        final String jarPath = UserPreferences.class.getProtectionDomain().getCodeSource().getLocation().getPath();
+        final String subFolder;
+        final String os = System.getProperty("os.name").toLowerCase();
+
+        // windows
+        if (os.indexOf("win") != -1) {
+            subFolder = "win" + File.separator;
+        }
+        // unix
+        else if (os.indexOf("nix") != -1) {
+            subFolder = "linux" + File.separator;
+        }
+        // mac
+        else if (os.indexOf("mac") != -1) {
+               subFolder = "mac" + File.separator;
+        }
+        // solaris
+        else if (os.indexOf("sunos") != -1) {
+                 subFolder = "solaris" + File.separator;
+        }
+        else {
+            subFolder = File.separator;
+        }
+
+        final String rootPath = jarPath + File.separator + subFolder + binPath;
+        if (new File(rootPath).exists()) {
+            return rootPath;
+        }
+        return  "";
     }
 
     /**

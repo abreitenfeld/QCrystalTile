@@ -31,7 +31,7 @@ public interface Controller<I extends SpaceGroupID> {
 
 	public enum ViewOptions {
         ShowVertices, ShowWireframe, ShowFaces, ShowSpacing,
-        ShowAxeBox, ShowLabeledMeshes, ShowUnifiedCells
+        ShowAxeBox, ShowLabeledMeshes
     };
 	public enum Visualization {
         ScatterPlot, ConvexHull

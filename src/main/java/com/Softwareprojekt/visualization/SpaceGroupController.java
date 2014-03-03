@@ -5,9 +5,6 @@ import com.Softwareprojekt.InternationalShortSymbol.SpaceGroupFactoryImpl;
 import com.Softwareprojekt.Utilities.*;
 import com.Softwareprojekt.common.UserPreferences;
 import com.Softwareprojekt.interfaces.*;
-import quickhull3d.Point3d;
-import quickhull3d.QuickHull3D;
-
 import java.util.*;
 
 public class SpaceGroupController implements Controller<ID> {
@@ -100,19 +97,7 @@ public class SpaceGroupController implements Controller<ID> {
 		else
 			this._options.remove(option);
 
-        final boolean invalidateView;
-        switch (option) {
-            case ShowUnifiedCells: invalidateView = true; break;
-            default: invalidateView = false;
-        }
-
-        // raise invalidation
-        if (invalidateView) {
-            this._view.invalidateView();
-        }
-        else {
-            this._view.invalidateViewOptions();
-        }
+        this._view.invalidateViewOptions();
         this._prefs.setViewOption(this._options);
 	}
 	
@@ -184,7 +169,7 @@ public class SpaceGroupController implements Controller<ID> {
                         for (Polygon poly : mesh.getFaces()) {
                             PointList cellPoints = new PointList();
                             cellPoints.addAll(poly.getVertices());
-                            Mesh convexHull = createConvexHull(cellPoints);
+                            Mesh convexHull = MeshHelper.createConvexHull(cellPoints);
                             if (!convexHull.getVertices().isEmpty()) {
                                 meshes.add(convexHull);
                             }
@@ -196,22 +181,6 @@ public class SpaceGroupController implements Controller<ID> {
         }
 		return meshes;
 	}
-
-    private static Mesh createConvexHull(List<Vector3D> vertices) {
-        final QuickHull3D hull = new QuickHull3D();
-        Point3d[] points = new Point3d[vertices.size()];
-
-        for (int i = 0; i < points.length; i++) {
-            points[i] = MeshHelper.convertVector3DToQPoint3d(vertices.get(i));
-        }
-
-        try {
-            hull.build(points);
-        }
-        catch (IllegalArgumentException e) { }
-
-        return MeshHelper.convertQuickHullToMesh(hull);
-    }
 
 	/**
 	 * Removes the specified vertex from mesh.
@@ -253,16 +222,12 @@ public class SpaceGroupController implements Controller<ID> {
                 minDistance = distance;
             }
         }
-        double unitCellInnerSum = unitCell.sumDistancesToCentroid();
-        double precision = 0.005;
 
         // filter for cells equal to unit cell
-        System.out.println(unitCellInnerSum);
         if (unitCell != null) {
             for (Mesh m : meshes) {
-                if (   unitCellInnerSum - precision < m.sumDistancesToCentroid()
-                    && unitCellInnerSum + precision > m.sumDistancesToCentroid() ) {
-                        whiteList.add(m);
+                if (MeshHelper.approximateEquality(unitCell, m)) {
+                    whiteList.add(m);
                 }
             }
         }

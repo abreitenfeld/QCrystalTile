@@ -256,6 +256,7 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
      * @return
      */
     private boolean handleQHullNotFound() {
+        final UserPreferences prefs = new UserPreferences();
         final String os = System.getProperty("os.name");
         if (os.toLowerCase().contains("windows")) {
             // inform user
@@ -268,7 +269,6 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
                 dir.setDialogTitle(bundle.getString("qhullSpecifyRootFolder"));
                 dir.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 if (dir.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
-                    final UserPreferences prefs = new UserPreferences();
                     // store path in user prefs
                     prefs.setQHullRootPath(dir.getSelectedFile().getPath() + File.separator);
                     return true; // problem solved

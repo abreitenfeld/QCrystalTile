@@ -1,6 +1,5 @@
 package com.Softwareprojekt.Utilities;
 
-import com.Softwareprojekt.interfaces.LatticeType;
 import com.Softwareprojekt.interfaces.Mesh;
 import com.Softwareprojekt.interfaces.Vector3D;
 import org.jzy3d.maths.Coord3d;
@@ -10,20 +9,40 @@ import org.jzy3d.plot3d.primitives.pickable.PickablePolygon;
 import org.la4j.vector.Vector;
 import quickhull3d.Point3d;
 import quickhull3d.QuickHull3D;
-import quickhull3d.Vector3d;
 
 import java.util.*;
-import java.util.regex.Matcher;
 
 public final class MeshHelper {
 
     private MeshHelper() {}
 
+    public static Mesh createConvexHull(List<Vector3D> vertices) {
+        final QuickHull3D hull = new QuickHull3D();
+        Point3d[] points = new Point3d[vertices.size()];
+
+        for (int i = 0; i < points.length; i++) {
+            points[i] = MeshHelper.convertVector3DToQPoint3d(vertices.get(i));
+        }
+
+        try {
+            hull.build(points);
+        }
+        catch (IllegalArgumentException e) { }
+
+        return MeshHelper.convertQuickHullToMesh(hull);
+    }
+
     public static boolean approximateEquality(Mesh m1, Mesh m2) {
         if (m1.getVertices().size() == m2.getVertices().size() && m1.getFaces().size() == m2.getFaces().size()) {
-            double v1 = calculateVolumeOfConvexHull(m1);
-            double v2 = calculateVolumeOfConvexHull(m2);
-            return Math.ceil(v1) == Math.ceil(v2);
+            final double m1InnerSum = m1.sumDistancesToCentroid();
+            final double m2InnerSum = m2.sumDistancesToCentroid();
+            final double tolerance = 0.005f;
+            //System.out.println(unitCellInnerSum);
+            return Math.abs(m1InnerSum - m2InnerSum) < tolerance;
+
+            /*final double v1 = calculateVolumeOfConvexHull(m1);
+            final double v2 = calculateVolumeOfConvexHull(m2);
+            return Math.ceil(v1) == Math.ceil(v2);  */
             /*if (Math.ceil(v1) == Math.ceil(v2)) {
                 // compare area of faces
                 Set<Double> set1 = new HashSet<Double>();
