@@ -154,10 +154,10 @@ public class SpaceGroupController implements Controller<ID> {
                     meshes.add(MeshHelper.convertPointListToMesh(p));
                     break;
                 case ConvexHull:
-                    meshes.add(QConvex.call(this._prefs.getQHullRootPath() + File.separator, p));
+                    meshes.add(QConvex.call(this._prefs.getQHullRootPath(), p));
                     break;
                 case DelaunayTriangulation:
-                    mesh = QDelaunay.call(this._prefs.getQHullRootPath() + File.separator, p);
+                    mesh = QDelaunay.call(this._prefs.getQHullRootPath(), p);
                     for (Polygon poly : mesh.getFaces()) {
                         PointList cellPoints = new PointList();
                         cellPoints.addAll(poly.getVertices());
@@ -165,7 +165,7 @@ public class SpaceGroupController implements Controller<ID> {
                     }
                     break;
                 case VoronoiTesselation:
-                    mesh = QVoronoi.call(this._prefs.getQHullRootPath() + File.separator, p, "C0.0001");
+                    mesh = QVoronoi.call(this._prefs.getQHullRootPath(), p, "C0.0001");
                     if (!mesh.getVertices().isEmpty()) {
                         mesh = removeVertexFromMesh(mesh.getVertices().get(0), mesh);
                         for (Polygon poly : mesh.getFaces()) {

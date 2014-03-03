@@ -270,7 +270,7 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
                 dir.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
                 if (dir.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
                     // store path in user prefs
-                    prefs.setQHullRootPath(dir.getSelectedFile().getPath());
+                    prefs.setQHullRootPath(dir.getSelectedFile().getPath() + File.separator);
                     return true; // problem solved
                 }
             }

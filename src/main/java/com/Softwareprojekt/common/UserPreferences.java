@@ -39,7 +39,6 @@ public final class UserPreferences {
     public UserPreferences() {
         this._prefs = Preferences.userNodeForPackage(this.getClass());
         this._qhullDefaultPath = getDefaultRootPath();
-        //System.out.println(this._qhullDefaultPath);
     }
 
     /**
@@ -78,7 +77,7 @@ public final class UserPreferences {
             final Path rootPath;
             rootPath = Paths.get(new File(".").getCanonicalPath() + File.separator + subFolder + binPath);
             if (Files.exists(rootPath)) {
-                return rootPath.toString();
+                return rootPath.toString() + File.separator;
             }
         } catch (IOException e) { }
 
