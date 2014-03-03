@@ -7,6 +7,10 @@ import com.Softwareprojekt.interfaces.LatticeType;
 import com.Softwareprojekt.interfaces.Vector3D;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.EnumSet;
 import java.util.prefs.Preferences;
 
@@ -51,7 +55,6 @@ public final class UserPreferences {
 
     private static String getDefaultRootPath() {
         final String binPath = "qhull" + File.separator + "bin" + File.separator;
-        final String jarPath = UserPreferences.class.getProtectionDomain().getCodeSource().getLocation().getPath();
         final String subFolder;
         final String os = System.getProperty("os.name").toLowerCase();
 
@@ -67,18 +70,18 @@ public final class UserPreferences {
         else if (os.indexOf("mac") != -1) {
                subFolder = "mac" + File.separator;
         }
-        // solaris
-        else if (os.indexOf("sunos") != -1) {
-                 subFolder = "solaris" + File.separator;
-        }
         else {
             subFolder = File.separator;
         }
 
-        final String rootPath = jarPath + File.separator + subFolder + binPath;
-        if (new File(rootPath).exists()) {
-            return rootPath;
-        }
+        try {
+            final Path rootPath;
+            rootPath = Paths.get(new File(".").getCanonicalPath() + File.separator + subFolder + binPath);
+            if (Files.exists(rootPath)) {
+                return rootPath.toString();
+            }
+        } catch (IOException e) { }
+
         return  "";
     }
 
