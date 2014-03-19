@@ -63,8 +63,8 @@ public class SpaceGroupSelectionPanel extends JPanel implements View, ActionList
             new LatticeSystemListItem(LatticeType.System.MONOCLINIC),
             new LatticeSystemListItem(LatticeType.System.ORTHORHOMBIC),
             new LatticeSystemListItem(LatticeType.System.TETRAGONAL),
-            new LatticeSystemListItem(LatticeType.System.TRICLINIC),
-                new LatticeSystemListItem(LatticeType.System.HEXAGONAL)
+            new LatticeSystemListItem(LatticeType.System.TRICLINIC)
+            //new LatticeSystemListItem(LatticeType.System.HEXAGONAL)
         });
         this._latticeSystemList.setLightWeightPopupEnabled(true);
         this._latticeSystemList.setPreferredSize(Box_Size);

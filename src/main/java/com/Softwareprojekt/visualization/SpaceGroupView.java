@@ -36,10 +36,7 @@ import java.util.List;
 import java.util.Timer;
 import java.util.concurrent.ExecutionException;
 
-//import org.jzy3d.chart.factories.ChartComponentFactory;
-//import org.jzy3d.maths.BoundingBox3d;
-//import org.jzy3d.plot3d.rendering.view.modes.CameraMode;
-//import org.jzy3d.plot3d.rendering.view.modes.ViewBoundMode;
+import org.jzy3d.plot3d.primitives.Polygon;
 
 public class SpaceGroupView extends JFrame implements View, IObjectPickedListener {
 
@@ -169,7 +166,7 @@ public class SpaceGroupView extends JFrame implements View, IObjectPickedListene
         });
 
         final Quality quality = Quality.Nicest;
-		this._chart = AWTChartComponentFactory.chart(quality, IChartComponentFactory.Toolkit.awt);
+		this._chart = AWTChartComponentFactory.chart(quality, IChartComponentFactory.Toolkit.newt);
 		this._chart.getView().setBackgroundColor(Viewport_Background);
 		this._chart.getView().setSquared(true);
         this._chart.getAxeLayout().setMainColor(Grid_Color);

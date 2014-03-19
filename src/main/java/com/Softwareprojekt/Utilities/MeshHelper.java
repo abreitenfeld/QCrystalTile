@@ -34,10 +34,10 @@ public final class MeshHelper {
 
     public static boolean approximateEquality(Mesh m1, Mesh m2) {
         if (m1.getVertices().size() == m2.getVertices().size() && m1.getFaces().size() == m2.getFaces().size()) {
+            // compare by sum of distances to centroid
             final double m1InnerSum = m1.sumDistancesToCentroid();
             final double m2InnerSum = m2.sumDistancesToCentroid();
             final double tolerance = 0.0005f;
-            //System.out.println(unitCellInnerSum);
             return Math.abs(m1InnerSum - m2InnerSum) < tolerance;
 
             /*final double v1 = volumeOfConvexHull(m1);

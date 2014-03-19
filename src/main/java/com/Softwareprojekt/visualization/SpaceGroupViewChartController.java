@@ -3,24 +3,28 @@ package com.Softwareprojekt.visualization;
 import com.Softwareprojekt.Utilities.ExtendedPickingSupport;
 import org.jzy3d.chart.Chart;
 import org.jzy3d.chart.controllers.camera.AbstractCameraController;
-import org.jzy3d.chart.controllers.mouse.AWTMouseUtilities;
 import org.jzy3d.chart.controllers.thread.camera.CameraThreadController;
 import org.jzy3d.maths.BoundingBox3d;
 import org.jzy3d.maths.Coord2d;
 import org.jzy3d.maths.IntegerCoord2d;
+import org.jzy3d.plot3d.rendering.canvas.CanvasNewtAwt;
+import org.jzy3d.plot3d.rendering.canvas.ICanvas;
 import org.jzy3d.plot3d.rendering.scene.Graph;
 import org.jzy3d.plot3d.rendering.view.modes.ViewPositionMode;
 
-import javax.media.opengl.GL;
+import com.jogamp.newt.event.MouseEvent;
+import com.jogamp.newt.event.MouseListener;
+import javax.media.opengl.GLAutoDrawable;
 import javax.media.opengl.glu.GLU;
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.*;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
 public class SpaceGroupViewChartController extends AbstractCameraController implements
-        ActionListener, MouseListener, MouseWheelListener, MouseMotionListener {
+        ActionListener, MouseListener {
 
     protected final ExtendedPickingSupport _pickingSupport;
     protected final Chart _chart;
@@ -76,7 +80,7 @@ public class SpaceGroupViewChartController extends AbstractCameraController impl
     }
 
     public boolean handleSlaveThread(MouseEvent e) {
-        if (AWTMouseUtilities.isDoubleClick(e)) {
+        if (e.getClickCount() > 1) {
             if (threadController != null) {
                 threadController.start();
                 return true;
@@ -96,33 +100,6 @@ public class SpaceGroupViewChartController extends AbstractCameraController impl
     }
 
     @Override
-    public void mouseWheelMoved(MouseWheelEvent e) {
-        float factor = (e.getWheelRotation() / 10.0f);
-        final BoundingBox3d bound = this._chart.getView().getBounds();
-
-        bound.setXmin(Math.max(Math.min(bound.getXmin() - factor, Max_Bounding_Box_Value), Min_Bounding_Box_Value));
-        bound.setYmin(Math.max(Math.min(bound.getYmin() - factor, Max_Bounding_Box_Value), Min_Bounding_Box_Value));
-        bound.setZmin(Math.max(Math.min(bound.getZmin() - factor, Max_Bounding_Box_Value), Min_Bounding_Box_Value));
-    }
-
-    @Override
-    public void mouseClicked(MouseEvent e) {
-        if (SwingUtilities.isLeftMouseButton(e)) {
-            int yflip = -e.getY() + this._chart.getCanvas().getRendererHeight();
-            Graph graph = _chart.getScene().getGraph();
-            GL gl = _chart.getView().getCurrentGL();
-
-            // will trigger vertex selection event to those subscribing to PickingSupport.
-            this._pickingSupport.pickObjects(gl, glu, this._chart.getView(), graph, new IntegerCoord2d(e.getX(), yflip));
-            // release gl context
-            this._chart.getView().getCurrentContext().release();
-        }
-        else if (SwingUtilities.isRightMouseButton(e)) {
-            this._contextMenu.show(e.getComponent(), e.getX(), e.getY());
-        }
-    }
-
-    @Override
     public void mousePressed(MouseEvent e) {
         //
         if (handleSlaveThread(e))
@@ -131,15 +108,6 @@ public class SpaceGroupViewChartController extends AbstractCameraController impl
         prevMouse.x = e.getX();
         prevMouse.y = e.getY();
     }
-
-    @Override
-    public void mouseReleased(MouseEvent e) { }
-
-    @Override
-    public void mouseEntered(MouseEvent e) { }
-
-    @Override
-    public void mouseExited(MouseEvent e) { }
 
     @Override
     public void actionPerformed(ActionEvent e) {
@@ -156,7 +124,7 @@ public class SpaceGroupViewChartController extends AbstractCameraController impl
         Coord2d mouse = new Coord2d(e.getX(), e.getY());
 
         // Rotate
-        if (AWTMouseUtilities.isLeftDown(e)) {
+        if (e.getButton() == MouseEvent.BUTTON1) {
             Coord2d move = mouse.sub(prevMouse).div(100);
             rotate(move);
         }
@@ -164,5 +132,54 @@ public class SpaceGroupViewChartController extends AbstractCameraController impl
     }
 
     @Override
+    public void mouseWheelMoved(MouseEvent e) {
+        float factor = (e.getWheelRotation() / 10.0f);
+        final BoundingBox3d bound = this._chart.getView().getBounds();
+
+        bound.setXmin(Math.max(Math.min(bound.getXmin() - factor, Max_Bounding_Box_Value), Min_Bounding_Box_Value));
+        bound.setYmin(Math.max(Math.min(bound.getYmin() - factor, Max_Bounding_Box_Value), Min_Bounding_Box_Value));
+        bound.setZmin(Math.max(Math.min(bound.getZmin() - factor, Max_Bounding_Box_Value), Min_Bounding_Box_Value));
+    }
+
+    @Override
+    public void mouseClicked(MouseEvent e) {
+        if (e.getButton() == MouseEvent.BUTTON1) {
+           int yflip = -e.getY() + this._chart.getCanvas().getRendererHeight();
+            Graph graph = _chart.getScene().getGraph();
+            final GLAutoDrawable glAutoDrawable = getCanvasAsGLAutoDrawable();
+            glAutoDrawable.getContext().makeCurrent();
+            // will trigger vertex selection event to those subscribing to PickingSupport.
+            this._pickingSupport.pickObjects(glAutoDrawable.getGL(), glu, this._chart.getView(), graph, new IntegerCoord2d(e.getX(), yflip));
+            // release gl context
+            glAutoDrawable.getContext().release();
+        }
+        else if (e.getButton() == MouseEvent.BUTTON3) {
+            this._contextMenu.show((Component)_chart.getCanvas(), e.getX(), e.getY());
+        }
+    }
+
+    protected GLAutoDrawable getCanvasAsGLAutoDrawable() {
+        ICanvas canvas = _chart.getCanvas();
+
+        if (canvas instanceof CanvasNewtAwt) {
+            return ((CanvasNewtAwt) canvas).getWindow();
+        }
+        else if (canvas instanceof GLAutoDrawable) {
+            return ((GLAutoDrawable) canvas);
+        }
+        return null;
+    }
+
+    @Override
     public void mouseMoved(MouseEvent e) { }
+
+    @Override
+    public void mouseReleased(MouseEvent e) { }
+
+    @Override
+    public void mouseEntered(MouseEvent e) { }
+
+    @Override
+    public void mouseExited(MouseEvent e) { }
+
 }
