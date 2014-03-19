@@ -36,13 +36,13 @@ public final class MeshHelper {
         if (m1.getVertices().size() == m2.getVertices().size() && m1.getFaces().size() == m2.getFaces().size()) {
             final double m1InnerSum = m1.sumDistancesToCentroid();
             final double m2InnerSum = m2.sumDistancesToCentroid();
-            final double tolerance = 0.005f;
+            final double tolerance = 0.0005f;
             //System.out.println(unitCellInnerSum);
             return Math.abs(m1InnerSum - m2InnerSum) < tolerance;
 
-            /*final double v1 = calculateVolumeOfConvexHull(m1);
-            final double v2 = calculateVolumeOfConvexHull(m2);
-            return Math.ceil(v1) == Math.ceil(v2);  */
+            /*final double v1 = volumeOfConvexHull(m1);
+            final double v2 = volumeOfConvexHull(m2);
+            return Math.ceil(v1) == Math.ceil(v2); */
             /*if (Math.ceil(v1) == Math.ceil(v2)) {
                 // compare area of faces
                 Set<Double> set1 = new HashSet<Double>();
@@ -68,7 +68,7 @@ public final class MeshHelper {
         return false;
     }
 
-    public static double calculateVolumeOfConvexHull(Mesh mesh) {
+    public static double volumeOfConvexHull(Mesh mesh) {
         double volume = 0;
         if (!mesh.getFaces().isEmpty()) {
             final Vector3D centroid = mesh.getCentroid();

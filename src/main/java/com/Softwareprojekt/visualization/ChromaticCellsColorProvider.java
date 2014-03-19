@@ -18,7 +18,7 @@ public class ChromaticCellsColorProvider implements ColorProvider {
 
     @Override
     public Color getColor(Mesh mesh, Polygon face) {
-        final double volume = MeshHelper.calculateVolumeOfConvexHull(mesh);
+        final double volume = MeshHelper.volumeOfConvexHull(mesh);
         if (!this._meshToColor.containsKey(volume)) {
             Color color = Color.random();
             color.a = 0.8f;

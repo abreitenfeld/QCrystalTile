@@ -165,7 +165,7 @@ public class SpaceGroupController implements Controller<ID> {
                     }
                     break;
                 case VoronoiTesselation:
-                    mesh = QVoronoi.call(this._prefs.getQHullRootPath(), p, "C0.0001");
+                    mesh = QVoronoi.call(this._prefs.getQHullRootPath(), p, "C0.0000000001");
                     if (!mesh.getVertices().isEmpty()) {
                         mesh = removeVertexFromMesh(mesh.getVertices().get(0), mesh);
                         for (Polygon poly : mesh.getFaces()) {
