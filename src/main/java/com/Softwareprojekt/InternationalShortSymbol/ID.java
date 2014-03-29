@@ -2,6 +2,7 @@ package com.Softwareprojekt.InternationalShortSymbol;
 
 
 import com.Softwareprojekt.interfaces.InvalidSpaceGroupIDException;
+import com.Softwareprojekt.interfaces.SpaceGroupEnumeration;
 import com.Softwareprojekt.interfaces.SpaceGroupID;
 
 /* this is just a wrapper class for String, to make it incompatible with an other spacegroupID */
@@ -64,4 +65,14 @@ public class ID implements SpaceGroupID {
 
 	private String repr;
 	//private CenteringType centering;
+
+	@Override
+	public int getNumber() {
+		SpaceGroupEnumeration<ID> sgEnum = new InternationalShortSymbolEnum();
+		for (int i = 1; i < 231; i++) {
+			if (sgEnum.get(i-1).equals(this))return i;
+			
+		}
+		return -1;
+	}
 }
