@@ -8,13 +8,10 @@ import com.Softwareprojekt.interfaces.SpaceGroupID;
 /* this is just a wrapper class for String, to make it incompatible with an other spacegroupID */
 public class ID implements SpaceGroupID {
 
-	private int number;
+
 	
 	public ID(String repr) throws InvalidSpaceGroupIDException {
-		SpaceGroupEnumeration<ID> sgEnum = new InternationalShortSymbolEnum();
-		for (int i = 1; i < 231; i++) {
-			if (sgEnum.get(i-1).stringRepr().equals(repr))this.number=i;
-		}
+		
 		this.repr = repr;
 		/*this.symmetryTokens = new ArrayList<String>();
 		
@@ -74,6 +71,12 @@ public class ID implements SpaceGroupID {
 
 
 	public int getNumber() {
-		return number;
-	}
+ 		SpaceGroupEnumeration<ID> sgEnum = new InternationalShortSymbolEnum();
+ 		for (int i = 1; i < 231; i++) {
+ 			if (sgEnum.get(i-1).equals(this))return i;
+ 			
+ 		}
+ 		return -1;
+ 	}
+ 	
 }
