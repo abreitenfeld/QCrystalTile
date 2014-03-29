@@ -66,7 +66,7 @@ public class ID implements SpaceGroupID {
 	private String repr;
 	//private CenteringType centering;
 
-	@Override
+
 	public int getNumber() {
 		SpaceGroupEnumeration<ID> sgEnum = new InternationalShortSymbolEnum();
 		for (int i = 1; i < 231; i++) {
