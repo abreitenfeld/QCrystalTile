@@ -5,6 +5,7 @@ import com.Softwareprojekt.InternationalShortSymbol.ID;
 public class SpaceGroupIDListItem implements Comparable<SpaceGroupIDListItem>  {
 
     private final ID _id;
+    private final static String Format = "%s (%s)";
 
     public SpaceGroupIDListItem(ID id) {
         this._id = id;
@@ -16,7 +17,7 @@ public class SpaceGroupIDListItem implements Comparable<SpaceGroupIDListItem>  {
 
     @Override
     public String toString() {
-        return  this._id.stringRepr();
+        return String.format(Format, this._id.stringRepr(), this._id.getNumber());
     }
 
     @Override
