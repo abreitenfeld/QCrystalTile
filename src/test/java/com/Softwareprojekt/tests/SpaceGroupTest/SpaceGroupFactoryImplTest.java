@@ -686,16 +686,16 @@ public class SpaceGroupFactoryImplTest {
 			ret.put( new ID("Pn-3m"), 48  );
 			// 225
 			ret.put( new ID("Fm-3m"), 192  );
-			/*// 226
-			ret.put( new ID("Fm-3c"), );
+			// 226
+			ret.put( new ID("Fm-3c"), 192  );
 			// 227
-			ret.put( new ID("Fd-3m"), );
+			ret.put( new ID("Fd-3m"), 192  );
 			// 228
-			ret.put( new ID("Fd-3c"), );
+			ret.put( new ID("Fd-3c"), 192  );
 			// 229
-			ret.put( new ID("Im-3m"), );
+			ret.put( new ID("Im-3m"), 96   );
 			// 230
-			ret.put( new ID("Ia-3d"), );*/
+			ret.put( new ID("Ia-3d"), 96   );
 		}
 		catch( InvalidSpaceGroupIDException e) {
 
