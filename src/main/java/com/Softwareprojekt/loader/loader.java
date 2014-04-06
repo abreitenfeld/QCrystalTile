@@ -41,7 +41,7 @@ public class loader {
 					String[] symline=lines.get(j).split("=");
 					String transformations="";
 					j++;
-					while(symline[0].equals(" symmetry")){
+					while(symline[0].equals(" symmetry")&&j<lines.size()){
 						transformations=transformations+symline[1].substring(1,symline[1].length()-1)+";";
 						symline=lines.get(j).split("=");
 						j++;
