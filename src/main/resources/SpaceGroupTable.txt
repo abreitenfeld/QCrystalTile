@@ -6525,15 +6525,15 @@
 <li> Number of Symmetry Operators =  8  </li>
 <li> Space Group Name =  Fm-3c  </li>
 <li> Crystal System =  CUBIC  </li>
-<li> Laue Class =  m-3m  </li>
-<li> Point Group =  m-3m  </li>
+<li> Laue Class =  m-3c  </li>
+<li> Point Group =  m-3c  </li>
 <li> Patterson Space Group # = <a href="http://homepage.univie.ac.at/nikos.pinotsis/spacegroup.html#226">226</a>
 </li><li> Lattice Type =  F  </li>
 <li> symmetry= X,Y,Z </li>
 <li> symmetry= -X,-Y,Z </li>
 <li> symmetry= -X,Y,-Z </li>
 <li> symmetry= Z,X,Y </li>
-<li> symmetry= Y+1/2,X+1/2,-z+1/2 </li>
+<li> symmetry= Y+1/2,X+1/2,-Z+1/2 </li>
 <li> symmetry= -X,-Y,-Z </li>
 <li> symmetry= X,Y+1/2,Z+1/2 </li>
 <li> symmetry= X+1/2,Y,Z+1/2 </li>
@@ -6542,8 +6542,8 @@
 <li> Number of Symmetry Operators =  8  </li>
 <li> Space Group Name =  Fd-3m  </li>
 <li> Crystal System =  CUBIC  </li>
-<li> Laue Class =  m-3m  </li>
-<li> Point Group =  m-3m  </li>
+<li> Laue Class =  d-3m  </li>
+<li> Point Group =  d-3m  </li>
 <li> Patterson Space Group # = <a href="http://homepage.univie.ac.at/nikos.pinotsis/spacegroup.html#227">227</a>
 </li><li> Lattice Type =  F  </li>
 <li> symmetry= X,Y,Z </li>
@@ -6557,10 +6557,10 @@
 
 <h2><a name="228">228   Fd-3c </a></h2>
 <li> Number of Symmetry Operators =  8  </li>
-<li> Space Group Name =  Fd-3C  </li>
+<li> Space Group Name =  Fd-3c  </li>
 <li> Crystal System =  CUBIC  </li>
-<li> Laue Class =  m-3m  </li>
-<li> Point Group =  m-3m  </li>
+<li> Laue Class =  d-3c  </li>
+<li> Point Group =  d-3c  </li>
 <li> Patterson Space Group # = <a href="http://homepage.univie.ac.at/nikos.pinotsis/spacegroup.html#228">228</a>
 </li><li> Lattice Type =  F  </li>
 <li> symmetry= X,Y,Z </li>
@@ -6568,18 +6568,18 @@
 <li> symmetry= -X+3/4,Y+1/2,-Z+1/4 </li>
 <li> symmetry= Z,X,Y </li>
 <li> symmetry= Y+3/4,X+1/4,-Z </li>
-<li> symmetry= -X,-Y,-Z  </li>
+<li> symmetry= -X,-Y,-Z </li>
 <li> symmetry= X,Y+1/2,Z+1/2 </li>
 <li> symmetry= X+1/2,Y,Z+1/2 </li>
 
-<h2><a name="229">229   Fd-3m </a></h2>
+<h2><a name="229">229   Im-3m </a></h2>
 <li> Number of Symmetry Operators =  7  </li>
 <li> Space Group Name =  Im-3m  </li>
 <li> Crystal System =  CUBIC  </li>
 <li> Laue Class =  m-3m  </li>
 <li> Point Group =  m-3m  </li>
 <li> Patterson Space Group # = <a href="http://homepage.univie.ac.at/nikos.pinotsis/spacegroup.html#229">229</a>
-</li><li> Lattice Type =  F  </li>
+</li><li> Lattice Type =  I  </li>
 <li> symmetry= X,Y,Z </li>
 <li> symmetry= -X,-Y,Z </li>
 <li> symmetry= -X,Y,-Z </li>
@@ -6592,10 +6592,10 @@
 <li> Number of Symmetry Operators =  7  </li>
 <li> Space Group Name =  Ia-3d  </li>
 <li> Crystal System =  CUBIC  </li>
-<li> Laue Class =  m-3m  </li>
-<li> Point Group =  m-3m  </li>
+<li> Laue Class =  a-3d  </li>
+<li> Point Group =  a-3d  </li>
 <li> Patterson Space Group # = <a href="http://homepage.univie.ac.at/nikos.pinotsis/spacegroup.html#230">230</a>
-</li><li> Lattice Type =  F  </li>
+</li><li> Lattice Type =  I  </li>
 <li> symmetry= X,Y,Z </li>
 <li> symmetry= -X+1/2,-Y,Z+1/2 </li>
 <li> symmetry= -X,Y+1/2,-Z+1/2 </li>
@@ -6603,3 +6603,4 @@
 <li> symmetry= Y+3/4,X+1/4,-Z+1/4 </li>
 <li> symmetry= -X,-Y,-Z </li>
 <li> symmetry= X+1/2,Y+1/2,Z+1/2 </li>
+
