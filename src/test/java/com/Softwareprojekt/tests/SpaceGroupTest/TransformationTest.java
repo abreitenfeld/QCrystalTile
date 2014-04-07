@@ -14,6 +14,8 @@ import com.Softwareprojekt.interfaces.Transformation;
 import com.Softwareprojekt.interfaces.Vector3D;
 
 import java.util.Random;
+import java.util.Set;
+import java.util.HashSet;
 
 public class TransformationTest {
 
@@ -21,6 +23,36 @@ public class TransformationTest {
 	public void testRotations4() throws Exception {
 		rotationsNewTest(4);
 	}*/
+
+	@Test
+	public void testTemp() throws Exception {
+		Matrix4D m1 = new Matrix4D( new double[][] {
+				{0, 1, 0, 0},
+				{0, 0, 1, 0.5},
+			    	{1, 0, 0, 0.5},
+			    	{0, 0, 0, 1}
+			});
+		Matrix4D m2 = new Matrix4D( new double[][] {
+				{0, 1, 0, 0},
+				{0, 0, -1, 0.5},
+			    	{-1, 0, 0, 0.5},
+			    	{0, 0, 0, 1}
+			});
+		Transformation t1 = new TransformationImpl(m1);
+		Transformation t2 = new TransformationImpl(m2);
+
+		HashSet<Transformation> set = new HashSet<Transformation>();
+		set.add(t1); set.add(t2);
+		assertEquals("correct set size", 2, set.size());
+
+
+		assertTrue("equal to itself", t1.getAsHomogeneous().equals(m1));
+		assertTrue("equal to itself", t2.getAsHomogeneous().equals(m2));
+
+		assertEquals( "testTemp", false,
+			t1.equals(t2)
+		);
+	}
 
 	@Test
 	public void testRotations12() throws Exception {
