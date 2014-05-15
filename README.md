@@ -4,5 +4,13 @@ QCrystalTile is an interactive tool which calculates and visualizes the Voronoi 
 ## Documentation
 https://github.com/garlicPasta/QCrystalTile-Documentation (german only)
 
+## Dependencies
+* Jzy3d
+* Qhull
+* QuickHull3D
+* la4j
+* junit
+* json-simple
+
 ## License
 General Public License (GPL), Version 2.0
