@@ -12,5 +12,11 @@ https://github.com/garlicPasta/QCrystalTile-Documentation (german only)
 * junit
 * json-simple
 
+## Screenshots
+
+![image](img/image01.png)
+
+![image](img/image02.png)
+
 ## License
 General Public License (GPL), Version 2.0
